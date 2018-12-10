@@ -9,4 +9,12 @@
         密碼預設為生日(ex. 911023)
     </string>
     <string name="login_text">登入</string>
+    <string name="title_activity_student_main">StudentMainActivity</string>
+    <string name="stu_title_order">點餐</string>
+    <string name="stu_title_history">檢視訂單</string>
+    <string name="stu_title_more">更多功能</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
 </resources>
