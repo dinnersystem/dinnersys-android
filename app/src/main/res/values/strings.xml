@@ -13,8 +13,9 @@
     <string name="stu_title_order">點餐</string>
     <string name="stu_title_history">檢視訂單</string>
     <string name="stu_title_more">更多功能</string>
-
+    <string name="priceString">%01s$</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
 
 </resources>
