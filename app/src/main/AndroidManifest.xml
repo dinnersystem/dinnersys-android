@@ -14,16 +14,18 @@
             android:theme="@style/AppTheme" tools:ignore="GoogleAppIndexingWarning">
         <activity android:name=".LoginActivity"
         android:label="@string/chinese_name">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
 
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
         </activity>
         <activity
                 android:name=".StudentMainActivity"
                 android:label="@string/title_activity_student_main"
-                ></activity>
+                >
+            <intent-filter>
+            <action android:name="android.intent.action.MAIN"/>
+
+            <category android:name="android.intent.category.LAUNCHER"/>
+        </intent-filter>
+        </activity>
         <activity android:name=".StuOrderListActivity"
         android:label="@string/stu_title_order">
         </activity>

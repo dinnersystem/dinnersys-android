@@ -4,8 +4,11 @@ import org.json.*
 
 //variable
 var userInfo = JSONObject("{}")
-var menuJson = JSONArray("[]")
-
+var allMenuJson = JSONArray("[]")
+var taiwanMenuJson = JSONArray("[]")
+var aiJiaMenuJson = JSONArray("[]")
+var cafetMenuJson = JSONArray("[]")
+var guanDonMenuJson = JSONArray("[]")
 //function
 fun dsURL(str: String): String{
     return "http://dinnersystem.ddns.net/dinnersys_beta/backend/backend.php?cmd=$str"

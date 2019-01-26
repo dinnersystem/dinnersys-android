@@ -6,14 +6,49 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".StuOrderListActivity">
+        tools:context=".StuOrderListActivity" android:background="@drawable/bg1">
 
-    <ListView
-            android:layout_width="368dp"
-            android:layout_height="495dp" android:layout_marginTop="8dp"
+    <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="597dp" app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintTop_toTopOf="parent" app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginStart="8dp" android:layout_marginBottom="8dp"
             app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginEnd="8dp" android:id="@+id/orderList"
-            android:scrollbars="vertical"/>
+            android:layout_marginTop="32dp" app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintVertical_bias="0.598" android:gravity="center|fill_vertical"
+            android:id="@+id/linearLayout">
+        <Button
+                android:text="@string/taiwan"
+                android:layout_width="258dp"
+                android:layout_height="70dp" android:id="@+id/taiwan_button" android:textSize="18sp"
+                android:onClick="toTaiwan"/>
+
+        <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="38dp" app:srcCompat="@android:color/transparent"
+                android:id="@+id/imageView" android:visibility="invisible" android:contentDescription="@string/blank"/>
+        <Button
+                android:text="@string/aiJia"
+                android:layout_width="256dp"
+                android:layout_height="70dp" android:id="@+id/aiJia_button"
+                android:textSize="18sp" android:onClick="toAiJia"/>
+        <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="38dp" app:srcCompat="@android:color/transparent"
+                android:id="@+id/imageView4" android:visibility="invisible" android:contentDescription="@string/blank"/>
+        <Button
+                android:text="@string/cafe"
+                android:layout_width="251dp"
+                android:layout_height="70dp" android:id="@+id/cafet_button"
+                android:textSize="18sp" android:onClick="toCafet"/>
+        <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="38dp" app:srcCompat="@android:color/transparent"
+                android:id="@+id/imageView5" android:visibility="invisible" android:contentDescription="@string/blank"/>
+        <Button
+                android:text="@string/GuanDon"
+                android:layout_width="247dp"
+                android:layout_height="70dp" android:id="@+id/guanDon_button"
+                android:textSize="18sp" android:onClick="toGuanDon"/>
+    </LinearLayout>
 </android.support.constraint.ConstraintLayout>
