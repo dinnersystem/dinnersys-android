@@ -14,7 +14,6 @@
     <string name="stu_title_history">檢視訂單</string>
     <string name="stu_title_more">更多功能</string>
     <string name="priceString">%01s$</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="taiwan">台灣小吃部</string>
     <string name="aiJia">愛佳便當</string>
@@ -22,4 +21,12 @@
     <string name="GuanDon">關東煮</string>
     <string name="blank">blank</string>
     <string name="remPW">以帳號登入</string>
+    <string name="chgPW">更新密碼</string>
+    <string name="checkWeb">檢視網頁版</string>
+    <string name="devThank">開發者致謝</string>
+    <string name="oldPW">請輸入舊密碼</string>
+    <string name="newPW1">請輸入新密碼</string>
+    <string name="newPW2">請再輸入一次新密碼</string>
+    <string name="confirmChg">確定更換</string>
+    <string name="title_activity_website">WebsiteActivity</string>
 </resources>

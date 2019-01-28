@@ -9,6 +9,17 @@ var taiwanMenuJson = JSONArray("[]")
 var aiJiaMenuJson = JSONArray("[]")
 var cafetMenuJson = JSONArray("[]")
 var guanDonMenuJson = JSONArray("[]")
+var balance = 0
+var selectedFactoryArr = JSONArray("[]")
+var selOrder1 = SelOrder("","","")
+var constUsername = ""
+var constPassword = ""
+//data structure
+data class SelOrder(val id: String, val name: String, val cost: String)
+
+
+
+var bonus = 0
 //function
 fun dsURL(str: String): String{
     return "http://dinnersystem.ddns.net/dinnersys_beta/backend/backend.php?cmd=$str"
@@ -22,7 +33,7 @@ fun isValidJson(str: String): Boolean{
     }catch (err: JSONException){
         try {
             val arr = JSONArray(str)
-        }catch (aerr: JSONException){
+        }catch (err: JSONException){
             return false
         }
     }

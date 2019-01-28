@@ -1,15 +1,14 @@
 package seanpai.dinnersystem
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.view.View
 import com.android.volley.RequestQueue
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
+import com.jakewharton.threetenabp.AndroidThreeTen
 import kotlinx.android.synthetic.main.activity_login.*
 import org.json.JSONObject
 import org.jetbrains.anko.alert
@@ -23,6 +22,7 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
         CookieHandler.setDefault(CookieManager(null, CookiePolicy.ACCEPT_ALL))
+        AndroidThreeTen.init(this)
         queue = Volley.newRequestQueue(this)
         if(preferences.getString("username",null) !=null){
             val name = preferences.getString("username",null)!!
@@ -55,6 +55,8 @@ class LoginActivity : AppCompatActivity() {
         val url = "${dsURL("login")}&id=$usr&hash=$hash&device_id=HELLO_FROM_ANDROID"
         val loginRequest = StringRequest(url,Response.Listener { string ->
             if (isValidJson(string)){
+                constPassword = psw
+                constUsername = usr
                 userInfo = JSONObject(string)
                 startActivity(Intent(view.context,StudentMainActivity::class.java))
             }else {
@@ -76,6 +78,8 @@ class LoginActivity : AppCompatActivity() {
         val url = "${dsURL("login")}&id=$usr&hash=$hash&device_id=HELLO_FROM_ANDROID"
         val loginRequest = StringRequest(url,Response.Listener { string ->
             if (isValidJson(string)){
+                constPassword = psw
+                constUsername = usr
                 userInfo = JSONObject(string)
                 if (remSwitch.isChecked){
                     preferences.edit()
@@ -96,8 +100,8 @@ class LoginActivity : AppCompatActivity() {
             }
         },Response.ErrorListener { error ->
             alert ("請注意網路狀態，或通知開發人員!","不知名的錯誤"){
-                positiveButton("OK"){}
-            }
+            positiveButton("OK"){}
+        }
         })
         queue!!.add(loginRequest)
     }

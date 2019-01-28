@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          xmlns:tools="http://schemas.android.com/tools" package="seanpai.dinnersystem">
+          xmlns:tools="http://schemas.android.com/tools"
+          package="seanpai.dinnersystem">
 
     <uses-permission android:name="android.permission.INTERNET"/>
 
@@ -11,23 +12,37 @@
             android:networkSecurityConfig="@xml/network_security_config"
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
-            android:theme="@style/AppTheme" tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".LoginActivity"
-        android:label="@string/chinese_name">
+            android:theme="@style/AppTheme.NoActionBar"
+            tools:ignore="GoogleAppIndexingWarning">
 
+        <activity android:name=".DeveloperBonusActivity">
+        </activity>
+        <activity android:name=".DeveloperNormalActivity">
+        </activity>
+        <activity android:name=".ChangePasswordActivity">
+        </activity>
+        <activity android:name=".MainMoreActivity">
+        </activity>
+        <activity android:name=".MainOrderActivity">
+        </activity>
+        <activity android:name=".MainMenuActivity">
+        </activity>
+        <activity
+                android:name=".LoginActivity"
+                android:label="@string/chinese_name">
         </activity>
         <activity
                 android:name=".StudentMainActivity"
-                android:label="@string/title_activity_student_main"
-                >
+                android:label="@string/title_activity_student_main">
             <intent-filter>
-            <action android:name="android.intent.action.MAIN"/>
+                <action android:name="android.intent.action.MAIN"/>
 
-            <category android:name="android.intent.category.LAUNCHER"/>
-        </intent-filter>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
         </activity>
-        <activity android:name=".StuOrderListActivity"
-        android:label="@string/stu_title_order">
+        <activity
+                android:name=".StuOrderListActivity"
+                android:label="@string/stu_title_order">
         </activity>
     </application>
 
