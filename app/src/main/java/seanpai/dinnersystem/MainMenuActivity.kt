@@ -1,6 +1,7 @@
 package seanpai.dinnersystem
 
 import android.content.Context
+import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -12,6 +13,7 @@ import kotlinx.android.synthetic.main.main_menu_cell.view.*
 
 class MainMenuActivity : AppCompatActivity() {
     private val adaptor = TableAdaptor(this)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_menu)
@@ -23,7 +25,7 @@ class MainMenuActivity : AppCompatActivity() {
 
     class TableAdaptor(context: Context): BaseAdapter(){
         private val mContext: Context = context
-
+        private val page = MainMenuActivity()
         override fun getCount(): Int {
             return selectedFactoryArr.length()
         }
@@ -46,7 +48,7 @@ class MainMenuActivity : AppCompatActivity() {
             layout.detailTitle.text = "$dishCost$"
             layout.proceedOrderButton.setOnClickListener {
                 selOrder1 = SelOrder(dishID,dishName,dishCost)
-
+                page.startActivity(Intent(mContext,MainOrderActivity::class.java))
             }
             return layout
         }

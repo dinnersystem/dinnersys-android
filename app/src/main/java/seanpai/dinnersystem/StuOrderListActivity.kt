@@ -109,6 +109,9 @@ class StuOrderListActivity : AppCompatActivity() {
         selectedFactoryArr = cafetMenuJson
         startActivity(Intent(view.context, MainMenuActivity::class.java))
     }
-    fun toGuanDon(view:View){}
+    fun toGuanDon(view:View){
+        selectedFactoryArr = guanDonMenuJson
+        startActivity(Intent(view.context, GuandonOrderListActivity::class.java))
+    }
 
 }

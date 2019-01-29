@@ -37,6 +37,6 @@ class StudentMainActivity : AppCompatActivity() {
 
     }
     fun toMore(view: View){
-
+        startActivity(Intent(view.context,MainMoreActivity::class.java))
     }
 }
