@@ -1,40 +1,33 @@
 package seanpai.dinnersystem
 
-import android.content.Context
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import android.view.Window
 import com.android.volley.RequestQueue
 import com.android.volley.Response
-import com.android.volley.toolbox.JsonArrayRequest
-import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
-import kotlinx.android.synthetic.main.activity_stu_order_list.*
 import org.jetbrains.anko.alert
 import org.json.JSONArray
 import org.json.JSONObject
 
 
 class StuOrderListActivity : AppCompatActivity() {
-    private var queue: RequestQueue? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_stu_order_list)
-        queue = Volley.newRequestQueue(this)
 
         val url = dsURL("show_dish")
         val balanceURL = dsURL("get_money")
+
         val balanceRequest = StringRequest(balanceURL, Response.Listener {
-            balance = it.toInt()
+            balance = it.trim().toInt()
         }, Response.ErrorListener { alert ("請注意網路狀態，或通知開發人員!","不知名的錯誤"){
             positiveButton("OK"){}
         } })
+
         val dishRequest = StringRequest(url, Response.Listener { response ->
             allMenuJson = JSONArray("[]")
             taiwanMenuJson = JSONArray("[]")
@@ -49,12 +42,12 @@ class StuOrderListActivity : AppCompatActivity() {
                     if (item.getString("is_idle") == "1") {
                         allMenuJson.remove(j)
                         j -= 1
-                    } else when (item.getJSONObject("factory").getString("name")) {
+                    } else when (item.getJSONObject("department").getJSONObject("factory").getString("name")) {
                         "台灣小吃部" -> taiwanMenuJson.put(item)
                         "愛家便當" -> aiJiaMenuJson.put(item)
                         "關東煮" -> guanDonMenuJson.put(item)
                         "合作社" -> cafetMenuJson.put(item)
-                        else -> println("no")
+                        else -> {}
                     }
                     j += 1
                 }
@@ -75,8 +68,9 @@ class StuOrderListActivity : AppCompatActivity() {
                             positiveButton("OK"){}
                         }
                     })
-                    queue!!.add(remainRequest)
+                    VolleySingleton.getInstance(this).addToRequestQueue(remainRequest)
                 }
+                println("everything should be alright")
             }else{
                 alert("請重新登入","您已經登出"){
                     positiveButton("OK"){
@@ -89,16 +83,14 @@ class StuOrderListActivity : AppCompatActivity() {
                 positiveButton("OK"){}
             }
         })
-        queue!!.add(dishRequest)
-        queue!!.add(balanceRequest)
+        VolleySingleton.getInstance(this).addToRequestQueue(dishRequest)
+        VolleySingleton.getInstance(this).addToRequestQueue(balanceRequest)
     }
-    override fun onStop() {
-        super.onStop()
-        queue!!.stop()
-    }
+
 
     fun toTaiwan(view:View){
         selectedFactoryArr = taiwanMenuJson
+        println("startingActivity......................")
         startActivity(Intent(view.context, MainMenuActivity::class.java))
     }
     fun toAiJia(view:View){

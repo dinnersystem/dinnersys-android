@@ -12,12 +12,16 @@ import kotlinx.android.synthetic.main.activity_guandon_order_list.*
 import kotlinx.android.synthetic.main.guandon_list_cell.view.*
 
 class GuandonOrderListActivity : AppCompatActivity() {
-    private val adaptor = TableAdaptor(this)
     var totalCost = 0
     var totalSelected = 0
+    companion object {
+        fun init(): GuandonOrderListActivity = GuandonOrderListActivity()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_guandon_order_list)
+        val adaptor = TableAdaptor(this)
         this.guandonTableView.adapter = adaptor
         this.balanceText.text = balance.toString() + "$"
         adaptor.notifyDataSetChanged()
@@ -59,7 +63,7 @@ class GuandonOrderListActivity : AppCompatActivity() {
 
     class TableAdaptor(context: Context): BaseAdapter(){
         private val mContext: Context = context
-        private val page = GuandonOrderListActivity()
+        private val page = GuandonOrderListActivity.init()
         override fun getCount(): Int {
             return selectedFactoryArr.length()
         }

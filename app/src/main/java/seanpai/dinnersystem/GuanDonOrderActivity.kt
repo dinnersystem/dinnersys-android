@@ -15,7 +15,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class GuanDonOrderActivity : AppCompatActivity() {
-    var queue = Volley.newRequestQueue(this)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_guan_don_order)
@@ -26,10 +26,6 @@ class GuanDonOrderActivity : AppCompatActivity() {
         this.confirmText.text = confirmString
     }
 
-    override fun onStop() {
-        super.onStop()
-        queue.stop()
-    }
 
     fun sendGuanDonOrder(view:View){
         val now = LocalDateTime.now()
@@ -78,7 +74,7 @@ class GuanDonOrderActivity : AppCompatActivity() {
                     positiveButton("OK"){}
                 }
             })
-            queue!!.add(orderRequest)
+            VolleySingleton.getInstance(this).addToRequestQueue(orderRequest)
         }
     }
 

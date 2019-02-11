@@ -12,12 +12,10 @@ import com.android.volley.toolbox.Volley
 import kotlinx.android.synthetic.main.activity_developer_bonus.*
 
 class DeveloperBonusActivity : AppCompatActivity() {
-    var queue:RequestQueue? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_developer_bonus)
-        queue = Volley.newRequestQueue(this)
-        val url = "http://dinnersystem.ddns.net/dinnersys_beta/frontend/images/dinnersys0.png"
+        val url = "https://dinnersystem.ddns.net/dinnersys_beta/frontend/u_move_u_dead/dinnersys0.png"
         val imageRequest = ImageRequest(url,
                                         Response.Listener {
                                             imageView7.setImageBitmap(it)
@@ -25,11 +23,8 @@ class DeveloperBonusActivity : AppCompatActivity() {
                                         0,0,ImageView.ScaleType.FIT_XY, Bitmap.Config.ARGB_8888, Response.ErrorListener {
 
             })
-        queue!!.add(imageRequest)
+        VolleySingleton.getInstance(this).addToRequestQueue(imageRequest)
     }
 
-    override fun onStop() {
-        super.onStop()
-        queue!!.stop()
-    }
+
 }

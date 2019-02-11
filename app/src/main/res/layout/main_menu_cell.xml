@@ -4,12 +4,11 @@
                                              android:layout_height="match_parent" android:id="@+id/relativeLayout">
 
     <TextView
-            android:text="TextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/title" android:textSize="18sp" app:layout_constraintStart_toStartOf="parent"
             android:layout_marginStart="16dp" android:layout_marginTop="12dp"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent" android:text="TextView"/>
     <TextView
             android:text="TextView"
             android:layout_width="wrap_content"

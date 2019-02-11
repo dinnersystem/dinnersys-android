@@ -16,11 +16,9 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class MainOrderActivity : AppCompatActivity() {
-    var queue: RequestQueue? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_order)
-        queue = Volley.newRequestQueue(this)
         val confirmString = """
             您選擇的餐點是${selOrder1.name}，價錢為${selOrder1.cost}，確定請按訂餐。
             請注意早上十點後將無法點餐!
@@ -28,10 +26,6 @@ class MainOrderActivity : AppCompatActivity() {
         this.confirmText.text = confirmString
     }
 
-    override fun onStop() {
-        super.onStop()
-        queue!!.stop()
-    }
     fun sendOrder(view: View){
         val now = LocalDateTime.now()
         val hourFormat = SimpleDateFormat("HH", Locale("zh-TW"))
@@ -76,7 +70,7 @@ class MainOrderActivity : AppCompatActivity() {
                     positiveButton("OK"){}
                 }
             })
-            queue!!.add(orderRequest)
+            VolleySingleton.getInstance(this).addToRequestQueue(orderRequest)
         }
     }
 

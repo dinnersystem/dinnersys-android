@@ -14,6 +14,8 @@
             android:supportsRtl="true"
             android:theme="@style/AppTheme.NoActionBar"
             tools:ignore="GoogleAppIndexingWarning">
+        <activity android:name=".DebugActivity">
+        </activity>
         <activity android:name=".MainHistoryActivity">
         </activity>
         <activity android:name=".GuanDonOrderActivity">
@@ -35,15 +37,15 @@
         <activity
                 android:name=".LoginActivity"
                 android:label="@string/chinese_name">
-        </activity>
-        <activity
-                android:name=".StudentMainActivity"
-                android:label="@string/title_activity_student_main">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
+        </activity>
+        <activity
+                android:name=".StudentMainActivity"
+                android:label="@string/title_activity_student_main">
         </activity>
         <activity
                 android:name=".StuOrderListActivity"

@@ -12,16 +12,11 @@ import kotlinx.android.synthetic.main.activity_change_password.*
 import org.jetbrains.anko.alert
 
 class ChangePasswordActivity : AppCompatActivity() {
-    var queue: RequestQueue = Volley.newRequestQueue(this)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_change_password)
     }
 
-    override fun onStop() {
-        super.onStop()
-        queue.stop()
-    }
     fun chgPW(view: View){
         val old = oldPWText.text.toString()
         val new = newPWText.text.toString()
@@ -69,7 +64,7 @@ class ChangePasswordActivity : AppCompatActivity() {
                     positiveButton("OK"){}
                 }
             })
-            queue.add(chgRequest)
+            VolleySingleton.getInstance(this).addToRequestQueue(chgRequest)
         }
 
 

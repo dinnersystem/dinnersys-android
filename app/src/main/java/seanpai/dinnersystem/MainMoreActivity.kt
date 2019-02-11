@@ -18,7 +18,7 @@ class MainMoreActivity : AppCompatActivity() {
         startActivity(Intent(view.context,ChangePasswordActivity::class.java))
     }
     fun webVer(view: View){
-        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("http://dinnersystem.ddns.net/")))
+        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://dinnersystem.ddns.net/")))
     }
     fun devThank(view: View){
         bonus += 1

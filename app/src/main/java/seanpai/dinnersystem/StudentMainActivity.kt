@@ -12,23 +12,18 @@ import com.android.volley.toolbox.Volley
 import org.jetbrains.anko.alert
 
 class StudentMainActivity : AppCompatActivity() {
-    private var queue: RequestQueue? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_student_main)
-        queue = Volley.newRequestQueue(this)
         val balanceURL = dsURL("get_money")
         val balanceRequest = StringRequest(balanceURL, Response.Listener {
             balance = it.toInt()
         }, Response.ErrorListener { alert ("請注意網路狀態，或通知開發人員!","不知名的錯誤"){
             positiveButton("OK"){}
         } })
-        queue!!.add(balanceRequest)
+        VolleySingleton.getInstance(this).addToRequestQueue(balanceRequest)
     }
-    override fun onStop() {
-        super.onStop()
-        queue!!.stop()
-    }
+
     fun toOrder(view: View){
         startActivity(Intent(view.context,StuOrderListActivity::class.java))
     }

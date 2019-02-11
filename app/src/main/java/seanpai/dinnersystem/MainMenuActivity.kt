@@ -17,15 +17,14 @@ class MainMenuActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_menu)
+        println("hello there")
         this.tableView.adapter = adaptor
-        this.balanceText.text = balance.toString() + "$"
-        adaptor.notifyDataSetChanged()
+        this.balanceText.text = "餘額：" + balance.toString() + "$"
     }
 
 
     class TableAdaptor(context: Context): BaseAdapter(){
         private val mContext: Context = context
-        private val page = MainMenuActivity()
         override fun getCount(): Int {
             return selectedFactoryArr.length()
         }
@@ -48,7 +47,7 @@ class MainMenuActivity : AppCompatActivity() {
             layout.detailTitle.text = "$dishCost$"
             layout.proceedOrderButton.setOnClickListener {
                 selOrder1 = SelOrder(dishID,dishName,dishCost)
-                page.startActivity(Intent(mContext,MainOrderActivity::class.java))
+                mContext.startActivity(Intent(mContext,MainOrderActivity::class.java))
             }
             return layout
         }
