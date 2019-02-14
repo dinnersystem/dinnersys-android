@@ -26,7 +26,7 @@ class StuOrderListActivity : AppCompatActivity() {
             balance = it.trim().toInt()
         }, Response.ErrorListener { alert ("請注意網路狀態，或通知開發人員!","不知名的錯誤"){
             positiveButton("OK"){}
-        } })
+        }.show() })
 
         val dishRequest = StringRequest(url, Response.Listener { response ->
             allMenuJson = JSONArray("[]")
@@ -61,12 +61,12 @@ class StuOrderListActivity : AppCompatActivity() {
                                 positiveButton("OK"){
                                     startActivity(Intent(this@StuOrderListActivity, LoginActivity::class.java))
                                 }
-                            }
+                            }.show()
                         }
                     }, Response.ErrorListener {
                         alert ("請注意網路狀態，或通知開發人員!","不知名的錯誤"){
                             positiveButton("OK"){}
-                        }
+                        }.show()
                     })
                     VolleySingleton.getInstance(this).addToRequestQueue(remainRequest)
                 }
@@ -76,12 +76,12 @@ class StuOrderListActivity : AppCompatActivity() {
                     positiveButton("OK"){
                         startActivity(Intent(this@StuOrderListActivity, LoginActivity::class.java))
                     }
-                }
+                }.show()
             }
         },Response.ErrorListener {
             alert ("請注意網路狀態，或通知開發人員!","不知名的錯誤"){
                 positiveButton("OK"){}
-            }
+            }.show()
         })
         VolleySingleton.getInstance(this).addToRequestQueue(dishRequest)
         VolleySingleton.getInstance(this).addToRequestQueue(balanceRequest)

@@ -21,7 +21,6 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
         CookieHandler.setDefault(CookieManager(null, CookiePolicy.ACCEPT_ALL))
-        AndroidThreeTen.init(this)
         preferences = PreferenceManager.getDefaultSharedPreferences(this)
         if(preferences!!.getString("username",null) !=null){
             val name = preferences!!.getString("name",null)!!
@@ -104,6 +103,7 @@ class LoginActivity : AppCompatActivity() {
                 }.show()
             }
         },Response.ErrorListener { error ->
+            println(error)
             alert ("請注意網路狀態，或通知開發人員!","不知名的錯誤"){
             positiveButton("OK"){}
         }.show()

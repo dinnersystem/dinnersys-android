@@ -11,6 +11,7 @@ var cafetMenuJson = JSONArray("[]")
 var guanDonMenuJson = JSONArray("[]")
 var balance = 0
 var selectedFactoryArr = JSONArray("[]")
+var historyArr = JSONArray("[]")
 var selOrder1 = SelOrder("","","")
 var constUsername = ""
 var constPassword = ""

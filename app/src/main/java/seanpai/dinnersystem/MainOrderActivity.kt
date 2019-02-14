@@ -13,6 +13,7 @@ import org.jetbrains.anko.alert
 import org.json.JSONArray
 import org.threeten.bp.LocalDateTime
 import java.text.SimpleDateFormat
+import java.time.ZoneId
 import java.util.*
 
 class MainOrderActivity : AppCompatActivity() {
@@ -27,14 +28,14 @@ class MainOrderActivity : AppCompatActivity() {
     }
 
     fun sendOrder(view: View){
-        val now = LocalDateTime.now()
+        val now = Date.from(java.time.LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant())
         val hourFormat = SimpleDateFormat("HH", Locale("zh-TW"))
         val hour = hourFormat.format(now).toInt()
         val fullFormat = SimpleDateFormat("yyyy/MM/dd", Locale("zh-TW"))
-        if(hour>10) {
-            alert("早上十點後無法訂餐，明日請早","超過訂餐時間") { positiveButton("OK"){} }
+        if(hour<10) {
+            alert("早上十點後無法訂餐，明日請早","超過訂餐時間") { positiveButton("OK"){} }.show()
         }else{
-            val orderURL = dsURL("make_self_order&dish_id[]=${selOrder1.id}&time=${fullFormat.format(now)}-12:00:00")
+            val orderURL = dsURL("make_self_order&dish_id[]=${selOrder1.id}&time=${fullFormat.format(now)}-23:00:00")  //TODO: MARK
             val orderRequest = StringRequest(orderURL, Response.Listener {
                 if (isValidJson(it)){
                     val orderInfo = JSONArray(it)
@@ -43,32 +44,33 @@ class MainOrderActivity : AppCompatActivity() {
                         positiveButton("OK"){
                             startActivity(Intent(this@MainOrderActivity, StudentMainActivity::class.java))
                         }
-                    }
+                    }.show()
                 }else{
+                    println(it)
                     if(it.contains("Off") || it.contains("Impossible")){
                         alert("請確定手機時間是否正確","訂餐錯誤"){
                             positiveButton("OK"){}
-                        }
+                        }.show()
                     }else if (it.contains("Invalid")){
                         alert("發生了不知名的錯誤。請嘗試重新登入，或嘗試重新開啟程式，若持續發生問題，請通知開發人員！", "Unexpected Error"){
                             positiveButton("OK"){}
-                        }
+                        }.show()
                     }else if (it == ""){
                         alert("請重新登入", "您已經登出") {
                             positiveButton("OK") {
                                 startActivity(Intent(this@MainOrderActivity, LoginActivity::class.java))
                             }
-                        }
+                        }.show()
                     }else{
                         alert("發生了不知名的錯誤。請嘗試重新登入，或嘗試重新開啟程式，若持續發生問題，請通知開發人員！", "Unexpected Error"){
                             positiveButton("OK"){}
-                        }
+                        }.show()
                     }
                 }
             }, Response.ErrorListener {
                 alert ("請注意網路狀態，或通知開發人員!","不知名的錯誤"){
                     positiveButton("OK"){}
-                }
+                }.show()
             })
             VolleySingleton.getInstance(this).addToRequestQueue(orderRequest)
         }

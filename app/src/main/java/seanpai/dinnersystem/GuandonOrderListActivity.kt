@@ -13,7 +13,7 @@ import kotlinx.android.synthetic.main.guandon_list_cell.view.*
 
 class GuandonOrderListActivity : AppCompatActivity() {
     var totalCost = 0
-    var totalSelected = 0
+    var totalSelected = 0   //TODO: limit
     companion object {
         fun init(): GuandonOrderListActivity = GuandonOrderListActivity()
     }

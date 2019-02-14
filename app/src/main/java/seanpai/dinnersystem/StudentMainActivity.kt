@@ -20,8 +20,8 @@ class StudentMainActivity : AppCompatActivity() {
             balance = it.toInt()
         }, Response.ErrorListener { alert ("請注意網路狀態，或通知開發人員!","不知名的錯誤"){
             positiveButton("OK"){}
-        } })
-        VolleySingleton.getInstance(this).addToRequestQueue(balanceRequest)
+        }.show() })
+        //VolleySingleton.getInstance(this).addToRequestQueue(balanceRequest)
     }
 
     fun toOrder(view: View){
@@ -29,7 +29,7 @@ class StudentMainActivity : AppCompatActivity() {
     }
 
     fun toHis(view:View){
-
+        startActivity(Intent(view.context,MainHistoryActivity::class.java))
     }
     fun toMore(view: View){
         startActivity(Intent(view.context,MainMoreActivity::class.java))
