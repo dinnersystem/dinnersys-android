@@ -14,14 +14,13 @@ import kotlinx.android.synthetic.main.guandon_list_cell.view.*
 class GuandonOrderListActivity : AppCompatActivity() {
     var totalCost = 0
     var totalSelected = 0   //TODO: limit
-    companion object {
-        fun init(): GuandonOrderListActivity = GuandonOrderListActivity()
-    }
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_guandon_order_list)
-        val adaptor = TableAdaptor(this)
+        val adaptor = TableAdaptor(this, {updateValue()})
         this.guandonTableView.adapter = adaptor
         this.balanceText.text = balance.toString() + "$"
         adaptor.notifyDataSetChanged()
@@ -61,9 +60,9 @@ class GuandonOrderListActivity : AppCompatActivity() {
         startActivity(Intent(view.context,GuanDonOrderActivity::class.java))
     }
 
-    class TableAdaptor(context: Context): BaseAdapter(){
+    class TableAdaptor(context: Context, updValue: () -> Unit): BaseAdapter(){
         private val mContext: Context = context
-        private val page = GuandonOrderListActivity.init()
+        private val updateValue = updValue
         override fun getCount(): Int {
             return selectedFactoryArr.length()
         }
@@ -97,7 +96,7 @@ class GuandonOrderListActivity : AppCompatActivity() {
                 if(quantity>1){
                     layout.minus_button.isEnabled = true
                 }
-                page.updateValue()
+                updateValue()
             }
             layout.minus_button.setOnClickListener {
                 var quantity = quantityDict[position.toString()]!!
@@ -113,7 +112,7 @@ class GuandonOrderListActivity : AppCompatActivity() {
                 if(quantity<5 && quantity< dishRemain.toInt()){
                     layout.plus_button.isEnabled = true
                 }
-                page.updateValue()
+                updateValue()
             }
             layout.titleText.text = dishName
             layout.detailTitleText.text = "$dishCost$, 剩${dishRemain}個"

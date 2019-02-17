@@ -1,9 +1,14 @@
 package seanpai.dinnersystem
 
 import android.content.Intent
+import android.content.SharedPreferences
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Gravity
 import android.view.View
+import android.view.WindowManager
+import android.widget.LinearLayout
+import android.widget.ProgressBar
 import com.android.volley.RequestQueue
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
@@ -17,9 +22,26 @@ import java.time.ZoneId
 import java.util.*
 
 class MainOrderActivity : AppCompatActivity() {
+    private var preferences: SharedPreferences? = null
+    private lateinit var indicatorView : View
+    private lateinit var progressBar: ProgressBar
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_order)
+        //indicator start
+        indicatorView = View(this)
+        indicatorView.setBackgroundResource(R.color.colorPrimaryDark)
+        val viewParam = LinearLayout.LayoutParams(-1,-1)
+        viewParam.gravity = Gravity.CENTER
+        indicatorView.layoutParams = viewParam
+        progressBar = ProgressBar(this,null, android.R.attr.progressBarStyle)
+        progressBar.isIndeterminate = true
+        val prams: LinearLayout.LayoutParams = LinearLayout.LayoutParams( LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+        prams.gravity = Gravity.CENTER
+        progressBar.layoutParams = prams
+        indicatorView.visibility = View.INVISIBLE
+        progressBar.visibility = View.INVISIBLE
+        //indicator end
         val confirmString = """
             您選擇的餐點是${selOrder1.name}，價錢為${selOrder1.cost}，確定請按訂餐。
             請注意早上十點後將無法點餐!
@@ -28,18 +50,30 @@ class MainOrderActivity : AppCompatActivity() {
     }
 
     fun sendOrder(view: View){
+        //indicator
+        indicatorView.visibility = View.VISIBLE
+        indicatorView.bringToFront()
+        progressBar.visibility = View.VISIBLE
+        progressBar.bringToFront()
+        window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+        //indicator
         val now = Date.from(java.time.LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant())
         val hourFormat = SimpleDateFormat("HH", Locale("zh-TW"))
         val hour = hourFormat.format(now).toInt()
         val fullFormat = SimpleDateFormat("yyyy/MM/dd", Locale("zh-TW"))
-        if(hour<10) {
+        if(hour>10) {
             alert("早上十點後無法訂餐，明日請早","超過訂餐時間") { positiveButton("OK"){} }.show()
         }else{
-            val orderURL = dsURL("make_self_order&dish_id[]=${selOrder1.id}&time=${fullFormat.format(now)}-23:00:00")  //TODO: MARK
+            val orderURL = dsURL("make_self_order&dish_id[]=${selOrder1.id}&time=${fullFormat.format(now)}-12:00:00")  //TODO: MARK
             val orderRequest = StringRequest(orderURL, Response.Listener {
                 if (isValidJson(it)){
                     val orderInfo = JSONArray(it)
                     val orderID = orderInfo.getJSONObject(0).getString("id")
+                    //indicator
+                    indicatorView.visibility = View.INVISIBLE
+                    progressBar.visibility = View.INVISIBLE
+                    window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+                    //indicator
                     alert("訂單編號$orderID,請記得付款！", "點餐成功"){
                         positiveButton("OK"){
                             startActivity(Intent(this@MainOrderActivity, StudentMainActivity::class.java))
@@ -48,26 +82,51 @@ class MainOrderActivity : AppCompatActivity() {
                 }else{
                     println(it)
                     if(it.contains("Off") || it.contains("Impossible")){
+                        //indicator
+                        indicatorView.visibility = View.INVISIBLE
+                        progressBar.visibility = View.INVISIBLE
+                        window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+                        //indicator
                         alert("請確定手機時間是否正確","訂餐錯誤"){
                             positiveButton("OK"){}
                         }.show()
                     }else if (it.contains("Invalid")){
+                        //indicator
+                        indicatorView.visibility = View.INVISIBLE
+                        progressBar.visibility = View.INVISIBLE
+                        window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+                        //indicator
                         alert("發生了不知名的錯誤。請嘗試重新登入，或嘗試重新開啟程式，若持續發生問題，請通知開發人員！", "Unexpected Error"){
                             positiveButton("OK"){}
                         }.show()
                     }else if (it == ""){
+                        //indicator
+                        indicatorView.visibility = View.INVISIBLE
+                        progressBar.visibility = View.INVISIBLE
+                        window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+                        //indicator
                         alert("請重新登入", "您已經登出") {
                             positiveButton("OK") {
                                 startActivity(Intent(this@MainOrderActivity, LoginActivity::class.java))
                             }
                         }.show()
                     }else{
+                        //indicator
+                        indicatorView.visibility = View.INVISIBLE
+                        progressBar.visibility = View.INVISIBLE
+                        window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+                        //indicator
                         alert("發生了不知名的錯誤。請嘗試重新登入，或嘗試重新開啟程式，若持續發生問題，請通知開發人員！", "Unexpected Error"){
                             positiveButton("OK"){}
                         }.show()
                     }
                 }
             }, Response.ErrorListener {
+                //indicator
+                indicatorView.visibility = View.INVISIBLE
+                progressBar.visibility = View.INVISIBLE
+                window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+                //indicator
                 alert ("請注意網路狀態，或通知開發人員!","不知名的錯誤"){
                     positiveButton("OK"){}
                 }.show()

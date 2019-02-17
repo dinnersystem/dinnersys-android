@@ -1,9 +1,14 @@
 package seanpai.dinnersystem
 
 import android.content.Intent
+import android.content.SharedPreferences
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Gravity
 import android.view.View
+import android.view.WindowManager
+import android.widget.LinearLayout
+import android.widget.ProgressBar
 import com.android.volley.RequestQueue
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
@@ -15,16 +20,46 @@ import org.json.JSONObject
 
 class StuOrderListActivity : AppCompatActivity() {
 
+    private lateinit var indicatorView : View
+    private lateinit var progressBar: ProgressBar
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_stu_order_list)
 
+        //indicator start
+        indicatorView = View(this)
+        indicatorView.setBackgroundResource(R.color.colorPrimaryDark)
+        val viewParam = LinearLayout.LayoutParams(-1,-1)
+        viewParam.gravity = Gravity.CENTER
+        indicatorView.layoutParams = viewParam
+        progressBar = ProgressBar(this,null, android.R.attr.progressBarStyle)
+        progressBar.isIndeterminate = true
+        val prams: LinearLayout.LayoutParams = LinearLayout.LayoutParams( LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+        prams.gravity = Gravity.CENTER
+        progressBar.layoutParams = prams
+        indicatorView.visibility = View.INVISIBLE
+        progressBar.visibility = View.INVISIBLE
+        //indicator end
+
         val url = dsURL("show_dish")
         val balanceURL = dsURL("get_money")
-
+        //indicator
+        indicatorView.visibility = View.VISIBLE
+        indicatorView.bringToFront()
+        progressBar.visibility = View.VISIBLE
+        progressBar.bringToFront()
+        window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+        //indicator
         val balanceRequest = StringRequest(balanceURL, Response.Listener {
             balance = it.trim().toInt()
-        }, Response.ErrorListener { alert ("請注意網路狀態，或通知開發人員!","不知名的錯誤"){
+        }, Response.ErrorListener {
+            //indicator
+            indicatorView.visibility = View.INVISIBLE
+            progressBar.visibility = View.INVISIBLE
+            window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+            //indicator
+            alert ("請注意網路狀態，或通知開發人員!","不知名的錯誤"){
             positiveButton("OK"){}
         }.show() })
 
@@ -57,6 +92,11 @@ class StuOrderListActivity : AppCompatActivity() {
                         if(isValidJson(remainResponse)){
                             guanDonMenuJson.put(i,JSONObject(remainResponse))
                         }else{
+                            //indicator
+                            indicatorView.visibility = View.INVISIBLE
+                            progressBar.visibility = View.INVISIBLE
+                            window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+                            //indicator
                             alert("請重新登入","您已經登出"){
                                 positiveButton("OK"){
                                     startActivity(Intent(this@StuOrderListActivity, LoginActivity::class.java))
@@ -64,6 +104,11 @@ class StuOrderListActivity : AppCompatActivity() {
                             }.show()
                         }
                     }, Response.ErrorListener {
+                        //indicator
+                        indicatorView.visibility = View.INVISIBLE
+                        progressBar.visibility = View.INVISIBLE
+                        window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+                        //indicator
                         alert ("請注意網路狀態，或通知開發人員!","不知名的錯誤"){
                             positiveButton("OK"){}
                         }.show()
@@ -72,13 +117,28 @@ class StuOrderListActivity : AppCompatActivity() {
                 }
                 println("everything should be alright")
             }else{
+                //indicator
+                indicatorView.visibility = View.INVISIBLE
+                progressBar.visibility = View.INVISIBLE
+                window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+                //indicator
                 alert("請重新登入","您已經登出"){
                     positiveButton("OK"){
                         startActivity(Intent(this@StuOrderListActivity, LoginActivity::class.java))
                     }
                 }.show()
             }
+            //indicator
+            indicatorView.visibility = View.INVISIBLE
+            progressBar.visibility = View.INVISIBLE
+            window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+            //indicator
         },Response.ErrorListener {
+            //indicator
+            indicatorView.visibility = View.INVISIBLE
+            progressBar.visibility = View.INVISIBLE
+            window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+            //indicator
             alert ("請注意網路狀態，或通知開發人員!","不知名的錯誤"){
                 positiveButton("OK"){}
             }.show()

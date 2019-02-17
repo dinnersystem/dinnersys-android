@@ -21,7 +21,7 @@ class StudentMainActivity : AppCompatActivity() {
         }, Response.ErrorListener { alert ("請注意網路狀態，或通知開發人員!","不知名的錯誤"){
             positiveButton("OK"){}
         }.show() })
-        //VolleySingleton.getInstance(this).addToRequestQueue(balanceRequest)
+        VolleySingleton.getInstance(this).addToRequestQueue(balanceRequest)
     }
 
     fun toOrder(view: View){
