@@ -7,7 +7,7 @@ import android.os.Bundle
 import android.view.Gravity
 import android.view.View
 import android.view.WindowManager
-import android.widget.LinearLayout
+import android.widget.RelativeLayout
 import android.widget.ProgressBar
 import com.android.volley.RequestQueue
 import com.android.volley.Response
@@ -15,6 +15,7 @@ import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import kotlinx.android.synthetic.main.activity_main_order.*
 import org.jetbrains.anko.alert
+import org.jetbrains.anko.centerInParent
 import org.json.JSONArray
 import org.threeten.bp.LocalDateTime
 import java.text.SimpleDateFormat
@@ -22,7 +23,6 @@ import java.time.ZoneId
 import java.util.*
 
 class MainOrderActivity : AppCompatActivity() {
-    private var preferences: SharedPreferences? = null
     private lateinit var indicatorView : View
     private lateinit var progressBar: ProgressBar
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,16 +31,21 @@ class MainOrderActivity : AppCompatActivity() {
         //indicator start
         indicatorView = View(this)
         indicatorView.setBackgroundResource(R.color.colorPrimaryDark)
-        val viewParam = LinearLayout.LayoutParams(-1,-1)
-        viewParam.gravity = Gravity.CENTER
+        val viewParam = RelativeLayout.LayoutParams(-1, -1)
+        viewParam.centerInParent()
         indicatorView.layoutParams = viewParam
         progressBar = ProgressBar(this,null, android.R.attr.progressBarStyle)
         progressBar.isIndeterminate = true
-        val prams: LinearLayout.LayoutParams = LinearLayout.LayoutParams( LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-        prams.gravity = Gravity.CENTER
+        val prams: RelativeLayout.LayoutParams = RelativeLayout.LayoutParams(
+            RelativeLayout.LayoutParams.WRAP_CONTENT,
+            RelativeLayout.LayoutParams.WRAP_CONTENT
+        )
+        viewParam.centerInParent()
         progressBar.layoutParams = prams
         indicatorView.visibility = View.INVISIBLE
         progressBar.visibility = View.INVISIBLE
+        layout.addView(indicatorView)
+        layout.addView(progressBar)
         //indicator end
         val confirmString = """
             您選擇的餐點是${selOrder1.name}，價錢為${selOrder1.cost}，確定請按訂餐。
@@ -58,13 +63,19 @@ class MainOrderActivity : AppCompatActivity() {
         window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         //indicator
         val now = Date.from(java.time.LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant())
-        val hourFormat = SimpleDateFormat("HH", Locale("zh-TW"))
+        val hourFormat = SimpleDateFormat("HH", Locale.TAIWAN)
         val hour = hourFormat.format(now).toInt()
-        val fullFormat = SimpleDateFormat("yyyy/MM/dd", Locale("zh-TW"))
+        println(now)
+        val fullFormat = SimpleDateFormat("yyyy/MM/dd", Locale.TAIWAN)
         if(hour>10) {
+            //indicator
+            indicatorView.visibility = View.INVISIBLE
+            progressBar.visibility = View.INVISIBLE
+            window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+            //indicator
             alert("早上十點後無法訂餐，明日請早","超過訂餐時間") { positiveButton("OK"){} }.show()
         }else{
-            val orderURL = dsURL("make_self_order&dish_id[]=${selOrder1.id}&time=${fullFormat.format(now)}-12:00:00")  //TODO: MARK
+            val orderURL = dsURL("make_self_order&dish_id[]=${selOrder1.id}&time=${fullFormat.format(now)}-12:00:00")
             val orderRequest = StringRequest(orderURL, Response.Listener {
                 if (isValidJson(it)){
                     val orderInfo = JSONArray(it)

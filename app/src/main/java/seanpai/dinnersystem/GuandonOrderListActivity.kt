@@ -13,7 +13,7 @@ import kotlinx.android.synthetic.main.guandon_list_cell.view.*
 
 class GuandonOrderListActivity : AppCompatActivity() {
     var totalCost = 0
-    var totalSelected = 0   //TODO: limit
+    var totalSelected = 0
 
 
 
@@ -22,24 +22,26 @@ class GuandonOrderListActivity : AppCompatActivity() {
         setContentView(R.layout.activity_guandon_order_list)
         val adaptor = TableAdaptor(this, {updateValue()})
         this.guandonTableView.adapter = adaptor
-        this.balanceText.text = balance.toString() + "$"
+        this.balanceText.text = "餘額：" + balance.toString() + "$"
         adaptor.notifyDataSetChanged()
 
     }
 
     fun updateValue() {
         totalCost = 0
+        totalSelected = 0
         dishDict.clear()
         for(item in quantityDict){
             if(item.value != 0){
                 val tmp = selectedFactoryArr.getJSONObject(item.key.toInt()).getString("dish_cost").toInt()
                 val id = selectedFactoryArr.getJSONObject(item.key.toInt()).getString("dish_id")
                 dishDict[id] = item.value
+                totalSelected += item.value
                 totalCost += tmp*item.value
             }
         }
         totalText.text = "$totalCost$"
-        guandonButton.isEnabled = (totalCost >= 30)
+        guandonButton.isEnabled = (totalCost >= 30 && totalSelected < 30)
     }
 
     fun sendOrder(view:View){

@@ -18,6 +18,8 @@ var constPassword = ""
 var quantityDict = mutableMapOf<String,Int>()
 var dishDict = mutableMapOf<String,Int>()
 var ord1 = ord("","")
+var dishNameArr: Array<String> = emptyArray()
+var dishCostArr: Array<Int> = emptyArray()
 //data structure
 data class SelOrder(val id: String, val name: String, val cost: String)
 data class ord(val name:String, val url: String)

@@ -13,7 +13,9 @@ import com.android.volley.RequestQueue
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
+import kotlinx.android.synthetic.main.activity_stu_order_list.*
 import org.jetbrains.anko.alert
+import org.jetbrains.anko.centerInParent
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -40,6 +42,8 @@ class StuOrderListActivity : AppCompatActivity() {
         progressBar.layoutParams = prams
         indicatorView.visibility = View.INVISIBLE
         progressBar.visibility = View.INVISIBLE
+        layout.addView(indicatorView)
+        layout.addView(progressBar)
         //indicator end
 
         val url = dsURL("show_dish")

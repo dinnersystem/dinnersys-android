@@ -11,6 +11,7 @@ import android.view.*
 import android.widget.BaseAdapter
 import android.widget.LinearLayout
 import android.widget.ProgressBar
+import android.widget.RelativeLayout
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import kotlinx.android.synthetic.main.activity_main_history.*
@@ -19,6 +20,7 @@ import kotlinx.android.synthetic.main.history_bottom_list_view.view.*
 import kotlinx.android.synthetic.main.history_list_cell.view.*
 import kotlinx.android.synthetic.main.paym_pw_alert.view.*
 import org.jetbrains.anko.alert
+import org.jetbrains.anko.centerInParent
 import org.json.JSONArray
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
@@ -35,16 +37,21 @@ class MainHistoryActivity : AppCompatActivity() {
         //indicator start
         indicatorView = View(this)
         indicatorView.setBackgroundResource(R.color.colorPrimaryDark)
-        val viewParam = LinearLayout.LayoutParams(-1,-1)
-        viewParam.gravity = Gravity.CENTER
+        val viewParam = RelativeLayout.LayoutParams(-1, -1)
+        viewParam.centerInParent()
         indicatorView.layoutParams = viewParam
         progressBar = ProgressBar(this,null, android.R.attr.progressBarStyle)
         progressBar.isIndeterminate = true
-        val prams: LinearLayout.LayoutParams = LinearLayout.LayoutParams( LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-        prams.gravity = Gravity.CENTER
+        val prams: RelativeLayout.LayoutParams = RelativeLayout.LayoutParams(
+            RelativeLayout.LayoutParams.WRAP_CONTENT,
+            RelativeLayout.LayoutParams.WRAP_CONTENT
+        )
+        prams.centerInParent()
         progressBar.layoutParams = prams
         indicatorView.visibility = View.INVISIBLE
         progressBar.visibility = View.INVISIBLE
+        layout.addView(indicatorView)
+        layout.addView(progressBar)
         //indicator end
         val adapter = TableAdapter(this)
         tableView.adapter = adapter
@@ -92,13 +99,27 @@ class MainHistoryActivity : AppCompatActivity() {
                     if(it != "[]"){
                     if (isValidJson(it)){
                         historyArr = JSONArray(it)
+                        for (i in 0 until historyArr.length()) {
+                            val info = historyArr.getJSONObject(i)
+                            if (info.getJSONArray("dish").length() > 1) {
+                                var dName = ""
+                                for (j in 0 until info.getJSONArray("dish").length()) {
+                                    val food = info.getJSONArray("dish").getJSONObject(j)
+                                    dName += "${food.getString("dish_name")}+"
+                                }
+                                dName.dropLast(1)
+                                dishNameArr += dName
+                            } else {
+                                dishNameArr += info.getJSONArray("dish").getJSONObject(0).getString("dish_name")
+                            }
+                        }
                         val adapter = TableAdapter(this)
+                        tableView.adapter = adapter
                         //indicator
                         indicatorView.visibility = View.INVISIBLE
                         progressBar.visibility = View.INVISIBLE
                         window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                         //indicator
-
                         adapter.notifyDataSetChanged()
                     }else{
                         //indicator
@@ -179,7 +200,7 @@ class MainHistoryActivity : AppCompatActivity() {
                 if(historyArr.getJSONObject(position).getJSONArray("dish").length() > 1){
                     layout.title.text = "自訂套餐(${info.getJSONArray("dish").length()}樣)"
                 }else{
-                    layout.title.text = info.getJSONArray("dish").getString(0)
+                    layout.title.text = dishNameArr[position]
                 }
                 val isPaid = info.getJSONObject("money").getJSONArray("payment").getJSONObject(0).getString("paid")
                 val paid = isPaid == "true"
@@ -195,7 +216,10 @@ class MainHistoryActivity : AppCompatActivity() {
                 layout.infoButton.setOnClickListener {
                     val dialog = BottomSheetDialog(mContext)
                     val bottomSheet = layoutInflater.inflate(R.layout.history_bottom_list_view, null)
-                    bottomSheet.textMessage.text = "訂餐編號:${info.getString("id")}\n餐點內容:${info.getString("dish_name")}\n訂餐日期:${info.getString("recv_date").dropLast(3)}\n餐點金額:${info.getJSONObject("money").getString("charge")}\n付款狀態:$paidStr"
+                    bottomSheet.textMessage.text =
+                        "訂餐編號:${info.getString("id")}\n餐點內容:${dishNameArr[position]}\n訂餐日期:${info.getString("recv_date").dropLast(
+                            3
+                        )}\n餐點金額:${info.getJSONObject("money").getString("charge")}\n付款狀態:$paidStr"
                     bottomSheet.paymentButton.setOnClickListener{
                         val alert = AlertDialog.Builder(mContext)
                         val inputView = layoutInflater.inflate(R.layout.paym_pw_alert, null)
@@ -376,8 +400,9 @@ class MainHistoryActivity : AppCompatActivity() {
                         bottomSheet.deleteButton.text = "取消訂單"
                     }
                     val now = Date.from(java.time.LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant())
-                    val hourFormat = SimpleDateFormat("HHmm", Locale("zh-TW"))
+                    val hourFormat = SimpleDateFormat("HHmm", Locale.TAIWAN)
                     val hour = hourFormat.format(now).toInt()
+                    println(hour)
                     if(hour>1030){
                         bottomSheet.paymentButton.isEnabled = false
                         bottomSheet.paymentButton.text = "已超過繳款時間(10:30)"
