@@ -64,6 +64,24 @@ class MainHistoryActivity : AppCompatActivity() {
         fun init(): MainHistoryActivity = MainHistoryActivity()
     }
 
+    fun startInd() {
+        //indicator
+        indicatorView.visibility = View.VISIBLE
+        indicatorView.bringToFront()
+        progressBar.visibility = View.VISIBLE
+        progressBar.bringToFront()
+        window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+        //indicator
+    }
+
+    fun stopInd() {
+        //indicator
+        indicatorView.visibility = View.INVISIBLE
+        progressBar.visibility = View.INVISIBLE
+        window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+        //indicator
+    }
+
     fun reloadData(view: View?) {
         //indicator
         indicatorView.visibility = View.VISIBLE
@@ -94,7 +112,6 @@ class MainHistoryActivity : AppCompatActivity() {
         val selSelf = dsURL("select_self&history=true&esti_start=${formatter.format(now)}-00:00:00&esti_end=${formatter.format(now)}-23:59:59")
         val historyRequest = StringRequest(selSelf,
             Response.Listener {
-                println(it)
                 if(it != ""){
                     if(it != "[]"){
                     if (isValidJson(it)){
@@ -180,6 +197,9 @@ class MainHistoryActivity : AppCompatActivity() {
     class TableAdapter(context: Context): BaseAdapter() {
         val page = MainHistoryActivity.init()
         val mContext: Context = context
+        val activity = context as MainHistoryActivity
+        private lateinit var indicatorView: View
+        private lateinit var progressBar: ProgressBar
         override fun getItem(position: Int): Any {
             return 1101
         }
@@ -216,6 +236,25 @@ class MainHistoryActivity : AppCompatActivity() {
                 layout.infoButton.setOnClickListener {
                     val dialog = BottomSheetDialog(mContext)
                     val bottomSheet = layoutInflater.inflate(R.layout.history_bottom_list_view, null)
+                    //indicator start
+                    indicatorView = View(bottomSheet.context)
+                    indicatorView.setBackgroundResource(R.color.colorPrimaryDark)
+                    val viewParam = RelativeLayout.LayoutParams(-1, -1)
+                    viewParam.centerInParent()
+                    indicatorView.layoutParams = viewParam
+                    progressBar = ProgressBar(bottomSheet.context, null, android.R.attr.progressBarStyle)
+                    progressBar.isIndeterminate = true
+                    val prams: RelativeLayout.LayoutParams = RelativeLayout.LayoutParams(
+                        RelativeLayout.LayoutParams.WRAP_CONTENT,
+                        RelativeLayout.LayoutParams.WRAP_CONTENT
+                    )
+                    prams.centerInParent()
+                    progressBar.layoutParams = prams
+                    indicatorView.visibility = View.INVISIBLE
+                    progressBar.visibility = View.INVISIBLE
+                    bottomSheet.bottomSheet.addView(indicatorView)
+                    bottomSheet.bottomSheet.addView(progressBar)
+                    //indicator end
                     bottomSheet.textMessage.text =
                         "訂餐編號:${info.getString("id")}\n餐點內容:${dishNameArr[position]}\n訂餐日期:${info.getString("recv_date").dropLast(
                             3
@@ -228,20 +267,10 @@ class MainHistoryActivity : AppCompatActivity() {
                         alert.setTitle("請輸入繳款密碼")
                         alert.setMessage("預設為身分證後四碼")
                         alert.setPositiveButton(R.string.send){ dialog, which ->
-                            //indicator
-                            page.indicatorView.visibility = View.VISIBLE
-                            page.indicatorView.bringToFront()
-                            page.progressBar.visibility = View.VISIBLE
-                            page.progressBar.bringToFront()
-                            page.window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-                            //indicator
+                            activity.startInd()
                             val paymentPw = paymentPwText.text
                             if (paymentPw.isBlank()){
-                                //indicator
-                                page.indicatorView.visibility = View.INVISIBLE
-                                page.progressBar.visibility = View.INVISIBLE
-                                page.window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-                                //indicator
+                                activity.stopInd()
                                 val errorAlertBuilder = AlertDialog.Builder(mContext)
                                 errorAlertBuilder.setTitle("錯誤")
                                 errorAlertBuilder.setMessage("繳款密碼不可為空")
@@ -258,24 +287,16 @@ class MainHistoryActivity : AppCompatActivity() {
                                 val paymentURL = dsURL("payment_self&target=true&order_id=${info.getString("id")}&hash=$hash")
                                 val paymentRequest = StringRequest(paymentURL, Response.Listener {
                                     if(isValidJson(it)){
-                                        //indicator
-                                        page.indicatorView.visibility = View.INVISIBLE
-                                        page.progressBar.visibility = View.INVISIBLE
-                                        page.window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-                                        //indicator
+                                        activity.stopInd()
                                         val successAlertBuilder = AlertDialog.Builder(mContext)
                                         successAlertBuilder.setTitle("繳款完成").setMessage("請注意付款狀況，實際情況仍以頁面為主")
                                         successAlertBuilder.setPositiveButton("OK"){_, _ ->
-                                                page.reloadData(null)
+                                            MainHistoryActivity().reloadData(null)
                                         }
                                         val successAlert = successAlertBuilder.create()
                                         successAlert.show()
                                     }else{
-                                        //indicator
-                                        page.indicatorView.visibility = View.INVISIBLE
-                                        page.progressBar.visibility = View.INVISIBLE
-                                        page.window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-                                        //indicator
+                                        activity.stopInd()
                                         if(it == ""){
                                             val errorAlertBuilder = AlertDialog.Builder(mContext)
                                             errorAlertBuilder.setTitle("你已經登出")
@@ -313,12 +334,9 @@ class MainHistoryActivity : AppCompatActivity() {
                                             errorAlert.show()
                                         }
                                     }
+                                    activity.reloadData(null)
                                 }, Response.ErrorListener {
-                                    //indicator
-                                    page.indicatorView.visibility = View.INVISIBLE
-                                    page.progressBar.visibility = View.INVISIBLE
-                                    page.window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-                                    //indicator
+                                    activity.stopInd()
                                     val errorAlertBuilder = AlertDialog.Builder(mContext)
                                     errorAlertBuilder.setTitle("不知名的錯誤")
                                     errorAlertBuilder.setMessage("請注意網路狀態，或通知開發人員!")
@@ -326,6 +344,7 @@ class MainHistoryActivity : AppCompatActivity() {
                                     val errorAlert = errorAlertBuilder.create()
                                     errorAlert.show()
                                 })
+                                dialog.dismiss()
                                 VolleySingleton.getInstance(mContext).addToRequestQueue(paymentRequest)
                             }
                         }
@@ -336,20 +355,10 @@ class MainHistoryActivity : AppCompatActivity() {
                         paymentAlert.show()
                     }
                     bottomSheet.deleteButton.setOnClickListener {
-                        //indicator
-                        page.indicatorView.visibility = View.VISIBLE
-                        page.indicatorView.bringToFront()
-                        page.progressBar.visibility = View.VISIBLE
-                        page.progressBar.bringToFront()
-                        page.window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-                        //indicator
+                        activity.startInd()
                         val deleteURL = dsURL("delete_self&order_id=${info.getString("id")}")
                         val deleteRequest = StringRequest(deleteURL, Response.Listener {
-                            //indicator
-                            page.indicatorView.visibility = View.INVISIBLE
-                            page.progressBar.visibility = View.INVISIBLE
-                            page.window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-                            //indicator
+                            activity.stopInd()
                             if(it == ""){
                                 val errorAlertBuilder = AlertDialog.Builder(mContext)
                                 errorAlertBuilder.setTitle("你已經登出")
@@ -372,12 +381,9 @@ class MainHistoryActivity : AppCompatActivity() {
                                 val errorAlert = errorAlertBuilder.create()
                                 errorAlert.show()
                             }
+                            activity.reloadData(null)
                         }, Response.ErrorListener {
-                            //indicator
-                            page.indicatorView.visibility = View.INVISIBLE
-                            page.progressBar.visibility = View.INVISIBLE
-                            page.window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-                            //indicator
+                            activity.stopInd()
                             val errorAlertBuilder = AlertDialog.Builder(mContext)
                             errorAlertBuilder.setTitle("不知名的錯誤")
                             errorAlertBuilder.setMessage("請注意網路狀態，或通知開發人員!")
@@ -387,6 +393,7 @@ class MainHistoryActivity : AppCompatActivity() {
                             val errorAlert = errorAlertBuilder.create()
                             errorAlert.show()
                         })
+                        dialog.dismiss()
                         VolleySingleton.getInstance(mContext).addToRequestQueue(deleteRequest)
                     }
                     bottomSheet.cancelButton.setOnClickListener { dialog.dismiss() }
@@ -394,7 +401,7 @@ class MainHistoryActivity : AppCompatActivity() {
                         bottomSheet.paymentButton.isEnabled = false
                         bottomSheet.paymentButton.text = "已成功付款"
                         bottomSheet.deleteButton.isEnabled = false
-                        bottomSheet.paymentButton.text = "已付款者請聯絡合作社取消"
+                        bottomSheet.deleteButton.text = "已付款者請聯絡合作社取消"
                     }else{
                         bottomSheet.paymentButton.text = "以學生證付款(餘額:$balance)"
                         bottomSheet.deleteButton.text = "取消訂單"
@@ -403,10 +410,10 @@ class MainHistoryActivity : AppCompatActivity() {
                     val hourFormat = SimpleDateFormat("HHmm", Locale.TAIWAN)
                     val hour = hourFormat.format(now).toInt()
                     println(hour)
-                    if(hour>1030){
+                    /*if(hour>1030){
                         bottomSheet.paymentButton.isEnabled = false
                         bottomSheet.paymentButton.text = "已超過繳款時間(10:30)"
-                    }
+                    }*/
                     bottomSheet.cancelButton.text = "返回"
                     dialog.setContentView(bottomSheet)
                     dialog.show()

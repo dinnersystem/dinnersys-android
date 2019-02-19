@@ -2,6 +2,7 @@ package seanpai.dinnersystem
 
 import android.content.Intent
 import android.content.SharedPreferences
+import android.net.Uri
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.preference.PreferenceManager
@@ -59,6 +60,62 @@ class LoginActivity : AppCompatActivity() {
             remButton.isEnabled = true
             remButton.text = "以${name}登入"
         }
+        val url = "https://dinnersystem.ddns.net/dinnersys_beta/frontend/u_move_u_dead/version.txt"
+        val versionRequest = StringRequest(url, Response.Listener {
+            //indicator
+            indicatorView.visibility = View.VISIBLE
+            indicatorView.bringToFront()
+            progressBar.visibility = View.VISIBLE
+            progressBar.bringToFront()
+            window.setFlags(
+                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
+            )
+            //indicator
+            var update = true
+            val version = JSONObject(it).getJSONArray("android")
+            for (i in 0 until version.length()) {
+                val ver = version.getInt(i)
+                if (ver == currentVersion) {
+                    update = false
+                    break
+                }
+            }
+            if (update) {
+                //indicator
+                indicatorView.visibility = View.INVISIBLE
+                progressBar.visibility = View.INVISIBLE
+                window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+                //indicator
+                alert("請至Google Play更新最新版本的點餐系統!", "偵測到更新版本") {
+                    positiveButton("OK(跳轉至GooglePlay)") {
+                        val packageName = packageName
+                        try {
+                            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + packageName)))
+                        } catch (e: android.content.ActivityNotFoundException) {
+                            startActivity(
+                                Intent(
+                                    Intent.ACTION_VIEW,
+                                    Uri.parse("https://play.google.com/store/apps/details?id=" + packageName)
+                                )
+                            )
+                        }
+                    }
+                }.show()
+
+            }
+            //indicator
+            indicatorView.visibility = View.INVISIBLE
+            progressBar.visibility = View.INVISIBLE
+            window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+            //indicator
+
+        }, Response.ErrorListener {
+            alert("請注意網路連線", "不知名的錯誤") {
+                positiveButton("OK") {}
+            }
+        })
+        VolleySingleton.getInstance(this).addToRequestQueue(versionRequest)
     }
 
     var back = true
@@ -147,6 +204,7 @@ class LoginActivity : AppCompatActivity() {
         val hash = hashOri.sha512()
         val url = "${dsURL("login")}&id=$usr&hash=$hash&device_id=HELLO_FROM_ANDROID"
         println(url)
+
         val loginRequest = StringRequest(url,Response.Listener { string ->
             println(isValidJson(string))
             if (isValidJson(string)){
@@ -193,7 +251,18 @@ class LoginActivity : AppCompatActivity() {
             positiveButton("OK"){}
         }.show()
         })
-        VolleySingleton.getInstance(this).addToRequestQueue(loginRequest)
+        if (usr.length == 5) {
+            //indicator
+            indicatorView.visibility = View.INVISIBLE
+            progressBar.visibility = View.INVISIBLE
+            window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+            //indicator
+            alert("App版已不支援午餐股長，請透過網頁版查看班級訂單!", "不支援午餐股長") {
+                positiveButton("OK") {}
+            }.show()
+        } else {
+            VolleySingleton.getInstance(this).addToRequestQueue(loginRequest)
+        }
     }
 
 

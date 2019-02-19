@@ -3,6 +3,7 @@ package seanpai.dinnersystem
 import org.json.*
 
 //variable
+var currentVersion = 201900001
 var userInfo = JSONObject("{}")
 var allMenuJson = JSONArray("[]")
 var taiwanMenuJson = JSONArray("[]")

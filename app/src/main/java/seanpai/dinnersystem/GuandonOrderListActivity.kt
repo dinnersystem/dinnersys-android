@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import kotlinx.android.synthetic.main.activity_guandon_order_list.*
+import kotlinx.android.synthetic.main.activity_guandon_order_list.view.*
 import kotlinx.android.synthetic.main.guandon_list_cell.view.*
 
 class GuandonOrderListActivity : AppCompatActivity() {
@@ -120,6 +121,7 @@ class GuandonOrderListActivity : AppCompatActivity() {
             layout.detailTitleText.text = "$dishCost$, 剩${dishRemain}個"
             layout.stepperDisplay.text = "0份"
             layout.minus_button.isEnabled = false
+            layout.guandonButton.isEnabled = false
             return layout
         }
     }
