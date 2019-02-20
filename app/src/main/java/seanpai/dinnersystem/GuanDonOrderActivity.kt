@@ -61,7 +61,7 @@ class GuanDonOrderActivity : AppCompatActivity() {
         progressBar.bringToFront()
         window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         //indicator
-        val now = Date.from(java.time.LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant())
+        val now = getCurrentDateTime()
         val hourFormat = SimpleDateFormat("HH", Locale("zh-TW"))
         val hour = hourFormat.format(now).toInt()
         val fullFormat = SimpleDateFormat("yyyy/MM/dd", Locale.TAIWAN)

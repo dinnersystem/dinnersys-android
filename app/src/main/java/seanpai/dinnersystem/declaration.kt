@@ -1,9 +1,11 @@
 package seanpai.dinnersystem
 
 import org.json.*
+import java.text.SimpleDateFormat
+import java.util.*
 
 //variable
-var currentVersion = 201900001
+var currentVersion = 201900003
 var userInfo = JSONObject("{}")
 var allMenuJson = JSONArray("[]")
 var taiwanMenuJson = JSONArray("[]")
@@ -32,7 +34,14 @@ fun dsURL(str: String): String{
     return "https://dinnersystem.ddns.net/dinnersys_beta/backend/backend.php?cmd=$str"
 }
 
+fun Date.toString(format: String, locale: Locale = Locale.getDefault()): String {
+    val formatter = SimpleDateFormat(format, locale)
+    return formatter.format(this)
+}
 
+fun getCurrentDateTime(): Date {
+    return Calendar.getInstance().time
+}
 
 fun isValidJson(str: String): Boolean{
     try {

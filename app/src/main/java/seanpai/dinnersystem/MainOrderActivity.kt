@@ -62,7 +62,7 @@ class MainOrderActivity : AppCompatActivity() {
         progressBar.bringToFront()
         window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         //indicator
-        val now = Date.from(java.time.LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant())
+        val now = getCurrentDateTime()
         val hourFormat = SimpleDateFormat("HH", Locale.TAIWAN)
         val hour = hourFormat.format(now).toInt()
         println(now)

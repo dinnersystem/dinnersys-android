@@ -104,7 +104,7 @@ class MainHistoryActivity : AppCompatActivity() {
             alert ("請注意網路狀態，或通知開發人員!","不知名的錯誤"){
             positiveButton("OK"){}
         }.show() })
-        val now = Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant())
+        val now = getCurrentDateTime()
 
         //val now = java.util.Calendar.getInstance()
         val formatter = SimpleDateFormat("yyyy/MM/dd", Locale.TAIWAN)
@@ -406,14 +406,14 @@ class MainHistoryActivity : AppCompatActivity() {
                         bottomSheet.paymentButton.text = "以學生證付款(餘額:$balance)"
                         bottomSheet.deleteButton.text = "取消訂單"
                     }
-                    val now = Date.from(java.time.LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant())
+                    val now = getCurrentDateTime()
                     val hourFormat = SimpleDateFormat("HHmm", Locale.TAIWAN)
                     val hour = hourFormat.format(now).toInt()
                     println(hour)
-                    /*if(hour>1030){
+                    if(hour>1030){
                         bottomSheet.paymentButton.isEnabled = false
                         bottomSheet.paymentButton.text = "已超過繳款時間(10:30)"
-                    }*/
+                    }
                     bottomSheet.cancelButton.text = "返回"
                     dialog.setContentView(bottomSheet)
                     dialog.show()
