@@ -124,7 +124,7 @@ class MainHistoryActivity : AppCompatActivity() {
                                     val food = info.getJSONArray("dish").getJSONObject(j)
                                     dName += "${food.getString("dish_name")}+"
                                 }
-                                dName.dropLast(1)
+                                dName = dName.dropLast(1)
                                 dishNameArr += dName
                             } else {
                                 dishNameArr += info.getJSONArray("dish").getJSONObject(0).getString("dish_name")

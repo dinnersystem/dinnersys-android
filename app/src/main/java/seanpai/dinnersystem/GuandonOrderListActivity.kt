@@ -55,9 +55,11 @@ class GuandonOrderListActivity : AppCompatActivity() {
             }
         }
         for(item in quantityDict){
-            nametmp += "${selectedFactoryArr.getJSONObject(item.key.toInt()).getString("dish_name")}*${item.value}+"
+            if (item.value != 0) {
+                nametmp += "${selectedFactoryArr.getJSONObject(item.key.toInt()).getString("dish_name")}*${item.value}+"
+            }
         }
-        nametmp.dropLast(1)
+        nametmp = nametmp.dropLast(1)
         ord1 = ord(nametmp,urltmp)
         selOrder1 = SelOrder("",nametmp,totalCost.toString())
         startActivity(Intent(view.context,GuanDonOrderActivity::class.java))
@@ -65,6 +67,7 @@ class GuandonOrderListActivity : AppCompatActivity() {
 
     class TableAdaptor(context: Context, updValue: () -> Unit): BaseAdapter(){
         private val mContext: Context = context
+        private val page = context as GuandonOrderListActivity
         private val updateValue = updValue
         override fun getCount(): Int {
             return selectedFactoryArr.length()
@@ -96,7 +99,7 @@ class GuandonOrderListActivity : AppCompatActivity() {
                     layout.stepperDisplay.text = "${quantity}份"
                     quantityDict[position.toString()] = quantity
                 }
-                if(quantity>1){
+                if (quantity >= 1) {
                     layout.minus_button.isEnabled = true
                 }
                 updateValue()
@@ -121,7 +124,7 @@ class GuandonOrderListActivity : AppCompatActivity() {
             layout.detailTitleText.text = "$dishCost$, 剩${dishRemain}個"
             layout.stepperDisplay.text = "0份"
             layout.minus_button.isEnabled = false
-            layout.guandonButton.isEnabled = false
+            page.guandonButton.isEnabled = false
             return layout
         }
     }
