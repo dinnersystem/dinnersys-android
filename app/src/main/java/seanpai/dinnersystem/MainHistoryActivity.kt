@@ -264,7 +264,7 @@ class MainHistoryActivity : AppCompatActivity() {
                         val inputView = layoutInflater.inflate(R.layout.paym_pw_alert, null)
                         val paymentPwText = inputView.paymentPW
                         alert.setView(inputView)
-                        alert.setTitle("請輸入繳款密碼")
+                        alert.setTitle("請輸入驗證碼")
                         alert.setMessage("預設為身分證後四碼")
                         alert.setPositiveButton(R.string.send){ dialog, which ->
                             activity.startInd()
@@ -403,7 +403,12 @@ class MainHistoryActivity : AppCompatActivity() {
                         bottomSheet.deleteButton.isEnabled = false
                         bottomSheet.deleteButton.text = "已付款者請聯絡合作社取消"
                     }else{
-                        bottomSheet.paymentButton.text = "以學生證付款(餘額:$balance)"
+                        if(balance > info.getJSONObject("money").getString("charge").toInt()) {
+                            bottomSheet.paymentButton.text = "以學生證付款(餘額:$balance)"
+                        }else{
+                            bottomSheet.paymentButton.isEnabled = false
+                            bottomSheet.paymentButton.text = "餘額不足（您只剩${balance}元）"
+                        }
                         bottomSheet.deleteButton.text = "取消訂單"
                     }
                     val now = getCurrentDateTime()
