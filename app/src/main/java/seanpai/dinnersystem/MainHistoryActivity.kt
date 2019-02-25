@@ -195,7 +195,6 @@ class MainHistoryActivity : AppCompatActivity() {
     }
 
     class TableAdapter(context: Context): BaseAdapter() {
-        val page = MainHistoryActivity.init()
         val mContext: Context = context
         val activity = context as MainHistoryActivity
         private lateinit var indicatorView: View
@@ -291,7 +290,7 @@ class MainHistoryActivity : AppCompatActivity() {
                                         val successAlertBuilder = AlertDialog.Builder(mContext)
                                         successAlertBuilder.setTitle("繳款完成").setMessage("請注意付款狀況，實際情況仍以頁面為主")
                                         successAlertBuilder.setPositiveButton("OK"){_, _ ->
-                                            MainHistoryActivity().reloadData(null)
+                                            activity.reloadData(null)
                                         }
                                         val successAlert = successAlertBuilder.create()
                                         successAlert.show()
@@ -388,7 +387,7 @@ class MainHistoryActivity : AppCompatActivity() {
                             errorAlertBuilder.setTitle("不知名的錯誤")
                             errorAlertBuilder.setMessage("請注意網路狀態，或通知開發人員!")
                             errorAlertBuilder.setPositiveButton("OK") { _, _ ->
-                                startActivity(mContext,Intent(page,LoginActivity::class.java),null)
+                                startActivity(mContext,Intent(activity,LoginActivity::class.java),null)
                             }
                             val errorAlert = errorAlertBuilder.create()
                             errorAlert.show()
