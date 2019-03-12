@@ -90,20 +90,7 @@ class MainHistoryActivity : AppCompatActivity() {
         progressBar.bringToFront()
         window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         //indicator
-        //get_money_value
-        val balanceURL = dsURL("get_money")
-        val balanceRequest = StringRequest(balanceURL, Response.Listener {
-            balance = it.trim().toInt()
-            balanceText.text = "餘額：$balance$"
-        }, Response.ErrorListener {
-            //indicator
-            indicatorView.visibility = View.INVISIBLE
-            progressBar.visibility = View.INVISIBLE
-            window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-            //indicator
-            alert ("請注意網路狀態，或通知開發人員!","不知名的錯誤"){
-            positiveButton("OK"){}
-        }.show() })
+
         val now = getCurrentDateTime()
 
         //val now = java.util.Calendar.getInstance()
@@ -187,9 +174,37 @@ class MainHistoryActivity : AppCompatActivity() {
                 }.show()
             }
         )
+        //get_money_value
+        val balanceURL = dsURL("get_money")
+        val balanceRequest = StringRequest(balanceURL, Response.Listener {
+            if (isInt(it)) {
+                balance = it.toInt()
+                VolleySingleton.getInstance(this).addToRequestQueue(historyRequest)
+                balanceText.text = "餘額：$balance$"
+            } else {
+                //indicator
+                indicatorView.visibility = View.INVISIBLE
+                progressBar.visibility = View.INVISIBLE
+                window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+                //indicator
+                alert("查詢餘額失敗，我們已經派出最精銳的猴子去修理這個問題，若長時間出現此問題請通知開發人員！", "請重新登入") {
+                    positiveButton("OK") {
+                        startActivity(Intent(this@MainHistoryActivity, LoginActivity::class.java))
+                    }
+                }.show()
+            }
 
+        }, Response.ErrorListener {
+            //indicator
+            indicatorView.visibility = View.INVISIBLE
+            progressBar.visibility = View.INVISIBLE
+            window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+            //indicator
+            alert("請注意網路狀態，或通知開發人員!", "不知名的錯誤") {
+                positiveButton("OK") {}
+            }.show()
+        })
         VolleySingleton.getInstance(this).addToRequestQueue(balanceRequest)
-        VolleySingleton.getInstance(this).addToRequestQueue(historyRequest)
 
 
     }
@@ -283,7 +298,8 @@ class MainHistoryActivity : AppCompatActivity() {
                                 val pwd = constPassword
                                 val noHash = "{\"id\":\"${info.getString("id")}\",\"usr_id\":\"$usr\",\"usr_password\":\"$pwd\",\"pmt_password\":\"$paymentString\",\"time\":\"$timeStamp\"}"
                                 val hash = noHash.sha512()
-                                val paymentURL = dsURL("payment_self&target=true&order_id=${info.getString("id")}&hash=$hash")
+                                val paymentURL =
+                                    dsURL("payment_self&target=true&order_id=${info.getString("id")}&hash=$hash&time=$timeStamp")
                                 val paymentRequest = StringRequest(paymentURL, Response.Listener {
                                     if(isValidJson(it)){
                                         activity.stopInd()

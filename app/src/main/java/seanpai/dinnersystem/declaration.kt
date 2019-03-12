@@ -1,11 +1,12 @@
 package seanpai.dinnersystem
 
 import org.json.*
+import java.lang.NumberFormatException
 import java.text.SimpleDateFormat
 import java.util.*
 
 //variable
-var currentVersion = 201900006
+var currentVersion = 201900007
 var userInfo = JSONObject("{}")
 var allMenuJson = JSONArray("[]")
 var taiwanMenuJson = JSONArray("[]")
@@ -41,6 +42,15 @@ fun Date.toString(format: String, locale: Locale = Locale.getDefault()): String 
 
 fun getCurrentDateTime(): Date {
     return Calendar.getInstance().time
+}
+
+fun isInt(str: String): Boolean {
+    try {
+        val int = str.toInt()
+    } catch (err: NumberFormatException) {
+        return false
+    }
+    return true
 }
 
 fun isValidJson(str: String): Boolean{

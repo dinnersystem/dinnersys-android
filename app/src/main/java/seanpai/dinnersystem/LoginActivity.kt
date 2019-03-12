@@ -179,6 +179,7 @@ class LoginActivity : AppCompatActivity() {
             progressBar.visibility = View.INVISIBLE
             window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
             //indicator
+            println(error)
             alert ("請注意網路狀態，或通知開發人員!","不知名的錯誤"){
                 positiveButton("OK"){}
             }.show()
@@ -202,7 +203,7 @@ class LoginActivity : AppCompatActivity() {
         val hashOri = "{\"id\":\"$usr\",\"password\":\"$psw\",\"time\":\"$timeStamp\"}"
         println(hashOri)
         val hash = hashOri.sha512()
-        val url = "${dsURL("login")}&id=$usr&hash=$hash&device_id=HELLO_FROM_ANDROID"
+        val url = "${dsURL("login")}&id=$usr&hash=$hash&time=$timeStamp&device_id=HELLO_FROM_ANDROID"
         println(url)
 
         val loginRequest = StringRequest(url,Response.Listener { string ->
