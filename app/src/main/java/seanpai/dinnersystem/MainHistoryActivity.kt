@@ -12,6 +12,7 @@ import android.widget.BaseAdapter
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.RelativeLayout
+import com.android.volley.DefaultRetryPolicy
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import kotlinx.android.synthetic.main.activity_main_history.*
@@ -60,9 +61,6 @@ class MainHistoryActivity : AppCompatActivity() {
     }
 
 
-    companion object {
-        fun init(): MainHistoryActivity = MainHistoryActivity()
-    }
 
     fun startInd() {
         //indicator
@@ -269,10 +267,15 @@ class MainHistoryActivity : AppCompatActivity() {
                     bottomSheet.bottomSheet.addView(indicatorView)
                     bottomSheet.bottomSheet.addView(progressBar)
                     //indicator end
+                    val now = getCurrentDateTime()
+                    val hourFormat = SimpleDateFormat("HHmm", Locale.TAIWAN)
+                    val hour = hourFormat.format(now).toInt()
+                    val timeBool = info.getString("recv_date").contains("11:00:00")
+                    val timeString = if (timeBool) "09:30" else "10:30"
                     bottomSheet.textMessage.text =
                         "訂餐編號:${info.getString("id")}\n餐點內容:${dishNameArr[position]}\n訂餐日期:${info.getString("recv_date").dropLast(
                             3
-                        )}\n餐點金額:${info.getJSONObject("money").getString("charge")}\n付款狀態:$paidStr"
+                        )}\n餐點金額:${info.getJSONObject("money").getString("charge")}\n付款狀態:$paidStr\n請於${timeString}前付款！"
                     bottomSheet.paymentButton.setOnClickListener{
                         val alert = AlertDialog.Builder(mContext)
                         val inputView = layoutInflater.inflate(R.layout.paym_pw_alert, null)
@@ -359,6 +362,7 @@ class MainHistoryActivity : AppCompatActivity() {
                                     val errorAlert = errorAlertBuilder.create()
                                     errorAlert.show()
                                 })
+                                paymentRequest.retryPolicy = DefaultRetryPolicy(50000, 0, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT )
                                 dialog.dismiss()
                                 VolleySingleton.getInstance(mContext).addToRequestQueue(paymentRequest)
                             }
@@ -426,13 +430,10 @@ class MainHistoryActivity : AppCompatActivity() {
                         }
                         bottomSheet.deleteButton.text = "取消訂單"
                     }
-                    val now = getCurrentDateTime()
-                    val hourFormat = SimpleDateFormat("HHmm", Locale.TAIWAN)
-                    val hour = hourFormat.format(now).toInt()
-                    println(hour)
-                    if(hour>1030){
+                    if((timeBool && hour>930) || (timeBool && hour>1030)){
+                        val timeString = if (timeBool) "09:30" else "10:30"
                         bottomSheet.paymentButton.isEnabled = false
-                        bottomSheet.paymentButton.text = "已超過繳款時間(10:30)"
+                        bottomSheet.paymentButton.text = "已超過繳款時間($timeString)"
                     }
                     bottomSheet.cancelButton.text = "返回"
                     dialog.setContentView(bottomSheet)

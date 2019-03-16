@@ -24,18 +24,22 @@ class GuandonOrderListActivity : AppCompatActivity() {
         val adaptor = TableAdaptor(this, {updateValue()})
         this.guandonTableView.adapter = adaptor
         this.balanceText.text = "餘額：" + balance.toString() + "$"
+        for(i in 0 until selectedFactoryArr.length()){
+            quantityDict[selectedFactoryArr.getJSONObject(i).getString("dish_id")] = 0
+        }
+        println(quantityDict)
         adaptor.notifyDataSetChanged()
-
     }
 
     fun updateValue() {
         totalCost = 0
         totalSelected = 0
+        val base = selectedFactoryArr.getJSONObject(0).getString("dish_id").toInt()
         dishDict.clear()
         for(item in quantityDict){
             if(item.value != 0){
-                val tmp = selectedFactoryArr.getJSONObject(item.key.toInt()).getString("dish_cost").toInt()
-                val id = selectedFactoryArr.getJSONObject(item.key.toInt()).getString("dish_id")
+                val tmp = selectedFactoryArr.getJSONObject(item.key.toInt()-base).getString("dish_cost").toInt()
+                val id = selectedFactoryArr.getJSONObject(item.key.toInt()-base).getString("dish_id")
                 dishDict[id] = item.value
                 totalSelected += item.value
                 totalCost += tmp*item.value
@@ -48,6 +52,7 @@ class GuandonOrderListActivity : AppCompatActivity() {
     fun sendOrder(view:View){
         var urltmp = ""
         var nametmp = ""
+        val base = selectedFactoryArr.getJSONObject(0).getString("dish_id").toInt()
         urltmp = dsURL("make_self_order")
         for(item in dishDict){
             for(i in 0 until item.value){
@@ -56,7 +61,7 @@ class GuandonOrderListActivity : AppCompatActivity() {
         }
         for(item in quantityDict){
             if (item.value != 0) {
-                nametmp += "${selectedFactoryArr.getJSONObject(item.key.toInt()).getString("dish_name")}*${item.value}+"
+                nametmp += "${selectedFactoryArr.getJSONObject(item.key.toInt()-base).getString("dish_name")}*${item.value}+"
             }
         }
         nametmp = nametmp.dropLast(1)
@@ -87,17 +92,16 @@ class GuandonOrderListActivity : AppCompatActivity() {
             val dishName = selectedFactoryArr.getJSONObject(position).getString("dish_name")
             val dishID = selectedFactoryArr.getJSONObject(position).getString("dish_id")
             val dishRemain = selectedFactoryArr.getJSONObject(position).getString("remaining")
-            quantityDict[position.toString()] = 0
             layout.plus_button.setOnClickListener {
-                var quantity = quantityDict[position.toString()]!!
+                var quantity = quantityDict[dishID]!!
                 quantity += 1
                 if(quantity==5 || quantity == dishRemain.toInt()){
                     layout.plus_button.isEnabled = false
                     layout.stepperDisplay.text = "${quantity}份"
-                    quantityDict[position.toString()] = quantity
+                    quantityDict[dishID] = quantity
                 }else {
                     layout.stepperDisplay.text = "${quantity}份"
-                    quantityDict[position.toString()] = quantity
+                    quantityDict[dishID] = quantity
                 }
                 if (quantity >= 1) {
                     layout.minus_button.isEnabled = true
@@ -105,15 +109,15 @@ class GuandonOrderListActivity : AppCompatActivity() {
                 updateValue()
             }
             layout.minus_button.setOnClickListener {
-                var quantity = quantityDict[position.toString()]!!
+                var quantity = quantityDict[dishID]!!
                 quantity -= 1
                 if(quantity==0){
                     layout.minus_button.isEnabled = false
                     layout.stepperDisplay.text = "${quantity}份"
-                    quantityDict[position.toString()] = quantity
+                    quantityDict[dishID] = quantity
                 }else {
                     layout.stepperDisplay.text = "${quantity}份"
-                    quantityDict[position.toString()] = quantity
+                    quantityDict[dishID] = quantity
                 }
                 if(quantity<5 && quantity< dishRemain.toInt()){
                     layout.plus_button.isEnabled = true
@@ -122,9 +126,9 @@ class GuandonOrderListActivity : AppCompatActivity() {
             }
             layout.titleText.text = dishName
             layout.detailTitleText.text = "$dishCost$, 剩${dishRemain}個"
-            layout.stepperDisplay.text = "0份"
-            layout.minus_button.isEnabled = false
-            page.guandonButton.isEnabled = false
+            layout.stepperDisplay.text = "${quantityDict[dishID]!!}份"
+            layout.minus_button.isEnabled = quantityDict[dishID]!! > 0
+            page.guandonButton.isEnabled = page.totalCost >= 40
             return layout
         }
     }

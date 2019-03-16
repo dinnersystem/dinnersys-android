@@ -1,7 +1,6 @@
 package seanpai.dinnersystem
 
 import android.content.Intent
-import android.content.SharedPreferences
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Gravity
@@ -9,13 +8,10 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.LinearLayout
 import android.widget.ProgressBar
-import com.android.volley.RequestQueue
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
-import com.android.volley.toolbox.Volley
 import kotlinx.android.synthetic.main.activity_stu_order_list.*
 import org.jetbrains.anko.alert
-import org.jetbrains.anko.centerInParent
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -70,7 +66,12 @@ class StuOrderListActivity : AppCompatActivity() {
                     if (item.getString("is_idle") == "1") {
                         allMenuJson.remove(j)
                         j -= 1
-                    } else when (item.getJSONObject("department").getJSONObject("factory").getString("name")) {
+                    }
+//                    else if (item.getString("sold_out") == "1") {
+////                        allMenuJson.remove(j)
+////                        j -= 1
+////                    }
+                    else when (item.getJSONObject("department").getJSONObject("factory").getString("name")) {
                         "台灣小吃部" -> taiwanMenuJson.put(item)
                         "愛家便當" -> aiJiaMenuJson.put(item)
                         "關東煮" -> guanDonMenuJson.put(item)
@@ -83,7 +84,7 @@ class StuOrderListActivity : AppCompatActivity() {
                     val remainURL = dsURL("get_remaining") + "&id=${guanDonMenuJson.getJSONObject(i).getString("dish_id")}"
                     val remainRequest = StringRequest(remainURL, Response.Listener { remainResponse ->
                         if(isValidJson(remainResponse)){
-                            guanDonMenuJson.put(i,JSONObject(remainResponse))
+                            guanDonMenuJson.put(i, JSONObject(remainResponse))
                         }else{
                             //indicator
                             indicatorView.visibility = View.INVISIBLE

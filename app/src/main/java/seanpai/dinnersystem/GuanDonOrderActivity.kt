@@ -47,7 +47,7 @@ class GuanDonOrderActivity : AppCompatActivity() {
         //indicator end
         val confirmString = """
             您選擇的餐點是${selOrder1.name}，價錢為${selOrder1.cost}，確定請選擇時間後按訂餐。
-            請注意早上十點後將無法點餐!
+            請於取餐時間兩個小時前訂餐！
         """.trimIndent()
         this.confirmText.text = confirmString
     }
@@ -62,17 +62,20 @@ class GuanDonOrderActivity : AppCompatActivity() {
         window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         //indicator
         val now = getCurrentDateTime()
+        val nowCal = Calendar.getInstance()
+        val min = nowCal.get(Calendar.MINUTE)
         val hourFormat = SimpleDateFormat("HH", Locale("zh-TW"))
         val hour = hourFormat.format(now).toInt()
         val fullFormat = SimpleDateFormat("yyyy/MM/dd", Locale.TAIWAN)
         val selTime = (if (timeButton.isChecked) "-12:00:00" else "-11:00:00")
-        if(hour>10) {
+        if((selTime == "-12:00:00" && hour>10 && min > 10) || (selTime == "-11:00:00" && hour>9 && min > 10)) {
             //indicator
             indicatorView.visibility = View.INVISIBLE
             progressBar.visibility = View.INVISIBLE
             window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
             //indicator
-            alert("早上十點後無法訂餐，明日請早","超過訂餐時間") {
+            val hour = if (selTime == "-12:00:00") "十" else "九"
+            alert("早上${hour}點十分後無法訂餐，明日請早","超過訂餐時間") {
                 positiveButton("OK"){}
             }.show()
         }else{
