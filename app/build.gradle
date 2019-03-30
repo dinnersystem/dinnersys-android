@@ -16,7 +16,7 @@ android {
         targetSdkVersion 28
         //1101 + major(digit:2) + minor(digit:3) + patch(digit:1)
         versionCode 1101001300
-        versionName "0.12"
+        versionName "0.13"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
