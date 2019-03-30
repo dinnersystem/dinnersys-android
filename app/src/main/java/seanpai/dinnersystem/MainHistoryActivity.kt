@@ -270,7 +270,7 @@ class MainHistoryActivity : AppCompatActivity() {
                     val now = getCurrentDateTime()
                     val hourFormat = SimpleDateFormat("HHmm", Locale.TAIWAN)
                     val hour = hourFormat.format(now).toInt()
-                    val timeBool = info.getString("recv_date").contains("11:00:00")
+                    val timeBool = info.getString("recv_date").contains("11:00")
                     val timeString = if (timeBool) "09:30" else "10:30"
                     bottomSheet.textMessage.text =
                         "訂餐編號:${info.getString("id")}\n餐點內容:${dishNameArr[position]}\n訂餐日期:${info.getString("recv_date").dropLast(

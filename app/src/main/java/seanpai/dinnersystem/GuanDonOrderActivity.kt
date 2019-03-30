@@ -62,13 +62,11 @@ class GuanDonOrderActivity : AppCompatActivity() {
         window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         //indicator
         val now = getCurrentDateTime()
-        val nowCal = Calendar.getInstance()
-        val min = nowCal.get(Calendar.MINUTE)
-        val hourFormat = SimpleDateFormat("HH", Locale("zh-TW"))
+        val hourFormat = SimpleDateFormat("HHmm", Locale("zh-TW"))
         val hour = hourFormat.format(now).toInt()
         val fullFormat = SimpleDateFormat("yyyy/MM/dd", Locale.TAIWAN)
         val selTime = (if (timeButton.isChecked) "-12:00:00" else "-11:00:00")
-        if((selTime == "-12:00:00" && hour>10 && min > 10) || (selTime == "-11:00:00" && hour>9 && min > 10)) {
+        if((selTime == "-12:00:00" && hour>1010) || (selTime == "-11:00:00" && hour>910)) {
             //indicator
             indicatorView.visibility = View.INVISIBLE
             progressBar.visibility = View.INVISIBLE

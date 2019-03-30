@@ -121,6 +121,17 @@ class MainOrderActivity : AppCompatActivity() {
                                 startActivity(Intent(this@MainOrderActivity, LoginActivity::class.java))
                             }
                         }.show()
+                    }else if (it.contains("exceed")){
+                        //indicator
+                        indicatorView.visibility = View.INVISIBLE
+                        progressBar.visibility = View.INVISIBLE
+                        window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+                        //indicator
+                        alert("您的訂單中似乎有一或多項餐點已售完", "餐點已售完") {
+                            positiveButton("OK") {
+                                startActivity(Intent(this@MainOrderActivity, LoginActivity::class.java))
+                            }
+                        }.show()
                     }else{
                         //indicator
                         indicatorView.visibility = View.INVISIBLE

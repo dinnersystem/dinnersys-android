@@ -67,48 +67,47 @@ class StuOrderListActivity : AppCompatActivity() {
                         allMenuJson.remove(j)
                         j -= 1
                     }
-//                    else if (item.getString("sold_out") == "1") {
-////                        allMenuJson.remove(j)
-////                        j -= 1
-////                    }
                     else when (item.getJSONObject("department").getJSONObject("factory").getString("name")) {
                         "台灣小吃部" -> taiwanMenuJson.put(item)
-                        "愛家便當" -> aiJiaMenuJson.put(item)
+                        "愛佳便當" -> aiJiaMenuJson.put(item)
                         "關東煮" -> guanDonMenuJson.put(item)
                         "合作社" -> cafetMenuJson.put(item)
                         else -> {}
                     }
+                    if(item.getString("remaining") == "2147483647"){
+                        item.put("remaining", "1000")
+                    }
                     j += 1
                 }
-                for(i in 0 until guanDonMenuJson.length()){
-                    val remainURL = dsURL("get_remaining") + "&id=${guanDonMenuJson.getJSONObject(i).getString("dish_id")}"
-                    val remainRequest = StringRequest(remainURL, Response.Listener { remainResponse ->
-                        if(isValidJson(remainResponse)){
-                            guanDonMenuJson.put(i, JSONObject(remainResponse))
-                        }else{
-                            //indicator
-                            indicatorView.visibility = View.INVISIBLE
-                            progressBar.visibility = View.INVISIBLE
-                            window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-                            //indicator
-                            alert("請重新登入","您已經登出"){
-                                positiveButton("OK"){
-                                    startActivity(Intent(this@StuOrderListActivity, LoginActivity::class.java))
-                                }
-                            }.show()
-                        }
-                    }, Response.ErrorListener {
-                        //indicator
-                        indicatorView.visibility = View.INVISIBLE
-                        progressBar.visibility = View.INVISIBLE
-                        window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-                        //indicator
-                        alert ("請注意網路狀態，或通知開發人員!","不知名的錯誤"){
-                            positiveButton("OK"){}
-                        }.show()
-                    })
-                    VolleySingleton.getInstance(this).addToRequestQueue(remainRequest)
-                }
+//                for(i in 0 until guanDonMenuJson.length()){
+//                    val remainURL = dsURL("get_remaining") + "&id=${guanDonMenuJson.getJSONObject(i).getString("dish_id")}"
+//                    val remainRequest = StringRequest(remainURL, Response.Listener { remainResponse ->
+//                        if(isValidJson(remainResponse)){
+//                            guanDonMenuJson.put(i, JSONObject(remainResponse))
+//                        }else{
+//                            //indicator
+//                            indicatorView.visibility = View.INVISIBLE
+//                            progressBar.visibility = View.INVISIBLE
+//                            window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+//                            //indicator
+//                            alert("請重新登入","您已經登出"){
+//                                positiveButton("OK"){
+//                                    startActivity(Intent(this@StuOrderListActivity, LoginActivity::class.java))
+//                                }
+//                            }.show()
+//                        }
+//                    }, Response.ErrorListener {
+//                        //indicator
+//                        indicatorView.visibility = View.INVISIBLE
+//                        progressBar.visibility = View.INVISIBLE
+//                        window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+//                        //indicator
+//                        alert ("請注意網路狀態，或通知開發人員!","不知名的錯誤"){
+//                            positiveButton("OK"){}
+//                        }.show()
+//                    })
+//                    //VolleySingleton.getInstance(this).addToRequestQueue(remainRequest)
+//                }
                 println("everything should be alright")
             }else{
                 //indicator

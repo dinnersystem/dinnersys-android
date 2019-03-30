@@ -14,8 +14,9 @@ android {
         applicationId "seanpai.dinnersystem"
         minSdkVersion 19
         targetSdkVersion 28
-        versionCode 101101
-        versionName "0.10"
+        //1101 + major(digit:2) + minor(digit:3) + patch(digit:1)
+        versionCode 1101001300
+        versionName "0.12"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {

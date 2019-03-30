@@ -74,6 +74,7 @@ class LoginActivity : AppCompatActivity() {
             //indicator
             var update = true
             val version = JSONObject(it).getJSONArray("android")
+            println(it)
             for (i in 0 until version.length()) {
                 val ver = version.getInt(i)
                 if (ver == currentVersion) {

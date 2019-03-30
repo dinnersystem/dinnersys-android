@@ -2,13 +2,16 @@ package seanpai.dinnersystem
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v4.content.ContextCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import kotlinx.android.synthetic.main.activity_main_menu.*
+import kotlinx.android.synthetic.main.guandon_list_cell.view.*
 import kotlinx.android.synthetic.main.main_menu_cell.view.*
 
 class MainMenuActivity : AppCompatActivity() {
@@ -48,6 +51,16 @@ class MainMenuActivity : AppCompatActivity() {
             layout.proceedOrderButton.setOnClickListener {
                 selOrder1 = SelOrder(dishID,dishName,dishCost)
                 mContext.startActivity(Intent(mContext,MainOrderActivity::class.java))
+            }
+            val bestSeller = selectedFactoryArr.getJSONObject(position).getString("best_seller")
+            val isBestSeller = bestSeller == "true"
+            if(isBestSeller){
+                layout.title.setTextColor(ContextCompat.getColor(mContext,R.color.special))
+                layout.detailTitle.text = layout.detailTitle.text.toString() + "，人氣商品！"
+                layout.detailTitle.setTextColor(ContextCompat.getColor(mContext,R.color.special))
+            }else{
+                layout.title.setTextColor(Color.BLACK)
+                layout.detailTitle.setTextColor(Color.BLACK)
             }
             return layout
         }
