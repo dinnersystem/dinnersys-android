@@ -422,7 +422,11 @@ class MainHistoryActivity : AppCompatActivity() {
                         bottomSheet.deleteButton.isEnabled = false
                         bottomSheet.deleteButton.text = "已付款者請聯絡合作社取消"
                     }else{
-                        if(balance > info.getJSONObject("money").getString("charge").toInt()) {
+                        if((timeBool && hour>930) || (!timeBool && hour>1030)){
+                            val timeString = if (timeBool) "09:30" else "10:30"
+                            bottomSheet.paymentButton.isEnabled = false
+                            bottomSheet.paymentButton.text = "已超過繳款時間($timeString)"
+                        }else if(balance > info.getJSONObject("money").getString("charge").toInt()) {
                             bottomSheet.paymentButton.text = "以學生證付款(餘額:$balance)"
                         }else{
                             bottomSheet.paymentButton.isEnabled = false
@@ -430,11 +434,7 @@ class MainHistoryActivity : AppCompatActivity() {
                         }
                         bottomSheet.deleteButton.text = "取消訂單"
                     }
-                    if((timeBool && hour>930) || (timeBool && hour>1030)){
-                        val timeString = if (timeBool) "09:30" else "10:30"
-                        bottomSheet.paymentButton.isEnabled = false
-                        bottomSheet.paymentButton.text = "已超過繳款時間($timeString)"
-                    }
+
                     bottomSheet.cancelButton.text = "返回"
                     dialog.setContentView(bottomSheet)
                     dialog.show()
