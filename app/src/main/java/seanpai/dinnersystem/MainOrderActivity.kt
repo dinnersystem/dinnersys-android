@@ -98,7 +98,7 @@ class MainOrderActivity : AppCompatActivity() {
                         progressBar.visibility = View.INVISIBLE
                         window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                         //indicator
-                        alert("請確定手機時間是否正確","訂餐錯誤"){
+                        alert("請不要在00:00-04:00之間或於點餐時間外點餐！","訂餐錯誤"){
                             positiveButton("OK"){}
                         }.show()
                     }else if (it.contains("Invalid")){

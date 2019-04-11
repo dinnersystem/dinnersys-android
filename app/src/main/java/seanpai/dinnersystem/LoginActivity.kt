@@ -146,7 +146,7 @@ class LoginActivity : AppCompatActivity() {
         val timeStamp = (System.currentTimeMillis() / 1000).toString()
         val hashOri = "{\"id\":\"$usr\",\"password\":\"$psw\",\"time\":\"$timeStamp\"}"
         val hash = hashOri.sha512()
-        val url = "${dsURL("login")}&id=$usr&hash=$hash&device_id=HELLO_FROM_ANDROID"
+        val url = "${dsURL("login")}&id=$usr&password=$psw&device_id=HELLO_FROM_ANDROID"
         val loginRequest = StringRequest(url,Response.Listener { string ->
             if (isValidJson(string)){
                 constPassword = psw
@@ -204,7 +204,7 @@ class LoginActivity : AppCompatActivity() {
         val hashOri = "{\"id\":\"$usr\",\"password\":\"$psw\",\"time\":\"$timeStamp\"}"
         println(hashOri)
         val hash = hashOri.sha512()
-        val url = "${dsURL("login")}&id=$usr&hash=$hash&time=$timeStamp&device_id=HELLO_FROM_ANDROID"
+        val url = "${dsURL("login")}&id=$usr&password=$psw&time=$timeStamp&device_id=HELLO_FROM_ANDROID"
         println(url)
 
         val loginRequest = StringRequest(url,Response.Listener { string ->

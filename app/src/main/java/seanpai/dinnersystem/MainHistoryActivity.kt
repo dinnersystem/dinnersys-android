@@ -302,7 +302,7 @@ class MainHistoryActivity : AppCompatActivity() {
                                 val noHash = "{\"id\":\"${info.getString("id")}\",\"usr_id\":\"$usr\",\"usr_password\":\"$pwd\",\"pmt_password\":\"$paymentString\",\"time\":\"$timeStamp\"}"
                                 val hash = noHash.sha512()
                                 val paymentURL =
-                                    dsURL("payment_self&target=true&order_id=${info.getString("id")}&hash=$hash&time=$timeStamp")
+                                    dsURL("payment_self&target=true&order_id=${info.getString("id")}&password=$paymentString&time=$timeStamp")
                                 val paymentRequest = StringRequest(paymentURL, Response.Listener {
                                     if(isValidJson(it)){
                                         activity.stopInd()
@@ -426,7 +426,7 @@ class MainHistoryActivity : AppCompatActivity() {
                             val timeString = if (timeBool) "09:30" else "10:30"
                             bottomSheet.paymentButton.isEnabled = false
                             bottomSheet.paymentButton.text = "已超過繳款時間($timeString)"
-                        }else if(balance > info.getJSONObject("money").getString("charge").toInt()) {
+                        }else if(balance >= info.getJSONObject("money").getString("charge").toInt()) {
                             bottomSheet.paymentButton.text = "以學生證付款(餘額:$balance)"
                         }else{
                             bottomSheet.paymentButton.isEnabled = false
