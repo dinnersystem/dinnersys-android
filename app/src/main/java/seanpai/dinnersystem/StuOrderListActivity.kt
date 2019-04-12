@@ -43,7 +43,7 @@ class StuOrderListActivity : AppCompatActivity() {
         //indicator end
 
         val url = dsURL("show_dish")
-        val balanceURL = dsURL("get_money")
+        val balanceURL = dsURL("get_pos")
         //indicator
         indicatorView.visibility = View.VISIBLE
         indicatorView.bringToFront()
@@ -138,8 +138,8 @@ class StuOrderListActivity : AppCompatActivity() {
         })
 
         val balanceRequest = StringRequest(balanceURL, Response.Listener {
-            if (isInt(it)) {
-                balance = it.toInt()
+            if (isValidJson(it)) {
+                balance = JSONObject(it).getString("money").toInt()
                 VolleySingleton.getInstance(this).addToRequestQueue(dishRequest)
             } else {
                 //indicator

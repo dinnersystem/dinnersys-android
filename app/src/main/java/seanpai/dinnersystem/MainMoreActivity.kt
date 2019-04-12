@@ -59,6 +59,11 @@ class MainMoreActivity : AppCompatActivity() {
         val cardRequest = StringRequest(dsURL("get_pos"),Response.Listener {
             if (isValidJson(it)) {
                 posInfo = JSONObject(it)
+                //indicator
+                indicatorView.visibility = View.INVISIBLE
+                progressBar.visibility = View.INVISIBLE
+                window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+                //indicator
                 startActivity(Intent(view.context,MainBarcodeActivity::class.java))
             } else {
                 //indicator

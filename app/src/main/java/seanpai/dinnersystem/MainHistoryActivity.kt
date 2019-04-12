@@ -23,6 +23,7 @@ import kotlinx.android.synthetic.main.paym_pw_alert.view.*
 import org.jetbrains.anko.alert
 import org.jetbrains.anko.centerInParent
 import org.json.JSONArray
+import org.json.JSONObject
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -173,10 +174,10 @@ class MainHistoryActivity : AppCompatActivity() {
             }
         )
         //get_money_value
-        val balanceURL = dsURL("get_money")
+        val balanceURL = dsURL("get_pos")
         val balanceRequest = StringRequest(balanceURL, Response.Listener {
-            if (isInt(it)) {
-                balance = it.toInt()
+            if (isValidJson(it)) {
+                balance = JSONObject(it).getString("money").toInt()
                 VolleySingleton.getInstance(this).addToRequestQueue(historyRequest)
                 balanceText.text = "餘額：$balance$"
             } else {
