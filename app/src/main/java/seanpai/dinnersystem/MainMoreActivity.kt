@@ -90,12 +90,12 @@ class MainMoreActivity : AppCompatActivity() {
         VolleySingleton.getInstance(this).addToRequestQueue(cardRequest)
     }
     fun devThank(view: View){
-        bonus += 1
-        if(bonus == 13){
-            bonus = 0
-            startActivity(Intent(view.context,DeveloperBonusActivity::class.java))
-        }else{
-            startActivity(Intent(view.context, DeveloperNormalActivity::class.java))
-        }
+//        bonus += 1
+//        if(bonus == 13){
+//            bonus = 0
+//            startActivity(Intent(view.context,DeveloperBonusActivity::class.java))
+//        }else{
+//            startActivity(Intent(view.context, DeveloperNormalActivity::class.java))
+//        }
     }
 }

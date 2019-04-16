@@ -26,6 +26,7 @@ var dishIDtoIndex = IntArray(1000)
 var ord1 = ord("","")
 var dishNameArr: Array<String> = emptyArray()
 var dishCostArr: Array<Int> = emptyArray()
+var dsIP = "dinnersystem.com"
 //data structure
 data class SelOrder(val id: String, val name: String, val cost: String)
 data class ord(val name:String, val url: String)
@@ -34,7 +35,7 @@ data class ord(val name:String, val url: String)
 var bonus = 0
 //function
 fun dsURL(str: String): String{
-    return "https://dinnersystem.ddns.net/dinnersys_beta/backend/backend.php?cmd=$str"
+    return "https://$dsIP/dinnersys_beta/backend/backend.php?cmd=$str"
 }
 
 fun Date.toString(format: String, locale: Locale = Locale.getDefault()): String {
