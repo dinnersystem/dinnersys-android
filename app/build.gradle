@@ -15,8 +15,8 @@ android {
         minSdkVersion 21
         targetSdkVersion 28
         //1101 + major(digit:2) + minor(digit:3) + patch(digit:1)
-        versionCode 1101001700
-        versionName "0.17"
+        versionCode 1101001800
+        versionName "0.18"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
