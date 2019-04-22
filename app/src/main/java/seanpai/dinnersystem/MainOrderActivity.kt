@@ -66,18 +66,20 @@ class MainOrderActivity : AppCompatActivity() {
         val hourFormat = SimpleDateFormat("HH", Locale.TAIWAN)
         val hour = hourFormat.format(now).toInt()
         println(now)
-        val fullFormat = SimpleDateFormat("yyyy/MM/dd", Locale.TAIWAN)
-        if(hour>10) {
-            //indicator
-            indicatorView.visibility = View.INVISIBLE
-            progressBar.visibility = View.INVISIBLE
-            window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-            //indicator
-            alert("早上十點後無法訂餐，明日請早","超過訂餐時間") { positiveButton("OK"){} }.show()
-        }else{
-            val orderURL = dsURL("make_self_order&dish_id[]=${selOrder1.id}&time=${fullFormat.format(now)}-12:00:00")
-            val orderRequest = StringRequest(orderURL, Response.Listener {
-                if (isValidJson(it)){
+                    val fullFormat = SimpleDateFormat("yyyy/MM/dd", Locale.TAIWAN)
+                    //if(hour>10) {
+                    if(false){
+                        //indicator
+                        indicatorView.visibility = View.INVISIBLE
+                        progressBar.visibility = View.INVISIBLE
+                        window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+                        //indicator
+                        alert("早上十點後無法訂餐，明日請早","超過訂餐時間") { positiveButton("OK"){} }.show()
+                    }else{
+                        val orderURL = dsURL("make_self_order&dish_id[]=${selOrder1.id}&time=${fullFormat.format(now)}-23:59:00")
+                        val orderRequest = StringRequest(orderURL, Response.Listener {
+                            println(it)
+                            if (isValidJson(it)){
                     val orderInfo = JSONArray(it)
                     val orderID = orderInfo.getJSONObject(0).getString("id")
                     //indicator

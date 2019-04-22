@@ -35,7 +35,7 @@ data class ord(val name:String, val url: String)
 var bonus = 0
 //function
 fun dsURL(str: String): String{
-    return "https://$dsIP/dinnersys_beta/backend/backend.php?cmd=$str"
+    return "http://$dsIP/dinnersys_beta/backend/backend.php?cmd=$str"
 }
 
 fun Date.toString(format: String, locale: Locale = Locale.getDefault()): String {

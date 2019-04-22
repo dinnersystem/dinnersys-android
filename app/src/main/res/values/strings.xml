@@ -15,10 +15,10 @@
     <string name="stu_title_more">更多功能</string>
     <string name="priceString">%01s$</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="taiwan">台灣小吃部</string>
-    <string name="aiJia">愛佳便當</string>
-    <string name="cafe">合作社</string>
-    <string name="GuanDon">關東煮</string>
+    <string name="taiwan">A廠商</string>
+    <string name="aiJia">B廠商</string>
+    <string name="cafe">C廠商</string>
+    <string name="GuanDon">D廠商</string>
     <string name="blank">blank</string>
     <string name="remPW">以帳號登入</string>
     <string name="chgPW">更新密碼</string>

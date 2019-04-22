@@ -132,6 +132,7 @@ class StuOrderListActivity : AppCompatActivity() {
             progressBar.visibility = View.INVISIBLE
             window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
             //indicator
+            println(it)
             alert ("請注意網路狀態，或通知開發人員!","不知名的錯誤"){
                 positiveButton("OK"){}
             }.show()
