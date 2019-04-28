@@ -35,13 +35,5 @@
                 android:text="@string/devThank"
                 android:layout_width="match_parent"
                 android:layout_height="60dp" android:id="@+id/devThank" android:onClick="devThank"/>
-        <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="50dp" app:srcCompat="@android:color/transparent"
-                android:id="@+id/imageView3" android:contentDescription="@string/blank"/>
-        <Button
-                android:text="@string/showBarcode"
-                android:layout_width="match_parent"
-                android:layout_height="60dp" android:id="@+id/showBarcode" android:onClick="showBarcode"/>
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>

@@ -47,48 +47,48 @@ class MainMoreActivity : AppCompatActivity() {
     fun webVer(view: View){
         startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://dinnersystem.ddns.net/")))
     }
-    fun showBarcode(view: View){
-        //indicator
-        indicatorView.visibility = View.VISIBLE
-        indicatorView.bringToFront()
-        progressBar.visibility = View.VISIBLE
-        progressBar.bringToFront()
-        window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-        //indicator
-
-        val cardRequest = StringRequest(dsURL("get_pos"),Response.Listener {
-            if (isValidJson(it)) {
-                posInfo = JSONObject(it)
-                //indicator
-                indicatorView.visibility = View.INVISIBLE
-                progressBar.visibility = View.INVISIBLE
-                window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-                //indicator
-                startActivity(Intent(view.context,MainBarcodeActivity::class.java))
-            } else {
-                //indicator
-                indicatorView.visibility = View.INVISIBLE
-                progressBar.visibility = View.INVISIBLE
-                window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-                //indicator
-                alert("查詢餘額失敗，我們已經派出最精銳的猴子去修理這個問題，若長時間出現此問題請通知開發人員！", "請重新登入") {
-                    positiveButton("OK") {
-                        startActivity(Intent(this@MainMoreActivity, LoginActivity::class.java))
-                    }
-                }.show()
-            }
-        }, Response.ErrorListener {
-            //indicator
-            indicatorView.visibility = View.INVISIBLE
-            progressBar.visibility = View.INVISIBLE
-            window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-            //indicator
-            alert("請注意網路狀態，或通知開發人員!", "不知名的錯誤") {
-                positiveButton("OK") {}
-            }.show()
-        })
-        VolleySingleton.getInstance(this).addToRequestQueue(cardRequest)
-    }
+//    fun showBarcode(view: View){
+//        //indicator
+//        indicatorView.visibility = View.VISIBLE
+//        indicatorView.bringToFront()
+//        progressBar.visibility = View.VISIBLE
+//        progressBar.bringToFront()
+//        window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+//        //indicator
+//
+//        val cardRequest = StringRequest(dsURL("get_pos"),Response.Listener {
+//            if (isValidJson(it)) {
+//                posInfo = JSONObject(it)
+//                //indicator
+//                indicatorView.visibility = View.INVISIBLE
+//                progressBar.visibility = View.INVISIBLE
+//                window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+//                //indicator
+//                startActivity(Intent(view.context,MainBarcodeActivity::class.java))
+//            } else {
+//                //indicator
+//                indicatorView.visibility = View.INVISIBLE
+//                progressBar.visibility = View.INVISIBLE
+//                window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+//                //indicator
+//                alert("查詢餘額失敗，我們已經派出最精銳的猴子去修理這個問題，若長時間出現此問題請通知開發人員！", "請重新登入") {
+//                    positiveButton("OK") {
+//                        startActivity(Intent(this@MainMoreActivity, LoginActivity::class.java))
+//                    }
+//                }.show()
+//            }
+//        }, Response.ErrorListener {
+//            //indicator
+//            indicatorView.visibility = View.INVISIBLE
+//            progressBar.visibility = View.INVISIBLE
+//            window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+//            //indicator
+//            alert("請注意網路狀態，或通知開發人員!", "不知名的錯誤") {
+//                positiveButton("OK") {}
+//            }.show()
+//        })
+//        VolleySingleton.getInstance(this).addToRequestQueue(cardRequest)
+//    }
     fun devThank(view: View){
         bonus += 1
         if(bonus == 13){
