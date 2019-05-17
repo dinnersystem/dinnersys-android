@@ -1,6 +1,7 @@
 package seanpai.dinnersystem
 
 import android.content.Intent
+import android.net.Uri
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Gravity
@@ -184,6 +185,14 @@ class StuOrderListActivity : AppCompatActivity() {
     fun toGuanDon(view:View){
         selectedFactoryArr = guanDonMenuJson
         startActivity(Intent(view.context, GuandonOrderListActivity::class.java))
+    }
+    fun toAd(view: View){
+        startActivity(
+            Intent(
+                Intent.ACTION_VIEW,
+                Uri.parse("https://docs.google.com/forms/d/e/1FAIpQLSftynInhmQH6iMu9HzAlFjB1UsL-wRpdRPheA5pUhgHhA6Fvw/viewform?fbclid=IwAR13QchnaWv84w2_9NCql_AZEbybXhhZZKoYVE5rXZtrQlXMjSATsb3yw5U")
+            )
+        )
     }
 
 }
