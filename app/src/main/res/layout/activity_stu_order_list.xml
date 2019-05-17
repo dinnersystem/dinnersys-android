@@ -55,7 +55,7 @@
                 android:layout_height="38dp" app:srcCompat="@android:color/transparent"
                 android:id="@+id/imageView3" android:visibility="invisible" android:contentDescription="@string/blank"/>
         <Button
-                android:text="校慶外送飲料  （外開連結）"
+                android:text="午餐系統問卷  （外開連結）"
                 android:layout_width="247dp"
                 android:layout_height="70dp" android:id="@+id/ad_button"
                 android:textSize="16sp" android:onClick="toAd"/>

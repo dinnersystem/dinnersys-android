@@ -190,7 +190,7 @@ class StuOrderListActivity : AppCompatActivity() {
         startActivity(
             Intent(
                 Intent.ACTION_VIEW,
-                Uri.parse("https://docs.google.com/forms/d/e/1FAIpQLSftynInhmQH6iMu9HzAlFjB1UsL-wRpdRPheA5pUhgHhA6Fvw/viewform?fbclid=IwAR13QchnaWv84w2_9NCql_AZEbybXhhZZKoYVE5rXZtrQlXMjSATsb3yw5U")
+                Uri.parse("https://forms.gle/ZzhtizScCsuMk5e87")
             )
         )
     }
