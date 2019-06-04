@@ -15,8 +15,8 @@ android {
         minSdkVersion 21
         targetSdkVersion 28
         //1101 + major(digit:2) + minor(digit:3) + patch(digit:1)
-        versionCode 1101002102
-        versionName "0.21.2"
+        versionCode 1101002200
+        versionName "0.22.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
@@ -41,7 +41,7 @@ dependencies {
     implementation "org.jetbrains.anko:anko-common:$anko_version"
     implementation 'com.jakewharton.threetenabp:threetenabp:1.1.1'
     implementation 'com.google.firebase:firebase-core:16.0.9'
-    implementation 'com.crashlytics.sdk.android:crashlytics:2.10.0'
+    implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
     implementation 'com.journeyapps:zxing-android-embedded:3.6.0'
     implementation 'com.google.zxing:core:3.3.3'
     testImplementation 'junit:junit:4.12'

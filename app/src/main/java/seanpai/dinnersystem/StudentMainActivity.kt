@@ -58,24 +58,7 @@ class StudentMainActivity : AppCompatActivity() {
 //            positiveButton("OK"){}
 //        }.show() })
 //        VolleySingleton.getInstance(this).addToRequestQueue(balanceRequest)
-        if (userInfo.getString("data_collected") == "0") {
-        alert("請參加我們的問卷調查", "午餐系統問卷") {
-            positiveButton("好") {
-                val okReq = StringRequest(dsURL("data_collected"), Response.Listener {
-                    startActivity(
-                        Intent(
-                            Intent.ACTION_VIEW,
-                            Uri.parse("https://forms.gle/ZzhtizScCsuMk5e87")
-                        )
-                    )
-                }, Response.ErrorListener { })
-                VolleySingleton.getInstance(this@StudentMainActivity).addToRequestQueue(okReq)
-            }
-            negativeButton("不好") {
 
-            }
-        }.show()
-    }
     }
 
     fun toOrder(view: View){
