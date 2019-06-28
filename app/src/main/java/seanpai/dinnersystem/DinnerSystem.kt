@@ -7,5 +7,6 @@ class DinnerSystem: Application() {
     override fun onCreate() {
         super.onCreate()
         AndroidThreeTen.init(this)
+        //NukeSSLCerts.nuke()
     }
 }

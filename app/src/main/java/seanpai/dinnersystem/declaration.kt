@@ -6,7 +6,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 //variable
-var currentVersion = 201900018
+var currentVersion = 201900019
 var userInfo = JSONObject("{}")
 var posInfo = JSONObject("{}")
 var allMenuJson = JSONArray("[]")
@@ -34,7 +34,8 @@ data class ord(val name:String, val url: String)
 var bonus = 0
 //function
 fun dsURL(str: String): String{
-    return "https://dinnersystem.ddns.net/dinnersys_beta/backend/backend.php?cmd=$str"
+    return "https://dinnersystem.com/dinnersys_beta/backend/backend.php?cmd=$str"
+    //return "https://25.10.211.133/dinnersys_beta/backend/backend.php?cmd=$str"
 }
 
 fun Date.toString(format: String, locale: Locale = Locale.getDefault()): String {

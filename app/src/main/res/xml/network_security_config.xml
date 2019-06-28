@@ -2,5 +2,8 @@
 <network-security-config>
     <domain-config cleartextTrafficPermitted="true">
         <domain includeSubdomains="true">dinnersystem.ddns.net</domain>
+        <domain includeSubdomains="true">dinnersystem.com</domain>
+
     </domain-config>
+
 </network-security-config>

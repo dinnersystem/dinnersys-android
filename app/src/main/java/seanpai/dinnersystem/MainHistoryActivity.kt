@@ -2,11 +2,11 @@ package seanpai.dinnersystem
 
 import android.content.Context
 import android.content.Intent
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.support.design.widget.BottomSheetDialog
-import android.support.v4.content.ContextCompat.startActivity
-import android.support.v7.app.AlertDialog
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import androidx.core.content.ContextCompat.startActivity
+import androidx.appcompat.app.AlertDialog
 import android.view.*
 import android.widget.BaseAdapter
 import android.widget.LinearLayout

@@ -3,7 +3,7 @@ package seanpai.dinnersystem
 import android.content.Intent
 import android.content.SharedPreferences
 import android.net.Uri
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.view.Gravity
@@ -60,7 +60,8 @@ class LoginActivity : AppCompatActivity() {
             remButton.isEnabled = true
             remButton.text = "以${name}登入"
         }
-        val url = "https://dinnersystem.ddns.net/dinnersys_beta/frontend/u_move_u_dead/version.txt"
+        val url = "https://dinnersystem.com/dinnersys_beta/frontend/u_move_u_dead/version.txt"
+        //val url = "https://25.10.211.133/dinnersys_beta/frontend/u_move_u_dead/version.txt"
         val versionRequest = StringRequest(url, Response.Listener {
             //indicator
             indicatorView.visibility = View.VISIBLE

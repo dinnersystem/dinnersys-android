@@ -4,9 +4,9 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.support.v4.content.ContextCompat
+import androidx.core.content.ContextCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -141,7 +141,7 @@ class GuandonOrderListActivity : AppCompatActivity() {
                 layout.detailTitleText.setTextColor(Color.BLACK)
             }
             layout.stepperDisplay.text = "${quantityDict[dishID]!!}份"
-            layout.plus_button.isEnabled = dishRemain.toInt() != 0
+            layout.plus_button.isEnabled = dishRemain.toInt() != 0 && quantityDict[dishID]!! < 5
             layout.minus_button.isEnabled = quantityDict[dishID]!! > 0
             return layout
         }

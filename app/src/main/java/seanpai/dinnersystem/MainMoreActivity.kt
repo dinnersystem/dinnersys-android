@@ -2,7 +2,7 @@ package seanpai.dinnersystem
 
 import android.content.Intent
 import android.net.Uri
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Gravity
 import android.view.View
@@ -45,7 +45,7 @@ class MainMoreActivity : AppCompatActivity() {
         startActivity(Intent(view.context,ChangePasswordActivity::class.java))
     }
     fun webVer(view: View){
-        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://dinnersystem.ddns.net/")))
+        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://dinnersystem.com/")))
     }
 //    fun showBarcode(view: View){
 //        //indicator

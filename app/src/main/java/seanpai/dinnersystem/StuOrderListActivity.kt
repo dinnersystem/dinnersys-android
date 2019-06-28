@@ -2,7 +2,7 @@ package seanpai.dinnersystem
 
 import android.content.Intent
 import android.net.Uri
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Gravity
 import android.view.View
@@ -164,7 +164,6 @@ class StuOrderListActivity : AppCompatActivity() {
                 positiveButton("OK") {}
             }.show()
         })
-
         VolleySingleton.getInstance(this).addToRequestQueue(balanceRequest)
     }
 
@@ -186,13 +185,6 @@ class StuOrderListActivity : AppCompatActivity() {
         selectedFactoryArr = guanDonMenuJson
         startActivity(Intent(view.context, GuandonOrderListActivity::class.java))
     }
-    fun toAd(view: View){
-        startActivity(
-            Intent(
-                Intent.ACTION_VIEW,
-                Uri.parse("https://forms.gle/ZzhtizScCsuMk5e87")
-            )
-        )
-    }
+
 
 }

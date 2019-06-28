@@ -2,7 +2,7 @@ package seanpai.dinnersystem
 
 import android.graphics.Bitmap
 import android.media.Image
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.ImageView
 import com.android.volley.RequestQueue
@@ -15,7 +15,7 @@ class DeveloperBonusActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_developer_bonus)
-        val url = "https://dinnersystem.ddns.net/dinnersys_beta/frontend/u_move_u_dead/dinnersys0.png"
+        val url = "https://dinnersystem.com/dinnersys_beta/frontend/u_move_u_dead/dinnersys0.png"
         val imageRequest = ImageRequest(url,
                                         Response.Listener {
                                             imageView7.setImageBitmap(it)
