@@ -3,7 +3,7 @@
     <domain-config cleartextTrafficPermitted="true">
         <domain includeSubdomains="true">dinnersystem.ddns.net</domain>
         <domain includeSubdomains="true">dinnersystem.com</domain>
-
+        <domain includeSubdomains="true">25.10.211.133</domain>
     </domain-config>
 
 </network-security-config>

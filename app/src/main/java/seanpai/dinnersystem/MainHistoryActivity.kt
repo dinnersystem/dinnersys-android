@@ -298,10 +298,10 @@ class MainHistoryActivity : AppCompatActivity() {
                             }else{
                                 val timeStamp = (System.currentTimeMillis() / 1000).toString()
                                 val paymentString = paymentPw.toString()
-                                val usr = constUsername
-                                val pwd = constPassword
-                                val noHash = "{\"id\":\"${info.getString("id")}\",\"usr_id\":\"$usr\",\"usr_password\":\"$pwd\",\"pmt_password\":\"$paymentString\",\"time\":\"$timeStamp\"}"
-                                val hash = noHash.sha512()
+                                //val usr = constUsername
+                                //val pwd = constPassword
+                                //val noHash = "{\"id\":\"${info.getString("id")}\",\"usr_id\":\"$usr\",\"usr_password\":\"$pwd\",\"pmt_password\":\"$paymentString\",\"time\":\"$timeStamp\"}"
+                                //val hash = noHash.sha512()
                                 val paymentURL =
                                     dsURL("payment_self&target=true&order_id=${info.getString("id")}&password=$paymentString&time=$timeStamp")
                                 val paymentRequest = StringRequest(paymentURL, Response.Listener {

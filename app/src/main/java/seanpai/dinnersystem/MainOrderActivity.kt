@@ -63,17 +63,18 @@ class MainOrderActivity : AppCompatActivity() {
         window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         //indicator
         val now = getCurrentDateTime()
-        val hourFormat = SimpleDateFormat("HH", Locale.TAIWAN)
+        val hourFormat = SimpleDateFormat("HHmm", Locale.TAIWAN)
         val hour = hourFormat.format(now).toInt()
         println(now)
         val fullFormat = SimpleDateFormat("yyyy/MM/dd", Locale.TAIWAN)
-        if(hour>10) {
+        if(hour>1010) {
+        //if(false){
             //indicator
             indicatorView.visibility = View.INVISIBLE
             progressBar.visibility = View.INVISIBLE
             window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
             //indicator
-            alert("早上十點後無法訂餐，明日請早","超過訂餐時間") { positiveButton("OK"){} }.show()
+            alert("早上十點十分後無法訂餐，明日請早","超過訂餐時間") { positiveButton("OK"){} }.show()
         }else{
             val orderURL = dsURL("make_self_order&dish_id[]=${selOrder1.id}&time=${fullFormat.format(now)}-12:00:00")
             val orderRequest = StringRequest(orderURL, Response.Listener {

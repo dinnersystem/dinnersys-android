@@ -61,7 +61,7 @@ class LoginActivity : AppCompatActivity() {
             remButton.text = "以${name}登入"
         }
         val url = "https://dinnersystem.com/dinnersys_beta/frontend/u_move_u_dead/version.txt"
-        //val url = "https://25.10.211.133/dinnersys_beta/frontend/u_move_u_dead/version.txt"
+        //val url = "http://25.10.211.133/dinnersys_beta/frontend/u_move_u_dead/version.txt"
         val versionRequest = StringRequest(url, Response.Listener {
             //indicator
             indicatorView.visibility = View.VISIBLE
@@ -144,9 +144,9 @@ class LoginActivity : AppCompatActivity() {
         password.onEditorAction(EditorInfo.IME_ACTION_DONE)
         val usr = preferences!!.getString("username", "")!!
         val psw = preferences!!.getString("password", "")!!
-        val timeStamp = (System.currentTimeMillis() / 1000).toString()
-        val hashOri = "{\"id\":\"$usr\",\"password\":\"$psw\",\"time\":\"$timeStamp\"}"
-        val hash = hashOri.sha512()
+        //val timeStamp = (System.currentTimeMillis() / 1000).toString()
+        //val hashOri = "{\"id\":\"$usr\",\"password\":\"$psw\",\"time\":\"$timeStamp\"}"
+        //val hash = hashOri.sha512()
         val url = "${dsURL("login")}&id=$usr&password=$psw&device_id=HELLO_FROM_ANDROID"
         val loginRequest = StringRequest(url,Response.Listener { string ->
             if (isValidJson(string)){
