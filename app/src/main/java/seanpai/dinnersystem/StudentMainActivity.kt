@@ -1,24 +1,30 @@
 package seanpai.dinnersystem
 
 import android.content.Intent
+import android.content.SharedPreferences
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
 import android.widget.ProgressBar
 import android.widget.RelativeLayout
+import android.widget.Toast
 import com.android.volley.RequestQueue
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
+import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.android.synthetic.main.activity_student_main.*
 import org.jetbrains.anko.alert
 import org.jetbrains.anko.centerInParent
 import org.json.JSONObject
 
 class StudentMainActivity : AppCompatActivity() {
+    private var preferences: SharedPreferences? = null
+
     private lateinit var indicatorView: View
     private lateinit var progressBar: ProgressBar
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,6 +65,19 @@ class StudentMainActivity : AppCompatActivity() {
 //        }.show() })
 //        VolleySingleton.getInstance(this).addToRequestQueue(balanceRequest)
 
+        preferences = PreferenceManager.getDefaultSharedPreferences(this)
+        val isSubbed = preferences!!.getBoolean("isSubbed", false)
+        if((constUsername == "06610089" || constUsername == "seanpai" ) && !isSubbed){
+            FirebaseMessaging.getInstance().subscribeToTopic("seanpai.gsatnotify").addOnCompleteListener { task ->
+                var msg = "訂閱通知失敗"
+                if(task.isSuccessful){
+                    msg = "訂閱每日通知成功"
+                    preferences!!.edit().putBoolean("isSubbed", true).apply()
+                }
+                println(msg)
+                Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     fun toOrder(view: View){

@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          xmlns:tools="http://schemas.android.com/tools"
-          package="seanpai.dinnersystem">
+        xmlns:tools="http://schemas.android.com/tools"
+        package="seanpai.dinnersystem">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+
+
 
     <application
             android:name=".DinnerSystem"
@@ -15,45 +17,44 @@
             android:supportsRtl="true"
             android:theme="@style/AppTheme.NoActionBar"
             tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".MainBarcodeActivity">
-        </activity>
-        <activity android:name=".DebugActivity">
-        </activity>
-        <activity android:name=".MainHistoryActivity">
-        </activity>
-        <activity android:name=".GuanDonOrderActivity">
-        </activity>
-        <activity android:name=".GuandonOrderListActivity">
-        </activity>
-        <activity android:name=".DeveloperBonusActivity">
-        </activity>
-        <activity android:name=".DeveloperNormalActivity">
-        </activity>
-        <activity android:name=".ChangePasswordActivity">
-        </activity>
-        <activity android:name=".MainMoreActivity">
-        </activity>
-        <activity android:name=".MainOrderActivity">
-        </activity>
-        <activity android:name=".MainMenuActivity">
-        </activity>
+        <service android:name=".FCMService"
+                android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
+        <activity android:name=".MainBarcodeActivity" />
+        <activity android:name=".MainHistoryActivity" />
+        <activity android:name=".GuanDonOrderActivity" />
+        <activity android:name=".GuandonOrderListActivity" />
+        <activity android:name=".DeveloperBonusActivity" />
+        <activity android:name=".DeveloperNormalActivity" />
+        <activity android:name=".ChangePasswordActivity" />
+        <activity android:name=".MainMoreActivity" />
+        <activity android:name=".MainOrderActivity" />
+        <activity android:name=".MainMenuActivity" />
         <activity
                 android:name=".LoginActivity"
                 android:label="@string/chinese_name">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
                 android:name=".StudentMainActivity"
-                android:label="@string/title_activity_student_main">
-        </activity>
+                android:label="@string/title_activity_student_main" />
         <activity
                 android:name=".StuOrderListActivity"
-                android:label="@string/stu_title_order">
-        </activity>
+                android:label="@string/stu_title_order" />
+        <meta-data
+                android:name="com.google.firebase.messaging.default_notification_channel_id"
+                android:value="@string/default_notification_channel_id" />
+        <meta-data
+                android:name="com.google.firebase.messaging.default_notification_icon"
+                android:resource="@drawable/dinnersys_icon_grey_transp" />
     </application>
 
 </manifest>

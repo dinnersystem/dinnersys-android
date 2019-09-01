@@ -36,4 +36,6 @@
     <string name="cancel">取消</string>
     <string name="reload">重新整理</string>
     <string name="showBarcode">顯示付款條碼</string>
+    <string name="default_notification_channel_id">DinnerSystem_channel_id</string>
+    <string name="default_notification_channel_name">DinnerSystem_channel_name</string>
 </resources>

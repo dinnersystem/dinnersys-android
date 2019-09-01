@@ -6,7 +6,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 //variable
-var currentVersion = 201900020
+var currentVersion = 201900021
 var userInfo = JSONObject("{}")
 var posInfo = JSONObject("{}")
 var allMenuJson = JSONArray("[]")
