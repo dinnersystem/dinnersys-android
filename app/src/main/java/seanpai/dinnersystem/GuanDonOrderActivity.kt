@@ -122,6 +122,17 @@ class GuanDonOrderActivity : AppCompatActivity() {
                                 startActivity(Intent(this@GuanDonOrderActivity, LoginActivity::class.java))
                             }
                         }.show()
+                    }else if (it == "daily limit exceed"){
+                        //indicator
+                        indicatorView.visibility = View.INVISIBLE
+                        progressBar.visibility = View.INVISIBLE
+                        window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+                        //indicator
+                        alert("您所想要訂購的餐點已被別人先訂走了，請重新點餐。") {
+                            positiveButton("OK") {
+                                startActivity(Intent(this@GuanDonOrderActivity, LoginActivity::class.java))
+                            }
+                        }.show()
                     }else{
                         //indicator
                         indicatorView.visibility = View.INVISIBLE
