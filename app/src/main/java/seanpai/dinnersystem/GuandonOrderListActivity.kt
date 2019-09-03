@@ -95,6 +95,15 @@ class GuandonOrderListActivity : AppCompatActivity() {
             val dishName = selectedFactoryArr.getJSONObject(position).getString("dish_name")
             val dishID = selectedFactoryArr.getJSONObject(position).getString("dish_id")
             val dishRemain = selectedFactoryArr.getJSONObject(position).getString("remaining")
+			
+			/* ---modified by lawrence--- */
+			var factory = selectedFactoryArr.getJSONObject(position).getJSONObject("department").getJSONObject("factory")
+            val factory_limit = false
+            if(factory.getString("daily_produce") != "-1") 
+                factory_limit = (factory.getString("daily_produce").toInt() <= factory.getString("remaining").toInt())
+            if(factory_limit) dishRemain = "0"
+			/* ------------------------- */
+			
             dishIDtoIndex[dishID.toInt()] = position
             layout.plus_button.setOnClickListener {
                 var quantity = quantityDict[dishID]!!
