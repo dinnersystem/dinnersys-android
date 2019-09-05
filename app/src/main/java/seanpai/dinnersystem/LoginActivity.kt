@@ -107,6 +107,9 @@ class LoginActivity : AppCompatActivity() {
                             )
                         }
                     }
+                }.build().apply {
+                    setCancelable(false)
+                    setCanceledOnTouchOutside(false)
                 }.show()
 
             }
@@ -245,6 +248,9 @@ class LoginActivity : AppCompatActivity() {
                         password.text.clear()
                         startActivity(Intent(view.context,StudentMainActivity::class.java))
                     }
+                }.build().apply {
+                    setCancelable(false)
+                    setCanceledOnTouchOutside(false)
                 }.show()
             }else {
                 //indicator

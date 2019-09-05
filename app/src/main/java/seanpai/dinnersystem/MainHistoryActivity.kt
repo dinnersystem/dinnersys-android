@@ -272,7 +272,7 @@ class MainHistoryActivity : AppCompatActivity() {
                     val hourFormat = SimpleDateFormat("HHmm", Locale.TAIWAN)
                     val hour = hourFormat.format(now).toInt()
                     val timeBool = info.getString("recv_date").contains("11:00")
-                    val timeString = if (timeBool) "09:30" else "10:30"
+                    val timeString = if (timeBool) "09:10" else "10:10"
                     bottomSheet.textMessage.text =
                         "訂餐編號:${info.getString("id")}\n餐點內容:${dishNameArr[position]}\n訂餐日期:${info.getString("recv_date").dropLast(
                             3
@@ -423,8 +423,8 @@ class MainHistoryActivity : AppCompatActivity() {
                         bottomSheet.deleteButton.isEnabled = false
                         bottomSheet.deleteButton.text = "已付款者請聯絡合作社取消"
                     }else{
-                        if((timeBool && hour>930) || (!timeBool && hour>1030)){
-                            val timeString = if (timeBool) "09:30" else "10:30"
+                        if((timeBool && hour>910) || (!timeBool && hour>1010)){
+                            val timeString = if (timeBool) "09:10" else "10:10"
                             bottomSheet.paymentButton.isEnabled = false
                             bottomSheet.paymentButton.text = "已超過繳款時間($timeString)"
                         }else if(balance >= info.getJSONObject("money").getString("charge").toInt()) {

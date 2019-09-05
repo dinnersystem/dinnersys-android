@@ -101,6 +101,9 @@ class GuanDonOrderActivity : AppCompatActivity() {
                         //indicator
                         alert("請確定手機時間是否正確","訂餐錯誤"){
                             positiveButton("OK"){}
+                        }.build().apply {
+                            setCancelable(false)
+                            setCanceledOnTouchOutside(false)
                         }.show()
                     }else if (it.contains("Invalid")){
                         //indicator
@@ -110,6 +113,9 @@ class GuanDonOrderActivity : AppCompatActivity() {
                         //indicator
                         alert("發生了不知名的錯誤。請嘗試重新登入，或嘗試重新開啟程式，若持續發生問題，請通知開發人員！", "Unexpected Error"){
                             positiveButton("OK"){}
+                        }.build().apply {
+                            setCancelable(false)
+                            setCanceledOnTouchOutside(false)
                         }.show()
                     }else if (it == ""){
                         //indicator
@@ -121,6 +127,9 @@ class GuanDonOrderActivity : AppCompatActivity() {
                             positiveButton("OK") {
                                 startActivity(Intent(this@GuanDonOrderActivity, LoginActivity::class.java))
                             }
+                        }.build().apply {
+                            setCancelable(false)
+                            setCanceledOnTouchOutside(false)
                         }.show()
                     }else if (it == "daily limit exceed"){
                         //indicator
@@ -128,10 +137,13 @@ class GuanDonOrderActivity : AppCompatActivity() {
                         progressBar.visibility = View.INVISIBLE
                         window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                         //indicator
-                        alert("您所想要訂購的餐點已被別人先訂走了，請重新點餐。") {
+                        alert("您所想要訂購的餐點已被別人先訂走或已達今日總訂單上限，請重新點餐。") {
                             positiveButton("OK") {
-                                startActivity(Intent(this@GuanDonOrderActivity, LoginActivity::class.java))
+                                startActivity(Intent(this@GuanDonOrderActivity, MainMenuActivity::class.java))
                             }
+                        }.build().apply {
+                            setCancelable(false)
+                            setCanceledOnTouchOutside(false)
                         }.show()
                     }else{
                         //indicator

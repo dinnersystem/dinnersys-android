@@ -141,6 +141,9 @@ class MainOrderActivity : AppCompatActivity() {
                         //indicator
                         alert("發生了不知名的錯誤。請嘗試重新登入，或嘗試重新開啟程式，若持續發生問題，請通知開發人員！", "Unexpected Error"){
                             positiveButton("OK"){}
+                        }.build().apply {
+                            setCancelable(false)
+                            setCanceledOnTouchOutside(false)
                         }.show()
                     }
                 }
@@ -152,6 +155,9 @@ class MainOrderActivity : AppCompatActivity() {
                 //indicator
                 alert ("請注意網路狀態，或通知開發人員!","不知名的錯誤"){
                     positiveButton("OK"){}
+                }.build().apply {
+                    setCancelable(false)
+                    setCanceledOnTouchOutside(false)
                 }.show()
             })
             VolleySingleton.getInstance(this).addToRequestQueue(orderRequest)

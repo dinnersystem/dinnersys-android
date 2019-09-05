@@ -19,8 +19,9 @@ import org.json.JSONObject
 class GuandonOrderListActivity : AppCompatActivity() {
     var totalCost = 0
     var totalSelected = 0
-
-
+    var noodleID = mutableListOf<String>()
+    var noodleCount = 0
+    val lowCost = selectedFactoryArr.getJSONObject(0).getJSONObject("department").getJSONObject("factory").getString("minimum").toInt()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,6 +32,9 @@ class GuandonOrderListActivity : AppCompatActivity() {
         dishIDtoIndex = IntArray(1000)
         for(i in 0 until selectedFactoryArr.length()){
             quantityDict[selectedFactoryArr.getJSONObject(i).getString("dish_id")] = 0
+            if(selectedFactoryArr.getJSONObject(i).getJSONObject("department").getString("name") == "麵類"){
+                noodleID.add(selectedFactoryArr.getJSONObject(i).getString("dish_id"))
+            }
         }
         println(quantityDict)
         adaptor.notifyDataSetChanged()
@@ -39,6 +43,7 @@ class GuandonOrderListActivity : AppCompatActivity() {
     fun updateValue() {
         totalCost = 0
         totalSelected = 0
+        noodleCount = 0
         dishDict.clear()
         for(item in quantityDict){
             if(item.value != 0){
@@ -47,10 +52,14 @@ class GuandonOrderListActivity : AppCompatActivity() {
                 dishDict[id] = item.value
                 totalSelected += item.value
                 totalCost += tmp*item.value
+
+                if(selectedFactoryArr.getJSONObject(dishIDtoIndex[item.key.toInt()]).getJSONObject("department").getString("name") == "麵類"){
+                    noodleCount += item.value
+                }
             }
         }
         totalText.text = "$totalCost$"
-        guandonButton.isEnabled = (totalCost >= 40 && totalSelected <= 20)
+        guandonButton.isEnabled = (totalCost >= lowCost && totalSelected <= 20 && noodleCount < 2)
     }
 
     fun sendOrder(view:View){
@@ -94,14 +103,14 @@ class GuandonOrderListActivity : AppCompatActivity() {
             val dishCost = selectedFactoryArr.getJSONObject(position).getString("dish_cost")
             val dishName = selectedFactoryArr.getJSONObject(position).getString("dish_name")
             val dishID = selectedFactoryArr.getJSONObject(position).getString("dish_id")
-            val dishRemain = selectedFactoryArr.getJSONObject(position).getString("remaining")
+            var dishRemain = selectedFactoryArr.getJSONObject(position).getString("remaining")
 			
 			/* ---modified by lawrence--- */
-			var factory = selectedFactoryArr.getJSONObject(position).getJSONObject("department").getJSONObject("factory")
-            val factory_limit = false
+			val factory = selectedFactoryArr.getJSONObject(position).getJSONObject("department").getJSONObject("factory")
+            var factoryLimit = false
             if(factory.getString("daily_produce") != "-1") 
-                factory_limit = (factory.getString("daily_produce").toInt() <= factory.getString("remaining").toInt())
-            if(factory_limit) dishRemain = "0"
+                factoryLimit = (factory.getString("daily_produce").toInt() <= factory.getString("remaining").toInt())
+            if(factoryLimit) dishRemain = "0"
 			/* ------------------------- */
 			
             dishIDtoIndex[dishID.toInt()] = position
