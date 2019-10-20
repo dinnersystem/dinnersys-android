@@ -24,19 +24,41 @@
             </intent-filter>
         </service>
 
-        <activity android:name=".MainBarcodeActivity" />
-        <activity android:name=".MainHistoryActivity" />
-        <activity android:name=".GuanDonOrderActivity" />
-        <activity android:name=".GuandonOrderListActivity" />
-        <activity android:name=".DeveloperBonusActivity" />
-        <activity android:name=".DeveloperNormalActivity" />
-        <activity android:name=".ChangePasswordActivity" />
-        <activity android:name=".MainMoreActivity" />
-        <activity android:name=".MainOrderActivity" />
-        <activity android:name=".MainMenuActivity" />
+        <activity android:name=".MainBarcodeActivity"
+                android:configChanges="orientation"
+                android:screenOrientation="portrait"/>
+        <activity android:name=".MainHistoryActivity"
+                android:configChanges="orientation"
+                android:screenOrientation="portrait"/>
+        <activity android:name=".GuanDonOrderActivity"
+                android:configChanges="orientation"
+                android:screenOrientation="portrait"/>
+        <activity android:name=".GuandonOrderListActivity"
+                android:configChanges="orientation"
+                android:screenOrientation="portrait"/>
+        <activity android:name=".DeveloperBonusActivity"
+                android:configChanges="orientation"
+                android:screenOrientation="portrait"/>
+        <activity android:name=".DeveloperNormalActivity"
+                android:configChanges="orientation"
+                android:screenOrientation="portrait"/>
+        <activity android:name=".ChangePasswordActivity"
+                android:configChanges="orientation"
+                android:screenOrientation="portrait"/>
+        <activity android:name=".MainMoreActivity"
+                android:configChanges="orientation"
+                android:screenOrientation="portrait"/>
+        <activity android:name=".MainOrderActivity"
+                android:configChanges="orientation"
+                android:screenOrientation="portrait"/>
+        <activity android:name=".MainMenuActivity"
+                android:configChanges="orientation"
+                android:screenOrientation="portrait"/>
         <activity
                 android:name=".LoginActivity"
-                android:label="@string/chinese_name">
+                android:label="@string/chinese_name"
+                android:configChanges="orientation"
+                android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -45,10 +67,14 @@
         </activity>
         <activity
                 android:name=".StudentMainActivity"
-                android:label="@string/title_activity_student_main" />
+                android:label="@string/title_activity_student_main"
+                android:configChanges="orientation"
+                android:screenOrientation="portrait"/>
         <activity
                 android:name=".StuOrderListActivity"
-                android:label="@string/stu_title_order" />
+                android:label="@string/stu_title_order"
+                android:configChanges="orientation"
+                android:screenOrientation="portrait"/>
         <meta-data
                 android:name="com.google.firebase.messaging.default_notification_channel_id"
                 android:value="@string/default_notification_channel_id" />
