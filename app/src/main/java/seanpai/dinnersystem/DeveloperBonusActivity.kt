@@ -15,7 +15,7 @@ class DeveloperBonusActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_developer_bonus)
-        val url = "https://dinnersystem.com/dinnersys_beta/frontend/u_move_u_dead/dinnersys0.png"
+        val url = "$dinnersysURL/frontend/u_move_u_dead/dinnersys0.png"
         val imageRequest = ImageRequest(url,
                                         Response.Listener {
                                             imageView7.setImageBitmap(it)

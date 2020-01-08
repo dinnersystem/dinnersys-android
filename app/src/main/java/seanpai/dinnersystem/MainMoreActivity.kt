@@ -45,7 +45,7 @@ class MainMoreActivity : AppCompatActivity() {
         startActivity(Intent(view.context,ChangePasswordActivity::class.java))
     }
     fun webVer(view: View){
-        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://dinnersystem.com/")))
+        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(dinnersysURL)))
     }
 //    fun showBarcode(view: View){
 //        //indicator
@@ -99,6 +99,6 @@ class MainMoreActivity : AppCompatActivity() {
         }
     }
     fun foodPolicies(view: View){
-        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://dinnersystem.com/dinnersys_beta/frontend/FoodPolicies.pdf")))
+        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("$dinnersysURL/frontend/FoodPolicies.pdf")))
     }
 }

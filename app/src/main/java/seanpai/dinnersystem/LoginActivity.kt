@@ -64,7 +64,7 @@ class LoginActivity : AppCompatActivity() {
             remButton.isEnabled = true
             remButton.text = "以${name}登入"
         }
-        val url = "https://dinnersystem.com/dinnersys_beta/frontend/u_move_u_dead/version.txt"
+        val url = "$dinnersysURL/frontend/u_move_u_dead/version.txt"
         //val url = "http://25.10.211.133/dinnersys_beta/frontend/u_move_u_dead/version.txt"
         val versionRequest = StringRequest(url, Response.Listener {
             //indicator
