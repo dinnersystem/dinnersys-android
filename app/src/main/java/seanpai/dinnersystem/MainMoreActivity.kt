@@ -98,4 +98,7 @@ class MainMoreActivity : AppCompatActivity() {
             startActivity(Intent(view.context, DeveloperNormalActivity::class.java))
         }
     }
+    fun foodPolicies(view: View){
+        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://dinnersystem.com/dinnersys_beta/frontend/FoodPolicies.pdf")))
+    }
 }
