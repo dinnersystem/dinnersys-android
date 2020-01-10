@@ -148,11 +148,13 @@ class StuOrderListActivity : AppCompatActivity() {
                 progressBar.visibility = View.INVISIBLE
                 window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 //indicator
-                alert("查詢餘額失敗，我們已經派出最精銳的猴子去修理這個問題，若長時間出現此問題請通知開發人員！", "請重新登入") {
-                    positiveButton("OK") {
-                        startActivity(Intent(this@StuOrderListActivity, LoginActivity::class.java))
-                    }
-                }.show()
+                if(!this.isFinishing){
+                    alert("查詢餘額失敗，我們已經派出最精銳的猴子去修理這個問題，若長時間出現此問題請通知開發人員！", "請重新登入") {
+                        positiveButton("OK") {
+                            startActivity(Intent(this@StuOrderListActivity, LoginActivity::class.java))
+                        }
+                    }.show()
+                }
             }
         }, Response.ErrorListener {
             //indicator
