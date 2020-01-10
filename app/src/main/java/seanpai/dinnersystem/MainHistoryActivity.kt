@@ -95,8 +95,8 @@ class MainHistoryActivity : AppCompatActivity() {
         //val now = java.util.Calendar.getInstance()
         val formatter = SimpleDateFormat("yyyy/MM/dd", Locale.TAIWAN)
         println(formatter.format(now))
-        val selSelf = dsURL("select_self&history=true&esti_start=${formatter.format(now)}-00:00:00&esti_end=${formatter.format(now)}-23:59:59")
-        val historyRequest = StringRequest(selSelf,
+//        val selSelf = dsURL("select_self&history=true&esti_start=${formatter.format(now)}-00:00:00&esti_end=${formatter.format(now)}-23:59:59")
+        val historyRequest = object: StringRequest(Method.POST, dsRequestURL,
             Response.Listener {
                 if(it != ""){
                     if(it != "[]"){
@@ -172,10 +172,18 @@ class MainHistoryActivity : AppCompatActivity() {
                     positiveButton("OK"){}
                 }.show()
             }
-        )
+        ){
+            override fun getParams(): MutableMap<String, String> {
+                var postParam: MutableMap<String, String> = HashMap()
+                postParam["cmd"] = "select_self"
+                postParam["esti_start"] = "${formatter.format(now)}-00:00:00"
+                postParam["esti_end"] = "${formatter.format(now)}-23:59:59"
+                return postParam
+            }
+        }
         //get_money_value
-        val balanceURL = dsURL("get_pos")
-        val balanceRequest = StringRequest(balanceURL, Response.Listener {
+//        val balanceURL = dsURL("get_pos")
+        val balanceRequest = object: StringRequest(Method.POST, dsRequestURL, Response.Listener {
             if (isValidJson(it)) {
                 balance = JSONObject(it).getString("money").toInt()
                 VolleySingleton.getInstance(this).addToRequestQueue(historyRequest)
@@ -202,7 +210,13 @@ class MainHistoryActivity : AppCompatActivity() {
             alert("請注意網路狀態，或通知開發人員!", "不知名的錯誤") {
                 positiveButton("OK") {}
             }.show()
-        })
+        }){
+            override fun getParams(): MutableMap<String, String> {
+                var postParam: MutableMap<String, String> = HashMap()
+                postParam["cmd"] = "get_pos"
+                return postParam
+            }
+        }
         VolleySingleton.getInstance(this).addToRequestQueue(balanceRequest)
 
 
@@ -302,9 +316,9 @@ class MainHistoryActivity : AppCompatActivity() {
                                 //val pwd = constPassword
                                 //val noHash = "{\"id\":\"${info.getString("id")}\",\"usr_id\":\"$usr\",\"usr_password\":\"$pwd\",\"pmt_password\":\"$paymentString\",\"time\":\"$timeStamp\"}"
                                 //val hash = noHash.sha512()
-                                val paymentURL =
-                                    dsURL("payment_self&target=true&order_id=${info.getString("id")}&password=$paymentString&time=$timeStamp")
-                                val paymentRequest = StringRequest(paymentURL, Response.Listener {
+//                                val paymentURL =
+//                                    dsURL("payment_self&target=true&order_id=${info.getString("id")}&password=$paymentString&time=$timeStamp")
+                                val paymentRequest = object : StringRequest(Method.POST, dsRequestURL, Response.Listener {
                                     if(isValidJson(it)){
                                         activity.stopInd()
                                         val successAlertBuilder = AlertDialog.Builder(mContext)
@@ -362,7 +376,17 @@ class MainHistoryActivity : AppCompatActivity() {
                                     errorAlertBuilder.setPositiveButton("OK") { _, _ -> }
                                     val errorAlert = errorAlertBuilder.create()
                                     errorAlert.show()
-                                })
+                                }){
+                                    override fun getParams(): MutableMap<String, String> {
+                                        var postParam: MutableMap<String, String> = HashMap()
+                                        postParam["cmd"] = "payment_self"
+                                        postParam["target"] = "true"
+                                        postParam["order_id"] = info.getString("id")
+                                        postParam["password"] = paymentString
+                                        postParam["time"] = timeStamp
+                                        return postParam
+                                    }
+                                }
                                 paymentRequest.retryPolicy = DefaultRetryPolicy(50000, 0, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT )
                                 dialog.dismiss()
                                 VolleySingleton.getInstance(mContext).addToRequestQueue(paymentRequest)
@@ -376,8 +400,8 @@ class MainHistoryActivity : AppCompatActivity() {
                     }
                     bottomSheet.deleteButton.setOnClickListener {
                         activity.startInd()
-                        val deleteURL = dsURL("delete_self&order_id=${info.getString("id")}")
-                        val deleteRequest = StringRequest(deleteURL, Response.Listener {
+//                        val deleteURL = dsURL("delete_self&order_id=${info.getString("id")}")
+                        val deleteRequest = object :StringRequest(Method.POST, dsRequestURL, Response.Listener {
                             activity.stopInd()
                             if(it == ""){
                                 val errorAlertBuilder = AlertDialog.Builder(mContext)
@@ -412,7 +436,14 @@ class MainHistoryActivity : AppCompatActivity() {
                             }
                             val errorAlert = errorAlertBuilder.create()
                             errorAlert.show()
-                        })
+                        }){
+                            override fun getParams(): MutableMap<String, String> {
+                                var postParam: MutableMap<String, String> = HashMap()
+                                postParam["cmd"] = "delete_self"
+                                postParam["order_id"] = info.getString("id")
+                                return postParam
+                            }
+                        }
                         dialog.dismiss()
                         VolleySingleton.getInstance(mContext).addToRequestQueue(deleteRequest)
                     }
@@ -445,5 +476,4 @@ class MainHistoryActivity : AppCompatActivity() {
             return layout
         }
     }
-
 }

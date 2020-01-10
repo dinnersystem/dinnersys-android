@@ -20,7 +20,6 @@ class MainMenuActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_menu)
-        println("hello there")
         this.tableView.adapter = adaptor
         this.balanceText.text = "餘額：" + balance.toString() + "$"
     }

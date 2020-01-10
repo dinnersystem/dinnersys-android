@@ -67,7 +67,7 @@ class StudentMainActivity : AppCompatActivity() {
 
         preferences = PreferenceManager.getDefaultSharedPreferences(this)
         val isSubbed = preferences!!.getBoolean("isSubbed", false)
-        if((constUsername == "06610089" || constUsername == "seanpai" ) && !isSubbed){
+        if((constUsername == "06610089") && !isSubbed){
             FirebaseMessaging.getInstance().subscribeToTopic("seanpai.gsatnotify").addOnCompleteListener { task ->
                 var msg = "訂閱通知失敗"
                 if(task.isSuccessful){
@@ -99,7 +99,7 @@ class StudentMainActivity : AppCompatActivity() {
         window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         //indicator
 
-        val cardRequest = StringRequest(dsURL("get_pos"),Response.Listener {
+        val cardRequest = object: StringRequest(Method.POST, dsRequestURL,Response.Listener {
             if (isValidJson(it)) {
                 posInfo = JSONObject(it)
                 //indicator
@@ -108,6 +108,17 @@ class StudentMainActivity : AppCompatActivity() {
                 window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 //indicator
                 startActivity(Intent(view.context,MainBarcodeActivity::class.java))
+            } else if (it.contains("\"Operation not allowed\"")){
+                //indicator
+                indicatorView.visibility = View.INVISIBLE
+                progressBar.visibility = View.INVISIBLE
+                window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+                //indicator
+                alert("工作階段已逾時", "請重新登入") {
+                    positiveButton("OK") {
+                        startActivity(Intent(this@StudentMainActivity, LoginActivity::class.java))
+                    }
+                }.show()
             } else {
                 //indicator
                 indicatorView.visibility = View.INVISIBLE
@@ -129,7 +140,13 @@ class StudentMainActivity : AppCompatActivity() {
             alert("請注意網路狀態，或通知開發人員!", "不知名的錯誤") {
                 positiveButton("OK") {}
             }.show()
-        })
+        }){
+            override fun getParams(): MutableMap<String, String> {
+                var postParam: MutableMap<String, String> = HashMap()
+                postParam["cmd"] = "get_pos"
+                return postParam
+            }
+        }
         VolleySingleton.getInstance(this).addToRequestQueue(cardRequest)
     }
 }

@@ -17,6 +17,8 @@ import android.view.inputmethod.EditorInfo
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.RelativeLayout
+import com.android.volley.AuthFailureError
+import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import kotlinx.android.synthetic.main.activity_login.*
@@ -65,7 +67,6 @@ class LoginActivity : AppCompatActivity() {
             remButton.text = "以${name}登入"
         }
         val url = "$dinnersysURL/frontend/u_move_u_dead/version.txt"
-        //val url = "http://25.10.211.133/dinnersys_beta/frontend/u_move_u_dead/version.txt"
         val versionRequest = StringRequest(url, Response.Listener {
             //indicator
             indicatorView.visibility = View.VISIBLE
@@ -160,11 +161,12 @@ class LoginActivity : AppCompatActivity() {
         password.onEditorAction(EditorInfo.IME_ACTION_DONE)
         val usr = preferences!!.getString("username", "")!!
         val psw = preferences!!.getString("password", "")!!
-        //val timeStamp = (System.currentTimeMillis() / 1000).toString()
+        val timeStamp = (System.currentTimeMillis() / 1000).toString()
         //val hashOri = "{\"id\":\"$usr\",\"password\":\"$psw\",\"time\":\"$timeStamp\"}"
         //val hash = hashOri.sha512()
-        val url = "${dsURL("login")}&id=$usr&password=$psw&device_id=HELLO_FROM_ANDROID"
-        val loginRequest = StringRequest(url,Response.Listener { string ->
+        //val url = "${dsURL("login")}&id=$usr&password=$psw&device_id=HELLO_FROM_ANDROID"
+        var loginRequest = object : StringRequest(Method.POST, dsRequestURL,Response.Listener { string ->
+            println(isValidJson(string))
             if (isValidJson(string)){
                 constPassword = psw
                 constUsername = usr
@@ -175,11 +177,14 @@ class LoginActivity : AppCompatActivity() {
                 window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 //indicator
                 alert("歡迎進入點餐系統,${userInfo.getString("name")}","登入成功"){
-                    username.text.clear()
-                    password.text.clear()
                     positiveButton("OK"){
+                        username.text.clear()
+                        password.text.clear()
                         startActivity(Intent(view.context,StudentMainActivity::class.java))
                     }
+                }.build().apply {
+                    setCancelable(false)
+                    setCanceledOnTouchOutside(false)
                 }.show()
             }else {
                 //indicator
@@ -187,6 +192,7 @@ class LoginActivity : AppCompatActivity() {
                 progressBar.visibility = View.INVISIBLE
                 window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 //indicator
+
                 alert("請注意帳號密碼是否錯誤，若持續失敗請通知開發人員!","登入失敗"){
                     positiveButton("OK"){}
                 }.show()
@@ -201,7 +207,17 @@ class LoginActivity : AppCompatActivity() {
             alert ("請注意網路狀態，或通知開發人員!","不知名的錯誤"){
                 positiveButton("OK"){}
             }.show()
-        })
+        }){
+            override fun getParams(): MutableMap<String, String> {
+                var postParam: MutableMap<String, String> = HashMap()
+                postParam["cmd"] = "login"
+                postParam["id"] = usr
+                postParam["password"] = psw
+                postParam["time"] = timeStamp
+                postParam["device_id"] = "HELLO_FROM_ANDROID"
+                return postParam
+            }
+        }
         VolleySingleton.getInstance(this).addToRequestQueue(loginRequest)
     }
     fun login(view: View) {
@@ -221,10 +237,8 @@ class LoginActivity : AppCompatActivity() {
         val hashOri = "{\"id\":\"$usr\",\"password\":\"$psw\",\"time\":\"$timeStamp\"}"
         println(hashOri)
         val hash = hashOri.sha512()
-        val url = "${dsURL("login")}&id=$usr&password=$psw&time=$timeStamp&device_id=HELLO_FROM_ANDROID"
-        println(url)
-
-        val loginRequest = StringRequest(url,Response.Listener { string ->
+        //val url = "${dsURL("login")}&id=$usr&password=$psw&time=$timeStamp&device_id=HELLO_FROM_ANDROID"
+        var loginRequest = object : StringRequest(Method.POST, dsRequestURL,Response.Listener { string ->
             println(isValidJson(string))
             if (isValidJson(string)){
                 constPassword = psw
@@ -258,6 +272,7 @@ class LoginActivity : AppCompatActivity() {
                 progressBar.visibility = View.INVISIBLE
                 window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 //indicator
+
                 alert("請注意帳號密碼是否錯誤，若持續失敗請通知開發人員!","登入失敗"){
                     positiveButton("OK"){}
                 }.show()
@@ -272,7 +287,18 @@ class LoginActivity : AppCompatActivity() {
             alert ("請注意網路狀態，或通知開發人員!","不知名的錯誤"){
             positiveButton("OK"){}
         }.show()
-        })
+        }){
+            override fun getParams(): MutableMap<String, String> {
+                var postParam: MutableMap<String, String> = HashMap()
+                postParam["cmd"] = "login"
+                postParam["id"] = usr
+                postParam["password"] = psw
+                postParam["time"] = timeStamp
+                postParam["device_id"] = "HELLO_FROM_ANDROID"
+                return postParam
+            }
+        }
+
         if (usr.length == 5) {
             //indicator
             indicatorView.visibility = View.INVISIBLE
@@ -286,6 +312,4 @@ class LoginActivity : AppCompatActivity() {
             VolleySingleton.getInstance(this).addToRequestQueue(loginRequest)
         }
     }
-
-
 }

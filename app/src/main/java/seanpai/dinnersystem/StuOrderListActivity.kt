@@ -43,8 +43,8 @@ class StuOrderListActivity : AppCompatActivity() {
         layout.addView(progressBar)
         //indicator end
 
-        val url = dsURL("show_dish")
-        val balanceURL = dsURL("get_pos")
+//        val url = dsURL("show_dish")
+//        val balanceURL = dsURL("get_pos")
         //indicator
         indicatorView.visibility = View.VISIBLE
         indicatorView.bringToFront()
@@ -53,7 +53,7 @@ class StuOrderListActivity : AppCompatActivity() {
         window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         //indicator
 
-        val dishRequest = StringRequest(url, Response.Listener { response ->
+        val dishRequest = object : StringRequest(Method.POST, dsRequestURL, Response.Listener { response ->
             allMenuJson = JSONArray("[]")
             taiwanMenuJson = JSONArray("[]")
             aiJiaMenuJson = JSONArray("[]")
@@ -80,36 +80,6 @@ class StuOrderListActivity : AppCompatActivity() {
                     }
                     j += 1
                 }
-//                for(i in 0 until guanDonMenuJson.length()){
-//                    val remainURL = dsURL("get_remaining") + "&id=${guanDonMenuJson.getJSONObject(i).getString("dish_id")}"
-//                    val remainRequest = StringRequest(remainURL, Response.Listener { remainResponse ->
-//                        if(isValidJson(remainResponse)){
-//                            guanDonMenuJson.put(i, JSONObject(remainResponse))
-//                        }else{
-//                            //indicator
-//                            indicatorView.visibility = View.INVISIBLE
-//                            progressBar.visibility = View.INVISIBLE
-//                            window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-//                            //indicator
-//                            alert("請重新登入","您已經登出"){
-//                                positiveButton("OK"){
-//                                    startActivity(Intent(this@StuOrderListActivity, LoginActivity::class.java))
-//                                }
-//                            }.show()
-//                        }
-//                    }, Response.ErrorListener {
-//                        //indicator
-//                        indicatorView.visibility = View.INVISIBLE
-//                        progressBar.visibility = View.INVISIBLE
-//                        window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-//                        //indicator
-//                        alert ("請注意網路狀態，或通知開發人員!","不知名的錯誤"){
-//                            positiveButton("OK"){}
-//                        }.show()
-//                    })
-//                    //VolleySingleton.getInstance(this).addToRequestQueue(remainRequest)
-//                }
-                println("everything should be alright")
             }else{
                 //indicator
                 indicatorView.visibility = View.INVISIBLE
@@ -136,9 +106,15 @@ class StuOrderListActivity : AppCompatActivity() {
             alert ("請注意網路狀態，或通知開發人員!","不知名的錯誤"){
                 positiveButton("OK"){}
             }.show()
-        })
+        }){
+            override fun getParams(): MutableMap<String, String> {
+                var postParam: MutableMap<String, String> = HashMap()
+                postParam["cmd"] = "show_dish"
+                return postParam
+            }
+        }
 
-        val balanceRequest = StringRequest(balanceURL, Response.Listener {
+        val balanceRequest = object : StringRequest(Method.POST, dsRequestURL, Response.Listener {
             if (isValidJson(it)) {
                 balance = JSONObject(it).getString("money").toInt()
                 VolleySingleton.getInstance(this).addToRequestQueue(dishRequest)
@@ -163,14 +139,19 @@ class StuOrderListActivity : AppCompatActivity() {
             alert("請注意網路狀態，或通知開發人員!", "不知名的錯誤") {
                 positiveButton("OK") {}
             }.show()
-        })
+        }){
+            override fun getParams(): MutableMap<String, String> {
+                var postParam: MutableMap<String, String> = HashMap()
+                postParam["cmd"] = "get_pos"
+                return postParam
+            }
+        }
         VolleySingleton.getInstance(this).addToRequestQueue(balanceRequest)
     }
 
 
     fun toTaiwan(view:View){
         selectedFactoryArr = taiwanMenuJson
-        println("startingActivity......................")
         startActivity(Intent(view.context, MainMenuActivity::class.java))
     }
     fun toAiJia(view:View){

@@ -65,10 +65,12 @@ class GuandonOrderListActivity : AppCompatActivity() {
     fun sendOrder(view:View){
         var urltmp = ""
         var nametmp = ""
+        guanDonParam = emptyArray()
         urltmp = dsURL("make_self_order")
         for(item in dishDict){
             for(i in 0 until item.value){
                 urltmp += "&dish_id[]=${item.key}"
+                guanDonParam += item.key
             }
         }
         for(item in quantityDict){

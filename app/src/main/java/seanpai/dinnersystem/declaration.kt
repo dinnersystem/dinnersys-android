@@ -8,6 +8,7 @@ import java.util.*
 //variable
 var currentVersion = 201900024
 const val dinnersysURL = "https://dinnersystem.com/dinnersys_beta"
+const val dsRequestURL = "https://dinnersystem.com/dinnersys_beta/backend/backend.php"
 var userInfo = JSONObject("{}")
 var posInfo = JSONObject("{}")
 var allMenuJson = JSONArray("[]")
@@ -27,6 +28,7 @@ var dishIDtoIndex = IntArray(1000)
 var ord1 = ord("","")
 var dishNameArr: Array<String> = emptyArray()
 var dishCostArr: Array<Int> = emptyArray()
+var guanDonParam: Array<String> = emptyArray()
 //data structure
 data class SelOrder(val id: String, val name: String, val cost: String)
 data class ord(val name:String, val url: String)

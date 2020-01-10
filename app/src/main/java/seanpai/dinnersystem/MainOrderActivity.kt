@@ -76,8 +76,8 @@ class MainOrderActivity : AppCompatActivity() {
             //indicator
             alert("早上十點十分後無法訂餐，明日請早","超過訂餐時間") { positiveButton("OK"){} }.show()
         }else{
-            val orderURL = dsURL("make_self_order&dish_id[]=${selOrder1.id}&time=${fullFormat.format(now)}-12:00:00")
-            val orderRequest = StringRequest(orderURL, Response.Listener {
+            //val orderURL = dsURL("make_self_order&dish_id[]=${selOrder1.id}&time=${fullFormat.format(now)}-12:00:00")
+            val orderRequest = object: StringRequest(Method.POST, dsRequestURL, Response.Listener {
                 if (isValidJson(it)){
                     val orderInfo = JSONArray(it)
                     val orderID = orderInfo.getJSONObject(0).getString("id")
@@ -159,7 +159,15 @@ class MainOrderActivity : AppCompatActivity() {
                     setCancelable(false)
                     setCanceledOnTouchOutside(false)
                 }.show()
-            })
+            }){
+                override fun getParams(): MutableMap<String, String> {
+                    var postParam: MutableMap<String, String> = HashMap()
+                    postParam["cmd"] = "make_self_order"
+                    postParam["dish_id"] = selOrder1.id
+                    postParam["time"] = "${fullFormat.format(now)}-12:00:00"
+                    return postParam
+                }
+            }
             VolleySingleton.getInstance(this).addToRequestQueue(orderRequest)
         }
     }

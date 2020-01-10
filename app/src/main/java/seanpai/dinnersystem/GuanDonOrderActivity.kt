@@ -77,8 +77,8 @@ class GuanDonOrderActivity : AppCompatActivity() {
                 positiveButton("OK"){}
             }.show()
         }else{
-            val orderURL = "${ord1.url}&time=${fullFormat.format(now)}$selTime"
-            val orderRequest = StringRequest(orderURL, Response.Listener {
+            //val orderURL = "${ord1.url}&time=${fullFormat.format(now)}$selTime"
+            val orderRequest = object: StringRequest(Method.POST, dsRequestURL, Response.Listener {
                 if (isValidJson(it)){
                     //indicator
                     indicatorView.visibility = View.INVISIBLE
@@ -165,7 +165,15 @@ class GuanDonOrderActivity : AppCompatActivity() {
                 alert ("請注意網路狀態，或通知開發人員!","不知名的錯誤"){
                     positiveButton("OK"){}
                 }.show()
-            })
+            }){
+                override fun getParams(): MutableMap<String, String> {
+                    var postParam: MutableMap<String, String> = HashMap()
+                    postParam["cmd"] = "make_self_order"
+                    postParam["dish_id"] = guanDonParam.joinToString("\", \"","[\"","\"]")
+                    postParam["time"] = "${fullFormat.format(now)}$selTime"
+                    return postParam
+                }
+            }
             VolleySingleton.getInstance(this).addToRequestQueue(orderRequest)
         }
     }
