@@ -1,54 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<androidx.constraintlayout.widget.ConstraintLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".StuOrderListActivity" android:background="@drawable/bg1" android:id="@+id/layout">
+        android:background="@drawable/bg1"
+        tools:context=".StuOrderListActivity">
 
-    <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="597dp" app:layout_constraintDimensionRatio="1:1"
-            app:layout_constraintTop_toTopOf="parent" app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="32dp" app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintVertical_bias="0.598" android:gravity="center|fill_vertical"
-            android:id="@+id/linearLayout">
-        <Button
-                android:text="@string/taiwan"
-                android:layout_width="258dp"
-                android:layout_height="70dp" android:id="@+id/taiwan_button" android:textSize="18sp"
-                android:onClick="toTaiwan"/>
+    <View
+            android:id="@+id/bgView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/transWhite"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="38dp" app:srcCompat="@android:color/transparent"
-                android:id="@+id/imageView" android:visibility="invisible" android:contentDescription="@string/blank"/>
-        <Button
-                android:text="@string/aiJia"
-                android:layout_width="256dp"
-                android:layout_height="70dp" android:id="@+id/aiJia_button"
-                android:textSize="18sp" android:onClick="toAiJia"/>
-        <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="38dp" app:srcCompat="@android:color/transparent"
-                android:id="@+id/imageView4" android:visibility="invisible" android:contentDescription="@string/blank"/>
-        <Button
-                android:text="@string/cafe"
-                android:layout_width="251dp"
-                android:layout_height="70dp" android:id="@+id/cafet_button"
-                android:textSize="18sp" android:onClick="toCafet"/>
-        <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="38dp" app:srcCompat="@android:color/transparent"
-                android:id="@+id/imageView5" android:visibility="invisible" android:contentDescription="@string/blank"/>
-        <Button
-                android:text="@string/GuanDon"
-                android:layout_width="247dp"
-                android:layout_height="70dp" android:id="@+id/guanDon_button"
-                android:textSize="18sp" android:onClick="toGuanDon"/>
-    </LinearLayout>
+    <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/factoryList"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="16dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

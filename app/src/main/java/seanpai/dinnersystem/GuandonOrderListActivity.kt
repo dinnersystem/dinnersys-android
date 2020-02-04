@@ -108,8 +108,8 @@ class GuandonOrderListActivity : AppCompatActivity() {
 			/* ---modified by lawrence--- */
 			val factory = selectedFactoryArr.getJSONObject(position).getJSONObject("department").getJSONObject("factory")
             var factoryLimit = false
-            if(factory.getString("daily_produce") != "-1") 
-                factoryLimit = (factory.getString("daily_produce").toInt() <= factory.getString("remaining").toInt())
+            if(factory.getString("daily_produce") != "-1")
+                factoryLimit = (factory.getString("daily_produce").toInt() < factory.getString("remaining").toInt())
             if(factoryLimit) dishRemain = "0"
 			/* ------------------------- */
 			

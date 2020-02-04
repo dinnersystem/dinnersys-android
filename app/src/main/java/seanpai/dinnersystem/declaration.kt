@@ -6,7 +6,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 //variable
-var currentVersion = 201900024
+var currentVersion = 201900025
 var userInfo = JSONObject("{}")
 var posInfo = JSONObject("{}")
 var allMenuJson = JSONArray("[]")
@@ -14,6 +14,7 @@ var taiwanMenuJson = JSONArray("[]")
 var aiJiaMenuJson = JSONArray("[]")
 var cafetMenuJson = JSONArray("[]")
 var guanDonMenuJson = JSONArray("[]")
+var splitMenuDict = mutableMapOf<String,JSONArray>()
 var balance = 0
 var selectedFactoryArr = JSONArray("[]")
 var historyArr = JSONArray("[]")
