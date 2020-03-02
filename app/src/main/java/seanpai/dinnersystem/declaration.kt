@@ -6,7 +6,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 //variable
-var currentVersion = 201900024
+var currentVersion = 201900025
 const val dinnersysURL = "https://dinnersystem.com/dinnersys_beta"
 const val dsRequestURL = "https://dinnersystem.com/dinnersys_beta/backend/backend.php"
 var userInfo = JSONObject("{}")
@@ -16,6 +16,7 @@ var taiwanMenuJson = JSONArray("[]")
 var aiJiaMenuJson = JSONArray("[]")
 var cafetMenuJson = JSONArray("[]")
 var guanDonMenuJson = JSONArray("[]")
+var splitMenuDict = mutableMapOf<String,JSONArray>()
 var balance = 0
 var selectedFactoryArr = JSONArray("[]")
 var historyArr = JSONArray("[]")
