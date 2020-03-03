@@ -60,72 +60,13 @@ class LoginActivity : AppCompatActivity() {
         //indicator end
 
         preferences = PreferenceManager.getDefaultSharedPreferences(this)
-        if(preferences!!.getString("username",null) !=null){
-            val name = preferences!!.getString("name",null)!!
-            remButton.visibility = View.VISIBLE
-            remButton.isEnabled = true
-            remButton.text = "以${name}登入"
-        }
-        val url = "$dinnersysURL/frontend/u_move_u_dead/version.txt"
-        val versionRequest = StringRequest(url, Response.Listener {
-            //indicator
-            indicatorView.visibility = View.VISIBLE
-            indicatorView.bringToFront()
-            progressBar.visibility = View.VISIBLE
-            progressBar.bringToFront()
-            window.setFlags(
-                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
-                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
-            )
-            //indicator
-            var update = true
-            val version = JSONObject(it).getJSONArray("android")
-            println(it)
-            for (i in 0 until version.length()) {
-                val ver = version.getInt(i)
-                if (ver == currentVersion) {
-                    update = false
-                    break
-                }
-            }
-            if (update) {
-                //indicator
-                indicatorView.visibility = View.INVISIBLE
-                progressBar.visibility = View.INVISIBLE
-                window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-                //indicator
-                alert("請至Google Play更新最新版本的點餐系統!", "偵測到更新版本") {
-                    positiveButton("OK(跳轉至GooglePlay)") {
-                        val packageName = packageName
-                        try {
-                            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + packageName)))
-                        } catch (e: android.content.ActivityNotFoundException) {
-                            startActivity(
-                                Intent(
-                                    Intent.ACTION_VIEW,
-                                    Uri.parse("https://play.google.com/store/apps/details?id=" + packageName)
-                                )
-                            )
-                        }
-                    }
-                }.build().apply {
-                    setCancelable(false)
-                    setCanceledOnTouchOutside(false)
-                }.show()
+//        if(preferences!!.getString("username",null) !=null){
+//            val name = preferences!!.getString("name",null)!!
+//            remButton.visibility = View.VISIBLE
+//            remButton.isEnabled = true
+//            remButton.text = "以${name}登入"
+//        }
 
-            }
-            //indicator
-            indicatorView.visibility = View.INVISIBLE
-            progressBar.visibility = View.INVISIBLE
-            window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-            //indicator
-
-        }, Response.ErrorListener {
-            alert("請注意網路連線", "不知名的錯誤") {
-                positiveButton("OK") {}
-            }
-        })
-        VolleySingleton.getInstance(this).addToRequestQueue(versionRequest)
 
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
             val channelID = resources.getString(R.string.default_notification_channel_id)
@@ -148,78 +89,6 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    fun remLogin(view: View){
-        //indicator
-        indicatorView.visibility = View.VISIBLE
-        indicatorView.bringToFront()
-        progressBar.visibility = View.VISIBLE
-        progressBar.bringToFront()
-        window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-        //indicator
-        //keyboard
-        username.onEditorAction(EditorInfo.IME_ACTION_DONE)
-        password.onEditorAction(EditorInfo.IME_ACTION_DONE)
-        val usr = preferences!!.getString("username", "")!!
-        val psw = preferences!!.getString("password", "")!!
-        val timeStamp = (System.currentTimeMillis() / 1000).toString()
-        //val hashOri = "{\"id\":\"$usr\",\"password\":\"$psw\",\"time\":\"$timeStamp\"}"
-        //val hash = hashOri.sha512()
-        //val url = "${dsURL("login")}&id=$usr&password=$psw&device_id=HELLO_FROM_ANDROID"
-        var loginRequest = object : StringRequest(Method.POST, dsRequestURL,Response.Listener { string ->
-            println(isValidJson(string))
-            if (isValidJson(string)){
-                constPassword = psw
-                constUsername = usr
-                userInfo = JSONObject(string)
-                //indicator
-                indicatorView.visibility = View.INVISIBLE
-                progressBar.visibility = View.INVISIBLE
-                window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-                //indicator
-                alert("歡迎進入點餐系統,${userInfo.getString("name")}","登入成功"){
-                    positiveButton("OK"){
-                        username.text.clear()
-                        password.text.clear()
-                        startActivity(Intent(view.context,StudentMainActivity::class.java))
-                    }
-                }.build().apply {
-                    setCancelable(false)
-                    setCanceledOnTouchOutside(false)
-                }.show()
-            }else {
-                //indicator
-                indicatorView.visibility = View.INVISIBLE
-                progressBar.visibility = View.INVISIBLE
-                window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-                //indicator
-
-                alert("請注意帳號密碼是否錯誤，若持續失敗請通知開發人員!","登入失敗"){
-                    positiveButton("OK"){}
-                }.show()
-            }
-        },Response.ErrorListener { error ->
-            //indicator
-            indicatorView.visibility = View.INVISIBLE
-            progressBar.visibility = View.INVISIBLE
-            window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-            //indicator
-            println(error)
-            alert ("請注意網路狀態，或通知開發人員!","不知名的錯誤"){
-                positiveButton("OK"){}
-            }.show()
-        }){
-            override fun getParams(): MutableMap<String, String> {
-                var postParam: MutableMap<String, String> = HashMap()
-                postParam["cmd"] = "login"
-                postParam["id"] = usr
-                postParam["password"] = psw
-                postParam["time"] = timeStamp
-                postParam["device_id"] = "HELLO_FROM_ANDROID"
-                return postParam
-            }
-        }
-        VolleySingleton.getInstance(this).addToRequestQueue(loginRequest)
-    }
     fun login(view: View) {
         //indicator
         indicatorView.visibility = View.VISIBLE
@@ -253,10 +122,10 @@ class LoginActivity : AppCompatActivity() {
                     preferences!!.edit()
                         .putString("username", usr)
                         .putString("password", psw)
-                        .putString("name", userInfo.getString("name").dropLast(1))
+                        .putString("name", userInfo.getString("name").trimEnd())
                         .apply()
                 }
-                alert("歡迎進入點餐系統,${userInfo.getString("name")}","登入成功"){
+                alert("歡迎進入點餐系統,${userInfo.getString("name").trimEnd()}","登入成功"){
                     positiveButton("OK"){
                         username.text.clear()
                         password.text.clear()

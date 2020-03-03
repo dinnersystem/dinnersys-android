@@ -5,4 +5,7 @@
     <color name="colorAccent">#007AE1</color>
     <color name="transWhite">#73FFFFFF</color>
     <color name="special">#FF4444</color>
+    <color name="pureWhite">#FFFFFF</color>
+    <color name="pureBlack">#000000</color>
+    <color name="buttonBlue">#007FFF</color>
 </resources>

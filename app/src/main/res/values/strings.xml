@@ -1,12 +1,20 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">板橋高中午餐系統</string>
     <string name="chinese_name">午餐系統</string>
     <string name="username">帳號</string>
     <string name="password">密碼</string>
     <string name="rem_pass">記住密碼</string>
-    <string name="input_help">
-        帳號：學年+學號(ex. 06610089)\n
+    <string name="input_help_account">
+        帳號(ex. 06610089)
+    </string>
+    <string name="input_help_password">
         密碼預設為生日(ex. 911023)
+    </string>
+    <string name="welcome_title">
+        歡迎使用午餐系統，\n$name.
+    </string>
+    <string name="balance_title" tools:ignore="TypographyDashes">
+        卡號：000000\n餘額：--元（非即時）
     </string>
     <string name="login_text">登入</string>
     <string name="title_activity_student_main">StudentMainActivity</string>

@@ -30,30 +30,13 @@ import java.time.ZoneId
 import java.util.*
 
 class MainHistoryActivity : AppCompatActivity() {
-    private lateinit var indicatorView : View
-    private lateinit var progressBar: ProgressBar
+    private lateinit var progressBarHandler: ProgressBarHandler
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_history)
         //indicator start
-        indicatorView = View(this)
-        indicatorView.setBackgroundResource(R.color.colorPrimaryDark)
-        val viewParam = RelativeLayout.LayoutParams(-1, -1)
-        viewParam.centerInParent()
-        indicatorView.layoutParams = viewParam
-        progressBar = ProgressBar(this,null, android.R.attr.progressBarStyle)
-        progressBar.isIndeterminate = true
-        val prams: RelativeLayout.LayoutParams = RelativeLayout.LayoutParams(
-            RelativeLayout.LayoutParams.WRAP_CONTENT,
-            RelativeLayout.LayoutParams.WRAP_CONTENT
-        )
-        prams.centerInParent()
-        progressBar.layoutParams = prams
-        indicatorView.visibility = View.INVISIBLE
-        progressBar.visibility = View.INVISIBLE
-        layout.addView(indicatorView)
-        layout.addView(progressBar)
+        progressBarHandler = ProgressBarHandler(this)
         //indicator end
         val adapter = TableAdapter(this)
         tableView.adapter = adapter
@@ -65,28 +48,21 @@ class MainHistoryActivity : AppCompatActivity() {
 
     fun startInd() {
         //indicator
-        indicatorView.visibility = View.VISIBLE
-        indicatorView.bringToFront()
-        progressBar.visibility = View.VISIBLE
-        progressBar.bringToFront()
+        progressBarHandler.show()
         window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         //indicator
     }
 
     fun stopInd() {
         //indicator
-        indicatorView.visibility = View.INVISIBLE
-        progressBar.visibility = View.INVISIBLE
+        progressBarHandler.hide()
         window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         //indicator
     }
 
     fun reloadData(view: View?) {
         //indicator
-        indicatorView.visibility = View.VISIBLE
-        indicatorView.bringToFront()
-        progressBar.visibility = View.VISIBLE
-        progressBar.bringToFront()
+        progressBarHandler.show()
         window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         //indicator
 
@@ -101,6 +77,7 @@ class MainHistoryActivity : AppCompatActivity() {
                 if(it != ""){
                     if(it != "[]"){
                     if (isValidJson(it)){
+                        println(it)
                         historyArr = JSONArray(it)
                         for (i in 0 until historyArr.length()) {
                             val info = historyArr.getJSONObject(i)
@@ -119,15 +96,13 @@ class MainHistoryActivity : AppCompatActivity() {
                         val adapter = TableAdapter(this)
                         tableView.adapter = adapter
                         //indicator
-                        indicatorView.visibility = View.INVISIBLE
-                        progressBar.visibility = View.INVISIBLE
+                        progressBarHandler.hide()
                         window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                         //indicator
                         adapter.notifyDataSetChanged()
                     }else{
                         //indicator
-                        indicatorView.visibility = View.INVISIBLE
-                        progressBar.visibility = View.INVISIBLE
+                        progressBarHandler.hide()
                         window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                         //indicator
                         alert("請重新登入","您已經登出"){
@@ -138,8 +113,7 @@ class MainHistoryActivity : AppCompatActivity() {
                     }
                     }else{
                         //indicator
-                        indicatorView.visibility = View.INVISIBLE
-                        progressBar.visibility = View.INVISIBLE
+                        progressBarHandler.hide()
                         window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                         //indicator
                         alert("請嘗試重新整理或進行點餐！","無點餐資料"){
@@ -150,8 +124,7 @@ class MainHistoryActivity : AppCompatActivity() {
                     }
                 }else{
                     //indicator
-                    indicatorView.visibility = View.INVISIBLE
-                    progressBar.visibility = View.INVISIBLE
+                    progressBarHandler.hide()
                     window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                     //indicator
                     //logout
@@ -164,8 +137,7 @@ class MainHistoryActivity : AppCompatActivity() {
             },
             Response.ErrorListener {
                 //indicator
-                indicatorView.visibility = View.INVISIBLE
-                progressBar.visibility = View.INVISIBLE
+                progressBarHandler.hide()
                 window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 //indicator
                 alert ("請注意網路狀態，或通知開發人員!","不知名的錯誤"){
@@ -178,6 +150,7 @@ class MainHistoryActivity : AppCompatActivity() {
                 postParam["cmd"] = "select_self"
                 postParam["esti_start"] = "${formatter.format(now)}-00:00:00"
                 postParam["esti_end"] = "${formatter.format(now)}-23:59:59"
+                postParam["history"] = "true"
                 return postParam
             }
         }
@@ -190,8 +163,7 @@ class MainHistoryActivity : AppCompatActivity() {
                 balanceText.text = "餘額：$balance$"
             } else {
                 //indicator
-                indicatorView.visibility = View.INVISIBLE
-                progressBar.visibility = View.INVISIBLE
+                progressBarHandler.hide()
                 window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 //indicator
                 alert("查詢餘額失敗，我們已經派出最精銳的猴子去修理這個問題，若長時間出現此問題請通知開發人員！", "請重新登入") {
@@ -203,8 +175,7 @@ class MainHistoryActivity : AppCompatActivity() {
 
         }, Response.ErrorListener {
             //indicator
-            indicatorView.visibility = View.INVISIBLE
-            progressBar.visibility = View.INVISIBLE
+            progressBarHandler.hide()
             window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
             //indicator
             alert("請注意網路狀態，或通知開發人員!", "不知名的錯誤") {
