@@ -26,38 +26,19 @@ var factoryNames: MutableList<String> = mutableListOf()
 
 class StuOrderListActivity : AppCompatActivity() {
 
-    private lateinit var indicatorView : View
-    private lateinit var progressBar: ProgressBar
-
+    private lateinit var progressBarHandler: ProgressBarHandler
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_stu_order_list)
 
         //indicator start
-        indicatorView = View(this)
-        indicatorView.setBackgroundResource(R.color.colorPrimaryDark)
-        val viewParam = LinearLayout.LayoutParams(-1,-1)
-        viewParam.gravity = Gravity.CENTER
-        indicatorView.layoutParams = viewParam
-        progressBar = ProgressBar(this,null, android.R.attr.progressBarStyle)
-        progressBar.isIndeterminate = true
-        val prams: LinearLayout.LayoutParams = LinearLayout.LayoutParams( LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-        prams.gravity = Gravity.CENTER
-        progressBar.layoutParams = prams
-        indicatorView.visibility = View.INVISIBLE
-        progressBar.visibility = View.INVISIBLE
-        layout.addView(indicatorView)
-        layout.addView(progressBar)
+        progressBarHandler = ProgressBarHandler(this)
         //indicator end
 
-//        val url = dsURL("show_dish")
-//        val balanceURL = dsURL("get_pos")
+
         //indicator
-        indicatorView.visibility = View.VISIBLE
-        indicatorView.bringToFront()
-        progressBar.visibility = View.VISIBLE
-        progressBar.bringToFront()
+        progressBarHandler.show()
         window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         //indicator
 
@@ -93,14 +74,6 @@ class StuOrderListActivity : AppCompatActivity() {
                         }
                         splitMenuDict[item.getJSONObject("department").getJSONObject("factory").getString("name")]!!.put(item)
                     }
-//                    else when (item.getJSONObject("department").getJSONObject("factory").getString("name")) {
-//                        "台灣小吃部" -> taiwanMenuJson.put(item)
-//                        "愛佳便當" -> aiJiaMenuJson.put(item)
-//                        "關東煮" -> guanDonMenuJson.put(item)
-//                        "合作社" -> cafetMenuJson.put(item)
-//                        else -> {
-//                        }
-//                    }
                     j += 1
                 }
                 println(factoryNames)
@@ -108,8 +81,7 @@ class StuOrderListActivity : AppCompatActivity() {
                 factoryList.adapter = factoryAdapter
             }else{
                 //indicator
-                indicatorView.visibility = View.INVISIBLE
-                progressBar.visibility = View.INVISIBLE
+                progressBarHandler.hide()
                 window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 //indicator
                 alert("請重新登入","您已經登出"){
@@ -119,14 +91,12 @@ class StuOrderListActivity : AppCompatActivity() {
                 }.show()
             }
             //indicator
-            indicatorView.visibility = View.INVISIBLE
-            progressBar.visibility = View.INVISIBLE
+            progressBarHandler.hide()
             window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
             //indicator
         },Response.ErrorListener {
             //indicator
-            indicatorView.visibility = View.INVISIBLE
-            progressBar.visibility = View.INVISIBLE
+            progressBarHandler.hide()
             window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
             //indicator
             alert ("請注意網路狀態，或通知開發人員!","不知名的錯誤"){
@@ -134,7 +104,7 @@ class StuOrderListActivity : AppCompatActivity() {
             }.show()
         }){
             override fun getParams(): MutableMap<String, String> {
-                var postParam: MutableMap<String, String> = HashMap()
+                val postParam: MutableMap<String, String> = HashMap()
                 postParam["cmd"] = "show_dish"
                 return postParam
             }
@@ -146,8 +116,7 @@ class StuOrderListActivity : AppCompatActivity() {
                 VolleySingleton.getInstance(this).addToRequestQueue(dishRequest)
             } else {
                 //indicator
-                indicatorView.visibility = View.INVISIBLE
-                progressBar.visibility = View.INVISIBLE
+                progressBarHandler.hide()
                 window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 //indicator
                 if(!this.isFinishing){
@@ -160,8 +129,7 @@ class StuOrderListActivity : AppCompatActivity() {
             }
         }, Response.ErrorListener {
             //indicator
-            indicatorView.visibility = View.INVISIBLE
-            progressBar.visibility = View.INVISIBLE
+            progressBarHandler.hide()
             window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
             //indicator
             alert("請注意網路狀態，或通知開發人員!", "不知名的錯誤") {
@@ -169,7 +137,7 @@ class StuOrderListActivity : AppCompatActivity() {
             }.show()
         }){
             override fun getParams(): MutableMap<String, String> {
-                var postParam: MutableMap<String, String> = HashMap()
+                val postParam: MutableMap<String, String> = HashMap()
                 postParam["cmd"] = "get_pos"
                 return postParam
             }
@@ -178,29 +146,11 @@ class StuOrderListActivity : AppCompatActivity() {
     }
 
 
-    fun toTaiwan(view:View){
-        selectedFactoryArr = taiwanMenuJson
-        startActivity(Intent(view.context, MainMenuActivity::class.java))
-    }
-    fun toAiJia(view:View){
-        selectedFactoryArr = aiJiaMenuJson
-        startActivity(Intent(view.context, MainMenuActivity::class.java))
-    }
-    fun toCafet(view:View){
-        selectedFactoryArr = cafetMenuJson
-        startActivity(Intent(view.context, MainMenuActivity::class.java))
-    }
-    fun toGuanDon(view:View){
-        selectedFactoryArr = guanDonMenuJson
-        startActivity(Intent(view.context, GuandonOrderListActivity::class.java))
-    }
-
-    class FactoryAdapter : RecyclerView.Adapter<FactoryAdapter.ViewHolder> {
-        private var context: Context
+    class FactoryAdapter(private var context: Context) :
+        RecyclerView.Adapter<FactoryAdapter.ViewHolder>() {
         private var data = factoryNames
 
-        constructor(context: Context) : super() {
-            this.context = context
+        init {
             this.data = factoryNames
         }
 
@@ -229,11 +179,10 @@ class StuOrderListActivity : AppCompatActivity() {
             }
         }
 
-        class ViewHolder : RecyclerView.ViewHolder {
+        class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             lateinit var factoryName: TextView
             lateinit var chooseButton: Button
 
-            constructor(itemView: View) : super(itemView)
         }
 
     }
