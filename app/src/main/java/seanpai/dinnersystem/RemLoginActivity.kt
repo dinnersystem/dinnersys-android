@@ -28,7 +28,7 @@ class RemLoginActivity : AppCompatActivity() {
         setContentView(R.layout.activity_rem_login)
         CookieHandler.setDefault(CookieManager(null, CookiePolicy.ACCEPT_ALL))
 
-        //initialize variables
+        //initialize late init variables
         preferences = PreferenceManager.getDefaultSharedPreferences(this)
         progBarHandler = ProgressBarHandler(this)
 
@@ -95,14 +95,13 @@ class RemLoginActivity : AppCompatActivity() {
 
     }
 
-    fun initLoginButton(){
-        if(preferences!!.getString("username",null) !=null){
-            val name = preferences!!.getString("name",null)!!
+    private fun initLoginButton(){
+        if(preferences.getString("username",null) != null){
+            val name = preferences.getString("name",null)!!
             remButton.visibility = View.VISIBLE
             fallbackButton.visibility = View.VISIBLE
             remButton.isEnabled = true
             remButton.text = "以${name}登入"
-            fallbackButton.visibility = View.VISIBLE
         }else{
             fallbackAction()
         }
@@ -132,10 +131,10 @@ class RemLoginActivity : AppCompatActivity() {
         progBarHandler.show()
         window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         //indicator
-        val usr = preferences!!.getString("username", "")!!
-        val psw = preferences!!.getString("password", "")!!
+        val usr = preferences.getString("username", "")!!
+        val psw = preferences.getString("password", "")!!
         val timeStamp = (System.currentTimeMillis() / 1000).toString()
-        var loginRequest = object : StringRequest(Method.POST, dsRequestURL,Response.Listener { string ->
+        val loginRequest = object : StringRequest(Method.POST, dsRequestURL,Response.Listener { string ->
             println(isValidJson(string))
             if (isValidJson(string)){
                 constPassword = psw
@@ -145,14 +144,6 @@ class RemLoginActivity : AppCompatActivity() {
                 progBarHandler.hide()
                 window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 //indicator
-//                alert("歡迎進入點餐系統,${userInfo.getString("name")}","登入成功"){
-//                    positiveButton("OK"){
-//                        startActivity(Intent(view.context,StudentMainActivity::class.java))
-//                    }
-//                }.build().apply {
-//                    setCancelable(false)
-//                    setCanceledOnTouchOutside(false)
-//                }.show()
                 startActivity(Intent(view.context,StudentMainActivity::class.java))
             }else {
                 //indicator
@@ -160,7 +151,7 @@ class RemLoginActivity : AppCompatActivity() {
                 window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 //indicator
 
-                alert("請注意帳號密碼是否錯誤，若持續失敗請通知開發人員!","登入失敗"){
+                alert("請注意帳號密碼是否錯誤，若持續失敗請通知開發人員!\n錯誤訊息$string","登入失敗"){
                     positiveButton("OK"){}
                 }.show()
             }

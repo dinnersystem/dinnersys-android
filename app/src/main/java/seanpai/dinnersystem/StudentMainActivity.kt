@@ -32,8 +32,8 @@ import kotlin.math.roundToInt
 
 class StudentMainActivity : AppCompatActivity() {
     private lateinit var preferences: SharedPreferences
-
     private lateinit var progBarHandler: ProgressBarHandler
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_student_main)
@@ -71,8 +71,6 @@ class StudentMainActivity : AppCompatActivity() {
                 val metrics = DisplayMetrics()
                 windowManager.defaultDisplay.getMetrics(metrics)
                 val multiFormatWriter = MultiFormatWriter()
-//                val bitMatrix = multiFormatWriter.encode(posInfo.getString("card"),
-//                    BarcodeFormat.CODE_39,metrics.widthPixels*0.8.roundToInt(),180)
                 val bitMatrix = multiFormatWriter.encode(posInfo.getString("card"),
                     BarcodeFormat.CODE_39,barcodeView.width,barcodeView.height)
                 val barcodeEncoder = BarcodeEncoder()
@@ -136,7 +134,6 @@ class StudentMainActivity : AppCompatActivity() {
         Thread.sleep(3_000)
         progBarHandler.hide()
         window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-        toast("還沒做啦")
-
+        toast("還沒做啦").show()
     }
 }

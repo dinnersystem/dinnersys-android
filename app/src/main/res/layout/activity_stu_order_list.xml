@@ -6,7 +6,7 @@
         android:id="@+id/layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/bg1"
+        android:background="@color/pureWhite"
         tools:context=".StuOrderListActivity">
 
     <View

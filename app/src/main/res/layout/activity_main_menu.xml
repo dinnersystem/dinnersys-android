@@ -1,25 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".MainMenuActivity" android:background="@drawable/bg1">
+        android:background="@color/pureWhite"
+        tools:context=".MainMenuActivity">
+
     <ListView
+            android:id="@+id/tableView"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:background="@color/transWhite"
+            android:scrollbars="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginStart="8dp" app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp" app:layout_constraintBottom_toBottomOf="parent"
-            android:id="@+id/tableView" android:background="@color/transWhite" android:scrollbars="vertical"
-            app:layout_constraintTop_toBottomOf="@+id/balanceText" app:layout_constraintHorizontal_bias="0.0"/>
+            app:layout_constraintTop_toBottomOf="@+id/balanceText" />
+
     <TextView
-            android:text="餘額："
+            android:id="@+id/balanceText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:id="@+id/balanceText" android:layout_marginBottom="8dp"
-            app:layout_constraintBottom_toTopOf="@+id/tableView" app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginStart="16dp" android:layout_marginTop="8dp" app:layout_constraintTop_toTopOf="parent"
-            android:textSize="20sp" android:textStyle="bold" app:layout_constraintVertical_bias="0.0"/>
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:text="餘額："
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/tableView"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
 </androidx.constraintlayout.widget.ConstraintLayout>

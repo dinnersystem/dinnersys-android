@@ -196,8 +196,6 @@ class MainHistoryActivity : AppCompatActivity() {
     class TableAdapter(context: Context): BaseAdapter() {
         val mContext: Context = context
         val activity = context as MainHistoryActivity
-        private lateinit var indicatorView: View
-        private lateinit var progressBar: ProgressBar
         override fun getItem(position: Int): Any {
             return 1101
         }
@@ -234,25 +232,7 @@ class MainHistoryActivity : AppCompatActivity() {
                 layout.infoButton.setOnClickListener {
                     val dialog = BottomSheetDialog(mContext)
                     val bottomSheet = layoutInflater.inflate(R.layout.history_bottom_list_view, null)
-                    //indicator start
-                    indicatorView = View(bottomSheet.context)
-                    indicatorView.setBackgroundResource(R.color.colorPrimaryDark)
-                    val viewParam = RelativeLayout.LayoutParams(-1, -1)
-                    viewParam.centerInParent()
-                    indicatorView.layoutParams = viewParam
-                    progressBar = ProgressBar(bottomSheet.context, null, android.R.attr.progressBarStyle)
-                    progressBar.isIndeterminate = true
-                    val prams: RelativeLayout.LayoutParams = RelativeLayout.LayoutParams(
-                        RelativeLayout.LayoutParams.WRAP_CONTENT,
-                        RelativeLayout.LayoutParams.WRAP_CONTENT
-                    )
-                    prams.centerInParent()
-                    progressBar.layoutParams = prams
-                    indicatorView.visibility = View.INVISIBLE
-                    progressBar.visibility = View.INVISIBLE
-                    bottomSheet.bottomSheet.addView(indicatorView)
-                    bottomSheet.bottomSheet.addView(progressBar)
-                    //indicator end
+
                     val now = getCurrentDateTime()
                     val hourFormat = SimpleDateFormat("HHmm", Locale.TAIWAN)
                     val hour = hourFormat.format(now).toInt()

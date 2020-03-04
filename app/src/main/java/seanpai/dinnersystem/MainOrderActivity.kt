@@ -163,7 +163,7 @@ class MainOrderActivity : AppCompatActivity() {
                 override fun getParams(): MutableMap<String, String> {
                     var postParam: MutableMap<String, String> = HashMap()
                     postParam["cmd"] = "make_self_order"
-                    postParam["dish_id"] = selOrder1.id
+                    postParam["dish_id[0]"] = selOrder1.id
                     postParam["time"] = "${fullFormat.format(now)}-12:00:00"
                     return postParam
                 }
