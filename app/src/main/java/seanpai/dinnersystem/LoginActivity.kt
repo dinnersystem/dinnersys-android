@@ -30,43 +30,17 @@ import java.net.*
 
 class LoginActivity : AppCompatActivity() {
     private var preferences: SharedPreferences? = null
-    private lateinit var indicatorView : View
-    private lateinit var progressBar: ProgressBar
+    private lateinit var progressBarHandler: ProgressBarHandler
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
         CookieHandler.setDefault(CookieManager(null, CookiePolicy.ACCEPT_ALL))
         //indicator start
-        indicatorView = View(this)
-        indicatorView.setBackgroundResource(R.color.colorPrimaryDark)
-        val viewParam = RelativeLayout.LayoutParams(-1, -1)
-        viewParam.centerInParent()
-        indicatorView.layoutParams = viewParam
-        progressBar = ProgressBar(this,null, android.R.attr.progressBarStyle)
-        progressBar.isIndeterminate = true
-        val prams: RelativeLayout.LayoutParams = RelativeLayout.LayoutParams(
-            RelativeLayout.LayoutParams.WRAP_CONTENT,
-            RelativeLayout.LayoutParams.WRAP_CONTENT
-        )
-        prams.centerInParent()
-        progressBar.layoutParams = prams
-        indicatorView.visibility = View.INVISIBLE
-        progressBar.visibility = View.INVISIBLE
-        layout.addView(indicatorView)
-        layout.addView(progressBar)
-        indicatorView.bringToFront()
-        progressBar.bringToFront()
+        progressBarHandler = ProgressBarHandler(this)
         //indicator end
 
         preferences = PreferenceManager.getDefaultSharedPreferences(this)
-//        if(preferences!!.getString("username",null) !=null){
-//            val name = preferences!!.getString("name",null)!!
-//            remButton.visibility = View.VISIBLE
-//            remButton.isEnabled = true
-//            remButton.text = "以${name}登入"
-//        }
-
 
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
             val channelID = resources.getString(R.string.default_notification_channel_id)
@@ -78,7 +52,7 @@ class LoginActivity : AppCompatActivity() {
 
     }
 
-    var back = true
+    private var back = true
     override fun onBackPressed() {
         //super.onBackPressed()
         if(back){
@@ -91,10 +65,7 @@ class LoginActivity : AppCompatActivity() {
 
     fun login(view: View) {
         //indicator
-        indicatorView.visibility = View.VISIBLE
-        indicatorView.bringToFront()
-        progressBar.visibility = View.VISIBLE
-        progressBar.bringToFront()
+        progressBarHandler.show()
         window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         //indicator
         //keyboard
@@ -114,8 +85,7 @@ class LoginActivity : AppCompatActivity() {
                 constUsername = usr
                 userInfo = JSONObject(string)
                 //indicator
-                indicatorView.visibility = View.INVISIBLE
-                progressBar.visibility = View.INVISIBLE
+                progressBarHandler.hide()
                 window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 //indicator
                 if (remSwitch.isChecked){
@@ -137,8 +107,7 @@ class LoginActivity : AppCompatActivity() {
                 }.show()
             }else {
                 //indicator
-                indicatorView.visibility = View.INVISIBLE
-                progressBar.visibility = View.INVISIBLE
+                progressBarHandler.hide()
                 window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 //indicator
 
@@ -148,8 +117,7 @@ class LoginActivity : AppCompatActivity() {
             }
         },Response.ErrorListener { error ->
             //indicator
-            indicatorView.visibility = View.INVISIBLE
-            progressBar.visibility = View.INVISIBLE
+            progressBarHandler.hide()
             window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
             //indicator
             println(error)
@@ -170,8 +138,7 @@ class LoginActivity : AppCompatActivity() {
 
         if (usr.length == 5) {
             //indicator
-            indicatorView.visibility = View.INVISIBLE
-            progressBar.visibility = View.INVISIBLE
+            progressBarHandler.hide()
             window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
             //indicator
             alert("App版已不支援午餐股長，請透過網頁版查看班級訂單!", "不支援午餐股長") {
