@@ -4,11 +4,11 @@ import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.content.SharedPreferences
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.view.View
 import android.view.WindowManager
+import androidx.appcompat.app.AppCompatActivity
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import kotlinx.android.synthetic.main.activity_rem_login.*
@@ -36,10 +36,10 @@ class RemLoginActivity : AppCompatActivity() {
         remButton.visibility = View.INVISIBLE
         fallbackButton.visibility = View.INVISIBLE
 
+        progBarHandler.show()
         val url = "$dinnersysURL/frontend/u_move_u_dead/version.txt"
         val versionRequest = StringRequest(url, Response.Listener {
             //indicator
-            progBarHandler.show()
 
             window.setFlags(
                 WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,

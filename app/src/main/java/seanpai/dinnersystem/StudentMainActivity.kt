@@ -2,37 +2,28 @@ package seanpai.dinnersystem
 
 import android.content.Intent
 import android.content.SharedPreferences
-import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.util.DisplayMetrics
 import android.view.View
-import android.view.ViewGroup
-import android.view.Window
 import android.view.WindowManager
-import android.widget.ProgressBar
-import android.widget.RelativeLayout
 import android.widget.Toast
-import androidx.constraintlayout.widget.ConstraintLayout
-import com.android.volley.RequestQueue
+import androidx.appcompat.app.AppCompatActivity
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
-import com.android.volley.toolbox.Volley
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.MultiFormatWriter
 import com.journeyapps.barcodescanner.BarcodeEncoder
 import kotlinx.android.synthetic.main.activity_student_main.*
 import org.jetbrains.anko.alert
-import org.jetbrains.anko.centerInParent
-import org.jetbrains.anko.toast
 import org.json.JSONObject
-import kotlin.math.roundToInt
 
 class StudentMainActivity : AppCompatActivity() {
     private lateinit var preferences: SharedPreferences
     private lateinit var progBarHandler: ProgressBarHandler
+    private var lighted = false
+    private var ogLightness: Float = 0.toFloat()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,9 +48,20 @@ class StudentMainActivity : AppCompatActivity() {
 
         titleView.text = "歡迎使用午餐系統，\n${userInfo.getString("name").trimEnd()}."
         getBarcode()
+
+
+        barcodeView.setOnLongClickListener {
+            if(lighted){
+                window.attributes.screenBrightness = ogLightness
+            }else{
+                ogLightness = window.attributes.screenBrightness
+                window.attributes.screenBrightness = WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_FULL
+            }
+            true
+        }
     }
 
-    fun getBarcode(){
+    private fun getBarcode(){
         progBarHandler.show()
         val cardRequest = object: StringRequest(Method.POST, dsRequestURL,Response.Listener {
             if (isValidJson(it)) {
@@ -108,7 +110,7 @@ class StudentMainActivity : AppCompatActivity() {
             }.show()
         }){
             override fun getParams(): MutableMap<String, String> {
-                var postParam: MutableMap<String, String> = HashMap()
+                val postParam: MutableMap<String, String> = HashMap()
                 postParam["cmd"] = "get_pos"
                 return postParam
             }
@@ -127,13 +129,8 @@ class StudentMainActivity : AppCompatActivity() {
         startActivity(Intent(view.context,MainMoreActivity::class.java))
     }
     fun toBefore(view: View){
-        //indicator
-        progBarHandler.show()
-        window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-        //indicator
-        Thread.sleep(3_000)
-        progBarHandler.hide()
-        window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-        toast("還沒做啦").show()
+        startActivity(Intent(view.context, BeforeHistoryActivity::class.java))
     }
+
+
 }

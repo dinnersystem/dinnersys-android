@@ -1,14 +1,11 @@
 package seanpai.dinnersystem
 
 import android.graphics.Bitmap
-import android.media.Image
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.ImageView
-import com.android.volley.RequestQueue
+import androidx.appcompat.app.AppCompatActivity
 import com.android.volley.Response
 import com.android.volley.toolbox.ImageRequest
-import com.android.volley.toolbox.Volley
 import kotlinx.android.synthetic.main.activity_developer_bonus.*
 
 class DeveloperBonusActivity : AppCompatActivity() {

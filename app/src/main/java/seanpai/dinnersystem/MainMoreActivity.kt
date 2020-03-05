@@ -2,19 +2,13 @@ package seanpai.dinnersystem
 
 import android.content.Intent
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Gravity
 import android.view.View
-import android.view.WindowManager
 import android.widget.LinearLayout
 import android.widget.ProgressBar
-import com.android.volley.Response
-import com.android.volley.toolbox.JsonObjectRequest
-import com.android.volley.toolbox.StringRequest
+import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main_more.*
-import org.jetbrains.anko.alert
-import org.json.JSONObject
 
 class MainMoreActivity : AppCompatActivity() {
     private lateinit var indicatorView : View

@@ -1,7 +1,8 @@
 package seanpai.dinnersystem
 
-import org.json.*
-import java.lang.NumberFormatException
+import org.json.JSONArray
+import org.json.JSONException
+import org.json.JSONObject
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -20,6 +21,7 @@ var splitMenuDict = mutableMapOf<String,JSONArray>()
 var balance = 0
 var selectedFactoryArr = JSONArray("[]")
 var historyArr = JSONArray("[]")
+var revHistoryArr = JSONArray("[]")
 var selOrder1 = SelOrder("","","")
 var constUsername = ""
 var constPassword = ""
@@ -28,6 +30,7 @@ var dishDict = mutableMapOf<String,Int>()
 var dishIDtoIndex = IntArray(1000)
 var ord1 = ord("","")
 var dishNameArr: Array<String> = emptyArray()
+var revDishNameArr: Array<String> = emptyArray()
 var dishCostArr: Array<Int> = emptyArray()
 var guanDonParam: Array<String> = emptyArray()
 //data structure

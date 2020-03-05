@@ -1,25 +1,19 @@
 package seanpai.dinnersystem
 
 import android.content.Intent
-import android.content.SharedPreferences
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.Gravity
 import android.view.View
 import android.view.WindowManager
-import android.widget.RelativeLayout
 import android.widget.ProgressBar
-import com.android.volley.RequestQueue
+import android.widget.RelativeLayout
+import androidx.appcompat.app.AppCompatActivity
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
-import com.android.volley.toolbox.Volley
 import kotlinx.android.synthetic.main.activity_main_order.*
 import org.jetbrains.anko.alert
 import org.jetbrains.anko.centerInParent
 import org.json.JSONArray
-import org.threeten.bp.LocalDateTime
 import java.text.SimpleDateFormat
-import java.time.ZoneId
 import java.util.*
 
 class MainOrderActivity : AppCompatActivity() {

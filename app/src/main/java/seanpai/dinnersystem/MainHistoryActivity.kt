@@ -2,31 +2,27 @@ package seanpai.dinnersystem
 
 import android.content.Context
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.google.android.material.bottomsheet.BottomSheetDialog
-import androidx.core.content.ContextCompat.startActivity
-import androidx.appcompat.app.AlertDialog
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.BaseAdapter
-import android.widget.LinearLayout
-import android.widget.ProgressBar
-import android.widget.RelativeLayout
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat.startActivity
 import com.android.volley.DefaultRetryPolicy
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import kotlinx.android.synthetic.main.activity_main_history.*
-import kotlinx.android.synthetic.main.guandon_list_cell.view.*
 import kotlinx.android.synthetic.main.history_bottom_list_view.view.*
 import kotlinx.android.synthetic.main.history_list_cell.view.*
 import kotlinx.android.synthetic.main.paym_pw_alert.view.*
 import org.jetbrains.anko.alert
-import org.jetbrains.anko.centerInParent
 import org.json.JSONArray
 import org.json.JSONObject
 import java.text.SimpleDateFormat
-import java.time.LocalDateTime
-import java.time.ZoneId
 import java.util.*
 
 class MainHistoryActivity : AppCompatActivity() {
@@ -112,13 +108,16 @@ class MainHistoryActivity : AppCompatActivity() {
                         }.show()
                     }
                     }else{
+                        historyArr = JSONArray("[]")
+                        val adapter = TableAdapter(this)
+                        tableView.adapter = adapter
                         //indicator
                         progressBarHandler.hide()
                         window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                         //indicator
+                        adapter.notifyDataSetChanged()
                         alert("請嘗試重新整理或進行點餐！","無點餐資料"){
                             positiveButton("OK"){
-
                             }
                         }.show()
                     }

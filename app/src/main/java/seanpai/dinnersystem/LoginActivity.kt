@@ -5,28 +5,22 @@ import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.net.Uri
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.preference.PreferenceManager
-import android.view.Gravity
 import android.view.View
 import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
-import android.widget.LinearLayout
-import android.widget.ProgressBar
-import android.widget.RelativeLayout
-import com.android.volley.AuthFailureError
-import com.android.volley.Request
+import androidx.appcompat.app.AppCompatActivity
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import kotlinx.android.synthetic.main.activity_login.*
-import org.json.JSONObject
 import org.jetbrains.anko.alert
-import org.jetbrains.anko.centerInParent
 import org.jetbrains.anko.toast
-import java.net.*
+import org.json.JSONObject
+import java.net.CookieHandler
+import java.net.CookieManager
+import java.net.CookiePolicy
 
 class LoginActivity : AppCompatActivity() {
     private var preferences: SharedPreferences? = null

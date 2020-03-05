@@ -3,15 +3,14 @@ package seanpai.dinnersystem
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.core.content.ContextCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import kotlinx.android.synthetic.main.activity_main_menu.*
-import kotlinx.android.synthetic.main.guandon_list_cell.view.*
 import kotlinx.android.synthetic.main.main_menu_cell.view.*
 
 class MainMenuActivity : AppCompatActivity() {

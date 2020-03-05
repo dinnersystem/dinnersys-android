@@ -2,19 +2,16 @@ package seanpai.dinnersystem
 
 import android.content.Context
 import android.content.Intent
-import android.content.res.ColorStateList
 import android.graphics.Color
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.core.content.ContextCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import kotlinx.android.synthetic.main.activity_guandon_order_list.*
-import kotlinx.android.synthetic.main.activity_guandon_order_list.view.*
 import kotlinx.android.synthetic.main.guandon_list_cell.view.*
-import org.json.JSONObject
 
 class GuandonOrderListActivity : AppCompatActivity() {
     var totalCost = 0

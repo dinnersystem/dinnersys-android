@@ -1,22 +1,16 @@
 package seanpai.dinnersystem
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
-import android.widget.ProgressBar
-import android.widget.RelativeLayout
+import androidx.appcompat.app.AppCompatActivity
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
-import com.android.volley.toolbox.Volley
 import kotlinx.android.synthetic.main.activity_guan_don_order.*
 import org.jetbrains.anko.alert
-import org.jetbrains.anko.centerInParent
 import org.json.JSONArray
-import org.threeten.bp.LocalDateTime
 import java.text.SimpleDateFormat
-import java.time.ZoneId
 import java.util.*
 
 class GuanDonOrderActivity : AppCompatActivity() {
@@ -121,8 +115,7 @@ class GuanDonOrderActivity : AppCompatActivity() {
                         }.show()
                     }else{
                         //indicator
-                        indicatorView.visibility = View.INVISIBLE
-                        progressBar.visibility = View.INVISIBLE
+                        progressBarHandler.hide()
                         window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                         //indicator
                         alert("發生了不知名的錯誤。請嘗試重新登入，或嘗試重新開啟程式，若持續發生問題，請通知開發人員！", "Unexpected Error"){
