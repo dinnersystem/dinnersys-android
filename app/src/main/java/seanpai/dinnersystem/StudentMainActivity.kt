@@ -33,13 +33,13 @@ class StudentMainActivity : AppCompatActivity() {
         //indicator end
 
         preferences = PreferenceManager.getDefaultSharedPreferences(this)
-        val isSubbed = preferences!!.getBoolean("isSubbed", false)
+        val isSubbed = preferences.getBoolean("isSubbed", false)
         if((constUsername == "06610089") && !isSubbed){
             FirebaseMessaging.getInstance().subscribeToTopic("seanpai.gsatnotify").addOnCompleteListener { task ->
                 var msg = "訂閱通知失敗"
                 if(task.isSuccessful){
                     msg = "訂閱每日通知成功"
-                    preferences!!.edit().putBoolean("isSubbed", true).apply()
+                    preferences.edit().putBoolean("isSubbed", true).apply()
                 }
                 println(msg)
                 Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()

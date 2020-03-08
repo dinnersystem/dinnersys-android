@@ -1,0 +1,67 @@
+package seanpai.dinnersystem
+
+import android.content.Intent
+import androidx.appcompat.app.AppCompatActivity
+import android.os.Bundle
+import android.os.Handler
+import android.view.View
+import kotlinx.android.synthetic.main.activity_random_order.*
+import kotlin.math.round
+import kotlin.random.Random
+
+class RandomOrderActivity : AppCompatActivity() {
+
+    private var randomming = false
+    private var totalDishCount = 0
+    private var totalPossibilities = 0.toDouble()
+    private var taskHandler = Handler()
+    private var currentRandom = 0
+    var randomUpper = 0
+
+
+        override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_random_order)
+        randomming = false
+        totalDishCount = randomMenuArr.length()
+        totalPossibilities = 1.0/totalDishCount.toDouble()
+        totalPossibilities = round(totalPossibilities*10000)/100
+        infoText.text = "今日共${totalDishCount}，每個餐點中獎機率平均，各為$totalPossibilities%。"
+    }
+
+    fun startRandom(view: View){
+        if(!randomming){
+            randomming = true
+            randomUpper = Random.nextInt(18,27)
+            currentRandom = 0
+            taskHandler.post(object : Runnable{
+                override fun run() {
+                    taskHandler.postDelayed(this, 200)
+                    roulette()
+                }
+            })
+        }
+    }
+    
+    private fun roulette(){
+        if(randomUpper < currentRandom){
+            taskHandler.removeCallbacksAndMessages(null)
+            randomming = false
+            val randomIndex = Random.nextInt(0,totalDishCount-1)
+            val item = randomMenuArr.getJSONObject(randomIndex)
+            nameText.text = item.getString("dish_name")
+            val dishName = item.getString("dish_name")
+            val dishID = item.getString("dish_id")
+            val dishCost = item.getString("dish_cost")
+            Handler().postDelayed({
+                selOrder1 = SelOrder(dishID,dishName,dishCost)
+                startActivity(Intent(this,MainOrderActivity::class.java))
+            }, 2000)
+        }else{
+            val randomIndex = Random.nextInt(0,totalDishCount-1)
+            val item = randomMenuArr.getJSONObject(randomIndex)
+            nameText.text = item.getString("dish_name")
+            currentRandom += 1
+        }
+    }
+}

@@ -73,9 +73,13 @@ class StuOrderListActivity : AppCompatActivity() {
                             splitMenuDict[item.getJSONObject("department").getJSONObject("factory").getString("name")] = JSONArray("[]")
                         }
                         splitMenuDict[item.getJSONObject("department").getJSONObject("factory").getString("name")]!!.put(item)
+                        if(item.getJSONObject("department").getJSONObject("factory").getString("allow_custom") == "false"){
+                            randomMenuArr.put(item)
+                        }
                     }
                     j += 1
                 }
+                factoryNames.add("Random")
                 println(factoryNames)
                 val factoryAdapter = FactoryAdapter(this)
                 factoryList.adapter = factoryAdapter
@@ -168,8 +172,17 @@ class StuOrderListActivity : AppCompatActivity() {
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             val name = data[position]
-            holder.factoryName.text = name
+            if (name == "Random"){
+                holder.factoryName.text = "想不到要吃什麼？"
+            }else{
+                holder.factoryName.text = name
+            }
+
             holder.chooseButton.setOnClickListener {
+                if(name == "Random"){
+                    startActivity(it.context, Intent(it.context, RandomOrderActivity::class.java),null)
+                    return@setOnClickListener
+                }
                 selectedFactoryArr = splitMenuDict[name]!!
                 if(selectedFactoryArr.getJSONObject(0).getJSONObject("department").getJSONObject("factory").getString("allow_custom") == "true"){
                     startActivity(it.context,Intent(it.context, GuandonOrderListActivity::class.java), null)

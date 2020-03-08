@@ -18,6 +18,7 @@ var aiJiaMenuJson = JSONArray("[]")
 var cafetMenuJson = JSONArray("[]")
 var guanDonMenuJson = JSONArray("[]")
 var splitMenuDict = mutableMapOf<String,JSONArray>()
+var randomMenuArr = JSONArray("[]")
 var balance = 0
 var selectedFactoryArr = JSONArray("[]")
 var historyArr = JSONArray("[]")
