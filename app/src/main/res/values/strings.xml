@@ -32,6 +32,7 @@
     <string name="chgPW">更新密碼</string>
     <string name="checkWeb">檢視網頁版</string>
     <string name="devThank">開發者致謝</string>
+    <string name="appInfo">關於此程式</string>
     <string name="oldPW">請輸入舊密碼</string>
     <string name="newPW1">請輸入新密碼</string>
     <string name="newPW2">請再輸入一次新密碼</string>
@@ -47,4 +48,5 @@
     <string name="default_notification_channel_id">DinnerSystem_channel_id</string>
     <string name="default_notification_channel_name">DinnerSystem_channel_name</string>
     <string name="foodPolicies">新北市立板橋高中午餐供應異常處理流程</string>
+    <string name="choose">選擇</string>
 </resources>

@@ -89,7 +89,7 @@ class MainMoreActivity : AppCompatActivity() {
             bonus = 0
             startActivity(Intent(view.context,DeveloperBonusActivity::class.java))
         }else{
-            startActivity(Intent(view.context, DeveloperNormalActivity::class.java))
+            startActivity(Intent(view.context, AppInfoActivity::class.java))
         }
     }
     fun foodPolicies(view: View){

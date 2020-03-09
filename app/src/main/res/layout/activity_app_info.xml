@@ -8,6 +8,7 @@
         tools:context=".AppInfoActivity">
 
     <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/infoList"
             android:layout_width="391dp"
             android:layout_height="711dp"
             app:layout_constraintBottom_toBottomOf="parent"

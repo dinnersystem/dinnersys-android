@@ -34,6 +34,7 @@ var dishNameArr: Array<String> = emptyArray()
 var revDishNameArr: Array<String> = emptyArray()
 var dishCostArr: Array<Int> = emptyArray()
 var guanDonParam: Array<String> = emptyArray()
+var DinnerSysInfo: MutableList<Pair<String, String>> = mutableListOf()
 //data structure
 data class SelOrder(val id: String, val name: String, val cost: String)
 data class ord(val name:String, val url: String)

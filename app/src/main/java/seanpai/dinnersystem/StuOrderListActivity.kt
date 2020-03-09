@@ -54,6 +54,7 @@ class StuOrderListActivity : AppCompatActivity() {
             aiJiaMenuJson = JSONArray("[]")
             cafetMenuJson = JSONArray("[]")
             guanDonMenuJson = JSONArray("[]")
+            randomMenuArr = JSONArray("[]")
             factoryNames = mutableListOf()
             splitMenuDict = mutableMapOf()
             if (isValidJson(response)){
