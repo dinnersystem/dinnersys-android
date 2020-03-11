@@ -49,4 +49,6 @@
     <string name="default_notification_channel_name">DinnerSystem_channel_name</string>
     <string name="foodPolicies">新北市立板橋高中午餐供應異常處理流程</string>
     <string name="choose">選擇</string>
+    <string name="confirmOrder">確認餐點</string>
+    <string name="sendOrder">送出訂單</string>
 </resources>

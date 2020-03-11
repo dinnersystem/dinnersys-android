@@ -35,10 +35,11 @@ var revDishNameArr: Array<String> = emptyArray()
 var dishCostArr: Array<Int> = emptyArray()
 var guanDonParam: Array<String> = emptyArray()
 var DinnerSysInfo: MutableList<Pair<String, String>> = mutableListOf()
+var foodArray: MutableList<FoodInfo> = mutableListOf()
 //data structure
 data class SelOrder(val id: String, val name: String, val cost: String)
 data class ord(val name:String, val url: String)
-
+data class FoodInfo(val name: String, val qty: String, val cost: String)
 
 var bonus = 0
 //function

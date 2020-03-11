@@ -1,12 +1,19 @@
 package seanpai.dinnersystem
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.ProgressBar
 import android.widget.RelativeLayout
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import kotlinx.android.synthetic.main.activity_main_order.*
@@ -17,43 +24,37 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class MainOrderActivity : AppCompatActivity() {
-    private lateinit var indicatorView : View
-    private lateinit var progressBar: ProgressBar
+    private lateinit var progressBarHandler: ProgressBarHandler
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_order)
         //indicator start
-        indicatorView = View(this)
-        indicatorView.setBackgroundResource(R.color.colorPrimaryDark)
-        val viewParam = RelativeLayout.LayoutParams(-1, -1)
-        viewParam.centerInParent()
-        indicatorView.layoutParams = viewParam
-        progressBar = ProgressBar(this,null, android.R.attr.progressBarStyle)
-        progressBar.isIndeterminate = true
-        val prams: RelativeLayout.LayoutParams = RelativeLayout.LayoutParams(
-            RelativeLayout.LayoutParams.WRAP_CONTENT,
-            RelativeLayout.LayoutParams.WRAP_CONTENT
-        )
-        viewParam.centerInParent()
-        progressBar.layoutParams = prams
-        indicatorView.visibility = View.INVISIBLE
-        progressBar.visibility = View.INVISIBLE
-        layout.addView(indicatorView)
-        layout.addView(progressBar)
+        progressBarHandler = ProgressBarHandler(this)
         //indicator end
-        val confirmString = """
-            您選擇的餐點是${selOrder1.name}，價錢為${selOrder1.cost}，確定請按訂餐。
-            請注意早上十點後將無法點餐!
-        """.trimIndent()
-        this.confirmText.text = confirmString
+
+//        val confirmString = """
+//            您選擇的餐點是${selOrder1.name}，價錢為${selOrder1.cost}，確定請按訂餐。
+//            請注意早上十點後將無法點餐!
+//        """.trimIndent()
+        foodArray.clear()
+        foodArray.add(FoodInfo(selOrder1.name,"x1", selOrder1.cost))
+        foodArray.add(FoodInfo("小計","x1", selOrder1.cost))
+
+        val layoutManager = LinearLayoutManager(this)
+        orderList.layoutManager = layoutManager
+        val dividerItemDecoration = DividerItemDecoration(orderList.context,layoutManager.orientation)
+        orderList.addItemDecoration(dividerItemDecoration)
+
+        val adapter = OrderAdapter(this)
+        orderList.adapter = adapter
+        adapter.notifyDataSetChanged()
+
+        //this.confirmText.text = confirmString
     }
 
     fun sendOrder(view: View){
         //indicator
-        indicatorView.visibility = View.VISIBLE
-        indicatorView.bringToFront()
-        progressBar.visibility = View.VISIBLE
-        progressBar.bringToFront()
+        progressBarHandler.show()
         window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         //indicator
         val now = getCurrentDateTime()
@@ -64,8 +65,7 @@ class MainOrderActivity : AppCompatActivity() {
         if(hour>1010) {
         //if(false){
             //indicator
-            indicatorView.visibility = View.INVISIBLE
-            progressBar.visibility = View.INVISIBLE
+            progressBarHandler.hide()
             window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
             //indicator
             alert("早上十點十分後無法訂餐，明日請早","超過訂餐時間") { positiveButton("OK"){} }.show()
@@ -76,8 +76,7 @@ class MainOrderActivity : AppCompatActivity() {
                     val orderInfo = JSONArray(it)
                     val orderID = orderInfo.getJSONObject(0).getString("id")
                     //indicator
-                    indicatorView.visibility = View.INVISIBLE
-                    progressBar.visibility = View.INVISIBLE
+                    progressBarHandler.hide()
                     window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                     //indicator
                     alert("訂單編號$orderID,請記得付款！", "點餐成功"){
@@ -89,8 +88,7 @@ class MainOrderActivity : AppCompatActivity() {
                     println(it)
                     if(it.contains("Off") || it.contains("Impossible")){
                         //indicator
-                        indicatorView.visibility = View.INVISIBLE
-                        progressBar.visibility = View.INVISIBLE
+                        progressBarHandler.hide()
                         window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                         //indicator
                         alert("請不要在00:00-04:00之間或於點餐時間外點餐！","訂餐錯誤"){
@@ -98,8 +96,7 @@ class MainOrderActivity : AppCompatActivity() {
                         }.show()
                     }else if (it.contains("Invalid")){
                         //indicator
-                        indicatorView.visibility = View.INVISIBLE
-                        progressBar.visibility = View.INVISIBLE
+                        progressBarHandler.hide()
                         window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                         //indicator
                         alert("發生了不知名的錯誤。請嘗試重新登入，或嘗試重新開啟程式，若持續發生問題，請通知開發人員！", "Unexpected Error"){
@@ -107,8 +104,7 @@ class MainOrderActivity : AppCompatActivity() {
                         }.show()
                     }else if (it == ""){
                         //indicator
-                        indicatorView.visibility = View.INVISIBLE
-                        progressBar.visibility = View.INVISIBLE
+                        progressBarHandler.hide()
                         window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                         //indicator
                         alert("請重新登入", "您已經登出") {
@@ -118,8 +114,7 @@ class MainOrderActivity : AppCompatActivity() {
                         }.show()
                     }else if (it.contains("exceed")){
                         //indicator
-                        indicatorView.visibility = View.INVISIBLE
-                        progressBar.visibility = View.INVISIBLE
+                        progressBarHandler.hide()
                         window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                         //indicator
                         alert("您的訂單中似乎有一或多項餐點已售完", "餐點已售完") {
@@ -129,8 +124,7 @@ class MainOrderActivity : AppCompatActivity() {
                         }.show()
                     }else{
                         //indicator
-                        indicatorView.visibility = View.INVISIBLE
-                        progressBar.visibility = View.INVISIBLE
+                        progressBarHandler.hide()
                         window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                         //indicator
                         alert("發生了不知名的錯誤。請嘗試重新登入，或嘗試重新開啟程式，若持續發生問題，請通知開發人員！", "Unexpected Error"){
@@ -143,8 +137,7 @@ class MainOrderActivity : AppCompatActivity() {
                 }
             }, Response.ErrorListener {
                 //indicator
-                indicatorView.visibility = View.INVISIBLE
-                progressBar.visibility = View.INVISIBLE
+                progressBarHandler.hide()
                 window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 //indicator
                 alert ("請注意網路狀態，或通知開發人員!","不知名的錯誤"){
@@ -166,4 +159,35 @@ class MainOrderActivity : AppCompatActivity() {
         }
     }
 
+    class OrderAdapter(private var context: Context):
+        RecyclerView.Adapter<OrderAdapter.ViewHolder>() {
+
+
+        class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
+            lateinit var nameText: TextView
+            lateinit var qtyText: TextView
+            lateinit var costText: TextView
+        }
+
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+            val cell = LayoutInflater.from(context).inflate(R.layout.order_list_cell,parent,false)
+            val viewHolder = ViewHolder(cell)
+            viewHolder.nameText = cell.findViewById(R.id.nameText)
+            viewHolder.qtyText = cell.findViewById(R.id.qtyText)
+            viewHolder.costText = cell.findViewById(R.id.costText)
+            return viewHolder
+        }
+
+        override fun getItemCount(): Int {
+
+            return foodArray.count()
+        }
+
+        override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+            val info = foodArray[position]
+            holder.nameText.text = info.name
+            holder.qtyText.text = info.qty
+            holder.costText.text = info.cost + '$'
+        }
+    }
 }
