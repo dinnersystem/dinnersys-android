@@ -70,11 +70,14 @@ class GuandonOrderListActivity : AppCompatActivity() {
                 guanDonParam += item.key
             }
         }
+        foodArray.clear()
         for(item in quantityDict){
             if (item.value != 0) {
                 nametmp += "${selectedFactoryArr.getJSONObject(dishIDtoIndex[item.key.toInt()]).getString("dish_name")}*${item.value}+"
+                foodArray.add(FoodInfo(selectedFactoryArr.getJSONObject(dishIDtoIndex[item.key.toInt()]).getString("dish_name"),"x" + item.value.toString(),(selectedFactoryArr.getJSONObject(dishIDtoIndex[item.key.toInt()]).getString("dish_cost").toInt()*item.value).toString()))
             }
         }
+        foodArray.add(FoodInfo("小計","x" + totalSelected.toString(),totalCost.toString()))
         nametmp = nametmp.dropLast(1)
         ord1 = ord(nametmp,urltmp)
         selOrder1 = SelOrder("",nametmp,totalCost.toString())

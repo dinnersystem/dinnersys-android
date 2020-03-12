@@ -25,12 +25,12 @@
             android:id="@+id/qtyText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="50dp"
+            android:layout_marginEnd="130dp"
             android:text="TextView"
             android:textAlignment="textStart"
             android:textColor="@color/pureBlack"
             app:layout_constraintBottom_toBottomOf="@+id/nameText"
-            app:layout_constraintEnd_toStartOf="@+id/costText"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/nameText" />
 
     <TextView
