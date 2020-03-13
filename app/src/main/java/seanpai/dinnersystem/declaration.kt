@@ -36,6 +36,8 @@ var dishCostArr: Array<Int> = emptyArray()
 var guanDonParam: Array<String> = emptyArray()
 var DinnerSysInfo: MutableList<Pair<String, String>> = mutableListOf()
 var foodArray: MutableList<FoodInfo> = mutableListOf()
+var lighted = false
+var ogBrightness = 0.toFloat()
 //data structure
 data class SelOrder(val id: String, val name: String, val cost: String)
 data class ord(val name:String, val url: String)

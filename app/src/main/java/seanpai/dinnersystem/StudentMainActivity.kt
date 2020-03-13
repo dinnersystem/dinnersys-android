@@ -1,11 +1,15 @@
 package seanpai.dinnersystem
 
+import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.util.DisplayMetrics
+import android.view.GestureDetector
+import android.view.MotionEvent
 import android.view.View
+import android.view.View.OnTouchListener
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -19,11 +23,14 @@ import kotlinx.android.synthetic.main.activity_student_main.*
 import org.jetbrains.anko.alert
 import org.json.JSONObject
 
+
 class StudentMainActivity : AppCompatActivity() {
     private lateinit var preferences: SharedPreferences
     private lateinit var progBarHandler: ProgressBarHandler
-    private var lighted = false
-    private var ogLightness: Float = 0.toFloat()
+    private lateinit var gestureDetector: GestureDetector
+
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,6 +38,8 @@ class StudentMainActivity : AppCompatActivity() {
         //indicator start
         progBarHandler = ProgressBarHandler(this)
         //indicator end
+
+        ogBrightness = this.window.attributes.screenBrightness
 
         preferences = PreferenceManager.getDefaultSharedPreferences(this)
         val isSubbed = preferences.getBoolean("isSubbed", false)
@@ -49,14 +58,27 @@ class StudentMainActivity : AppCompatActivity() {
         titleView.text = "歡迎使用午餐系統，\n${userInfo.getString("name").trimEnd()}."
         getBarcode()
 
+        gestureDetector = GestureDetector(this, DoubleTapListener(this))
+
+        val onTouchView = OnTouchListener { v, event ->
+            gestureDetector.onTouchEvent(event);
+        }
+
+        barcodeView.setOnTouchListener(onTouchView)
 
         barcodeView.setOnLongClickListener {
+            print("I've heard something long pressed")
             if(lighted){
-                window.attributes.screenBrightness = ogLightness
+                val layoutParams = this.window.attributes
+                layoutParams.screenBrightness = ogBrightness
+                this.window.attributes = layoutParams
             }else{
-                ogLightness = window.attributes.screenBrightness
-                window.attributes.screenBrightness = WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_FULL
+                ogBrightness = this.window.attributes.screenBrightness
+                val layoutParams = this.window.attributes
+                layoutParams.screenBrightness = WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_FULL
+                this.window.attributes = layoutParams
             }
+            lighted = !lighted
             true
         }
     }
@@ -132,5 +154,28 @@ class StudentMainActivity : AppCompatActivity() {
         startActivity(Intent(view.context, BeforeHistoryActivity::class.java))
     }
 
+    class DoubleTapListener(context: Context): GestureDetector.SimpleOnGestureListener() {
+        private val mContext = context as StudentMainActivity
+        override fun onDoubleTap(e: MotionEvent?): Boolean {
+            println("double tap")
+            if(lighted){
+                val layoutParams = mContext.window.attributes
+                layoutParams.screenBrightness = ogBrightness
+                mContext.window.attributes = layoutParams
+            }else{
+                ogBrightness = mContext.window.attributes.screenBrightness
+                val layoutParams = mContext.window.attributes
+                layoutParams.screenBrightness = WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_FULL
+                mContext.window.attributes = layoutParams
+            }
+            lighted = !lighted
+            return true
+        }
+
+        override fun onDown(e: MotionEvent?): Boolean {
+            return true
+        }
+    }
 
 }
+
