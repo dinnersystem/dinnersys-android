@@ -80,6 +80,8 @@ class GuandonOrderListActivity : AppCompatActivity() {
         foodArray.add(FoodInfo("小計","x" + totalSelected.toString(),totalCost.toString()))
         nametmp = nametmp.dropLast(1)
         ord1 = ord(nametmp,urltmp)
+        val confirmDishName = "自訂餐點(${totalSelected}樣)"
+        confirmData = ConfirmStruct(confirmDishName,selectedFactoryArr.getJSONObject(0).getJSONObject("department").getJSONObject("factory").getString("name"),totalCost.toString())
         selOrder1 = SelOrder("",nametmp,totalCost.toString())
         startActivity(Intent(view.context,GuanDonOrderActivity::class.java))
     }

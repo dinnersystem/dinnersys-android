@@ -46,16 +46,6 @@ class LoginActivity : AppCompatActivity() {
 
     }
 
-    private var back = true
-    override fun onBackPressed() {
-        //super.onBackPressed()
-        if(back){
-            back = false
-            toast("再按一次以退出")
-        }else{
-            this.finishAffinity()
-        }
-    }
 
     fun login(view: View) {
         //indicator
@@ -89,16 +79,7 @@ class LoginActivity : AppCompatActivity() {
                         .putString("name", userInfo.getString("name").trimEnd())
                         .apply()
                 }
-                alert("歡迎進入點餐系統,${userInfo.getString("name").trimEnd()}","登入成功"){
-                    positiveButton("OK"){
-                        username.text.clear()
-                        password.text.clear()
-                        startActivity(Intent(view.context,StudentMainActivity::class.java))
-                    }
-                }.build().apply {
-                    setCancelable(false)
-                    setCanceledOnTouchOutside(false)
-                }.show()
+                startActivity(Intent(view.context,StudentMainActivity::class.java))
             }else {
                 //indicator
                 progressBarHandler.hide()

@@ -44,10 +44,12 @@ class MainMenuActivity : AppCompatActivity() {
             val dishCost = selectedFactoryArr.getJSONObject(position).getString("dish_cost")
             val dishID = selectedFactoryArr.getJSONObject(position).getString("dish_id")
             val dishName = selectedFactoryArr.getJSONObject(position).getString("dish_name")
+            val factoryName = selectedFactoryArr.getJSONObject(position).getJSONObject("department").getJSONObject("factory").getString("name")
             layout.title.text = dishName
             layout.detailTitle.text = "$dishCost$"
             layout.proceedOrderButton.setOnClickListener {
                 selOrder1 = SelOrder(dishID,dishName,dishCost)
+                confirmData = ConfirmStruct(dishName,factoryName,dishCost)
                 mContext.startActivity(Intent(mContext,MainOrderActivity::class.java))
             }
             val bestSeller = selectedFactoryArr.getJSONObject(position).getString("best_seller")

@@ -53,6 +53,15 @@ class MainOrderActivity : AppCompatActivity() {
     }
 
     fun sendOrder(view: View){
+
+        payBool = null
+        selectedTime = ""
+        canOrder = false
+        orderIDParam.clear()
+        orderIDParam.add(selOrder1.id)
+        startActivity(Intent(this,ConfirmOrderActivity::class.java))
+
+        return
         //indicator
         progressBarHandler.show()
         window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
@@ -179,7 +188,6 @@ class MainOrderActivity : AppCompatActivity() {
         }
 
         override fun getItemCount(): Int {
-
             return foodArray.count()
         }
 

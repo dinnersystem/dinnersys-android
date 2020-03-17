@@ -7,7 +7,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 //variable
-var currentVersion = 201900025
+var currentVersion = 202000001
 const val dinnersysURL = "https://dinnersystem.com/dinnersys_beta"
 const val dsRequestURL = "https://dinnersystem.com/dinnersys_beta/backend/backend.php"
 var userInfo = JSONObject("{}")
@@ -38,10 +38,27 @@ var DinnerSysInfo: MutableList<Pair<String, String>> = mutableListOf()
 var foodArray: MutableList<FoodInfo> = mutableListOf()
 var lighted = false
 var ogBrightness = 0.toFloat()
+var confirmContentList: MutableList<Pair<String, String>> = mutableListOf()
+var confirmData = ConfirmStruct("","","")
+var paymentTime: List<String> = mutableListOf()
+var prepareTime: List<String> = mutableListOf()
+var paymentTimeString = ""
+var prepareTimeString = ""
+var factory = JSONObject("{}")
+var orderIDParam: MutableList<String> = mutableListOf()
+var canOrder = false
+var payBool: Boolean? = null
+var selectedTime = ""
+
 //data structure
 data class SelOrder(val id: String, val name: String, val cost: String)
 data class ord(val name:String, val url: String)
 data class FoodInfo(val name: String, val qty: String, val cost: String)
+data class ConfirmStruct(
+    val dishName: String,
+    val factoryName: String,
+    val dishCost: String
+)
 
 var bonus = 0
 //function
@@ -81,3 +98,11 @@ fun isValidJson(str: String): Boolean{
     return true
 }
 
+fun addTime(date: Date, hour: Int, min: Int, sec: Int): Date{
+    val calender = Calendar.getInstance()
+    calender.time = date
+    calender.add(Calendar.HOUR_OF_DAY, hour)
+    calender.add(Calendar.MINUTE, min)
+    calender.add(Calendar.SECOND, sec)
+    return calender.time
+}

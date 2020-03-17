@@ -21,6 +21,7 @@ import com.google.zxing.MultiFormatWriter
 import com.journeyapps.barcodescanner.BarcodeEncoder
 import kotlinx.android.synthetic.main.activity_student_main.*
 import org.jetbrains.anko.alert
+import org.jetbrains.anko.toast
 import org.json.JSONObject
 
 
@@ -61,7 +62,7 @@ class StudentMainActivity : AppCompatActivity() {
         gestureDetector = GestureDetector(this, DoubleTapListener(this))
 
         val onTouchView = OnTouchListener { v, event ->
-            gestureDetector.onTouchEvent(event);
+            gestureDetector.onTouchEvent(event)
         }
 
         barcodeView.setOnTouchListener(onTouchView)
@@ -80,6 +81,18 @@ class StudentMainActivity : AppCompatActivity() {
             }
             lighted = !lighted
             true
+        }
+    }
+
+    private var back = true
+
+    override fun onBackPressed() {
+        //super.onBackPressed()
+        if(back){
+            back = false
+            toast("再按一次以登出")
+        }else{
+            startActivity(Intent(this@StudentMainActivity, RemLoginActivity::class.java))
         }
     }
 
@@ -108,7 +121,7 @@ class StudentMainActivity : AppCompatActivity() {
                 //indicator
                 alert("工作階段已逾時", "請重新登入") {
                     positiveButton("OK") {
-                        startActivity(Intent(this@StudentMainActivity, LoginActivity::class.java))
+                        startActivity(Intent(this@StudentMainActivity, RemLoginActivity::class.java))
                     }
                 }.show()
             } else {
@@ -118,7 +131,7 @@ class StudentMainActivity : AppCompatActivity() {
                 //indicator
                 alert("查詢餘額失敗，我們已經派出最精銳的猴子去修理這個問題，若長時間出現此問題請通知開發人員！", "請重新登入") {
                     positiveButton("OK") {
-                        startActivity(Intent(this@StudentMainActivity, LoginActivity::class.java))
+                        startActivity(Intent(this@StudentMainActivity, RemLoginActivity::class.java))
                     }
                 }.show()
             }
@@ -127,6 +140,7 @@ class StudentMainActivity : AppCompatActivity() {
             progBarHandler.hide()
             window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
             //indicator
+            println(it)
             alert("請注意網路狀態，或通知開發人員!", "不知名的錯誤") {
                 positiveButton("OK") {}
             }.show()

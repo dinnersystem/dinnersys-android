@@ -8,18 +8,6 @@
         tools:context=".GuanDonOrderActivity" android:id="@+id/layout"
         android:background="@android:color/background_light">
 
-    <ToggleButton
-            android:id="@+id/timeButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="52dp"
-            android:checked="false"
-            android:textOff="@string/time1100"
-            android:textOn="@string/time1200"
-            android:textSize="16sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/orderButton" />
-
     <Button
             android:id="@+id/orderButton"
             android:layout_width="190dp"
@@ -28,13 +16,13 @@
             android:layout_marginEnd="48dp"
             android:background="@drawable/button_outline_round"
             android:onClick="sendGuanDonOrder"
-            android:text="@string/stu_title_order"
+            android:text="@string/confirmOrder"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/guandonOrderList" />
 
     <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/guandonOrderList"
-            android:layout_width="391dp"
+            android:layout_width="380dp"
             android:layout_height="300dp"
             android:layout_marginTop="100dp"
             android:scrollbars="vertical"
