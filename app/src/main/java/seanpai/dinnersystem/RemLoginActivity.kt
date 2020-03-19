@@ -36,6 +36,13 @@ class RemLoginActivity : AppCompatActivity() {
         remButton.visibility = View.INVISIBLE
         fallbackButton.visibility = View.INVISIBLE
 
+        if(preferences.getString("username",null) != null && preferences.getString("clear",null) == null){
+            preferences.edit().remove("username").remove("password").remove("name").putString("clear","cleared").apply()
+            toast("請重新登入")
+            fallbackAction()
+            return
+        }
+
         progBarHandler.show()
         val url = "$dinnersysURL/frontend/u_move_u_dead/version.txt"
         val versionRequest = StringRequest(url, Response.Listener {
@@ -132,7 +139,7 @@ class RemLoginActivity : AppCompatActivity() {
         window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         //indicator
         val usr = preferences.getString("username", "")!!
-        val psw = preferences.getString("password", "")!!
+        val psw = RayTracing.disable(preferences.getString("password", "")!!,"52s131e31413a145n20")
         val timeStamp = (System.currentTimeMillis() / 1000).toString()
         val loginRequest = object : StringRequest(Method.POST, dsRequestURL,Response.Listener { string ->
             println(isValidJson(string))
@@ -166,7 +173,7 @@ class RemLoginActivity : AppCompatActivity() {
             }.show()
         }){
             override fun getParams(): MutableMap<String, String> {
-                var postParam: MutableMap<String, String> = HashMap()
+                val postParam: MutableMap<String, String> = HashMap()
                 postParam["cmd"] = "login"
                 postParam["id"] = usr
                 postParam["password"] = psw

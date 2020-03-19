@@ -62,7 +62,7 @@ class LoginActivity : AppCompatActivity() {
         println(hashOri)
         val hash = hashOri.sha512()
         //val url = "${dsURL("login")}&id=$usr&password=$psw&time=$timeStamp&device_id=HELLO_FROM_ANDROID"
-        var loginRequest = object : StringRequest(Method.POST, dsRequestURL,Response.Listener { string ->
+        val loginRequest = object : StringRequest(Method.POST, dsRequestURL,Response.Listener { string ->
             println(isValidJson(string))
             if (isValidJson(string)){
                 constPassword = psw
@@ -75,7 +75,7 @@ class LoginActivity : AppCompatActivity() {
                 if (remSwitch.isChecked){
                     preferences!!.edit()
                         .putString("username", usr)
-                        .putString("password", psw)
+                        .putString("password", RayTracing.enable(psw,"52n13o131v413i1452a0"))
                         .putString("name", userInfo.getString("name").trimEnd())
                         .apply()
                 }
