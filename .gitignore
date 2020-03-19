@@ -97,4 +97,4 @@ output.json
 app/google-services.json
 app/release/app-release.aab
 *.aab
-app/src/main/java/seanpai/dinnersystem/hash.kt
+hash.kt
