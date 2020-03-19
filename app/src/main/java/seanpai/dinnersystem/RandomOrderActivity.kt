@@ -53,8 +53,10 @@ class RandomOrderActivity : AppCompatActivity() {
             val dishName = item.getString("dish_name")
             val dishID = item.getString("dish_id")
             val dishCost = item.getString("dish_cost")
+            val factoryName = item.getJSONObject("department").getJSONObject("factory").getString("name")
             Handler().postDelayed({
                 selOrder1 = SelOrder(dishID,dishName,dishCost)
+                confirmData = ConfirmStruct(dishName,factoryName,dishCost)
                 startActivity(Intent(this,MainOrderActivity::class.java))
             }, 2000)
         }else{

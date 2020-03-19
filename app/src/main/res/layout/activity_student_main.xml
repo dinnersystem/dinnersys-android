@@ -148,15 +148,18 @@
             android:textColor="@color/pureBlack"
             android:textSize="30sp"
             android:textStyle="bold"
+            app:autoSizeTextType="uniform"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
             android:id="@+id/barcodeView"
-            android:layout_width="359dp"
+            android:layout_width="0dp"
             android:layout_height="82dp"
+            android:layout_marginStart="8dp"
             android:layout_marginTop="16dp"
+            android:layout_marginEnd="8dp"
             app:layout_constraintEnd_toEndOf="@+id/titleView"
             app:layout_constraintStart_toStartOf="@+id/titleView"
             app:layout_constraintTop_toBottomOf="@+id/titleView"

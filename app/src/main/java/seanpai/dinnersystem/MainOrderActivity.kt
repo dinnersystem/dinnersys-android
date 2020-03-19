@@ -6,22 +6,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
-import android.widget.ProgressBar
-import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.android.volley.Response
-import com.android.volley.toolbox.StringRequest
 import kotlinx.android.synthetic.main.activity_main_order.*
-import org.jetbrains.anko.alert
-import org.jetbrains.anko.centerInParent
-import org.json.JSONArray
-import java.text.SimpleDateFormat
-import java.util.*
 
 class MainOrderActivity : AppCompatActivity() {
     private lateinit var progressBarHandler: ProgressBarHandler
@@ -61,111 +51,6 @@ class MainOrderActivity : AppCompatActivity() {
         orderIDParam.add(selOrder1.id)
         startActivity(Intent(this,ConfirmOrderActivity::class.java))
 
-        return
-        //indicator
-        progressBarHandler.show()
-        window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-        //indicator
-        val now = getCurrentDateTime()
-        val hourFormat = SimpleDateFormat("HHmm", Locale.TAIWAN)
-        val hour = hourFormat.format(now).toInt()
-        println(now)
-        val fullFormat = SimpleDateFormat("yyyy/MM/dd", Locale.TAIWAN)
-        if(hour>1010) {
-        //if(false){
-            //indicator
-            progressBarHandler.hide()
-            window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-            //indicator
-            alert("早上十點十分後無法訂餐，明日請早","超過訂餐時間") { positiveButton("OK"){} }.show()
-        }else{
-            //val orderURL = dsURL("make_self_order&dish_id[]=${selOrder1.id}&time=${fullFormat.format(now)}-12:00:00")
-            val orderRequest = object: StringRequest(Method.POST, dsRequestURL, Response.Listener {
-                if (isValidJson(it)){
-                    val orderInfo = JSONArray(it)
-                    val orderID = orderInfo.getJSONObject(0).getString("id")
-                    //indicator
-                    progressBarHandler.hide()
-                    window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-                    //indicator
-                    alert("訂單編號$orderID,請記得付款！", "點餐成功"){
-                        positiveButton("OK"){
-                            startActivity(Intent(this@MainOrderActivity, StudentMainActivity::class.java))
-                        }
-                    }.show()
-                }else{
-                    println(it)
-                    if(it.contains("Off") || it.contains("Impossible")){
-                        //indicator
-                        progressBarHandler.hide()
-                        window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-                        //indicator
-                        alert("請不要在00:00-04:00之間或於點餐時間外點餐！","訂餐錯誤"){
-                            positiveButton("OK"){}
-                        }.show()
-                    }else if (it.contains("Invalid")){
-                        //indicator
-                        progressBarHandler.hide()
-                        window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-                        //indicator
-                        alert("發生了不知名的錯誤。請嘗試重新登入，或嘗試重新開啟程式，若持續發生問題，請通知開發人員！", "Unexpected Error"){
-                            positiveButton("OK"){}
-                        }.show()
-                    }else if (it == ""){
-                        //indicator
-                        progressBarHandler.hide()
-                        window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-                        //indicator
-                        alert("請重新登入", "您已經登出") {
-                            positiveButton("OK") {
-                                startActivity(Intent(this@MainOrderActivity, LoginActivity::class.java))
-                            }
-                        }.show()
-                    }else if (it.contains("exceed")){
-                        //indicator
-                        progressBarHandler.hide()
-                        window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-                        //indicator
-                        alert("您的訂單中似乎有一或多項餐點已售完", "餐點已售完") {
-                            positiveButton("OK") {
-                                startActivity(Intent(this@MainOrderActivity, LoginActivity::class.java))
-                            }
-                        }.show()
-                    }else{
-                        //indicator
-                        progressBarHandler.hide()
-                        window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-                        //indicator
-                        alert("發生了不知名的錯誤。請嘗試重新登入，或嘗試重新開啟程式，若持續發生問題，請通知開發人員！", "Unexpected Error"){
-                            positiveButton("OK"){}
-                        }.build().apply {
-                            setCancelable(false)
-                            setCanceledOnTouchOutside(false)
-                        }.show()
-                    }
-                }
-            }, Response.ErrorListener {
-                //indicator
-                progressBarHandler.hide()
-                window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-                //indicator
-                alert ("請注意網路狀態，或通知開發人員!","不知名的錯誤"){
-                    positiveButton("OK"){}
-                }.build().apply {
-                    setCancelable(false)
-                    setCanceledOnTouchOutside(false)
-                }.show()
-            }){
-                override fun getParams(): MutableMap<String, String> {
-                    var postParam: MutableMap<String, String> = HashMap()
-                    postParam["cmd"] = "make_self_order"
-                    postParam["dish_id[0]"] = selOrder1.id
-                    postParam["time"] = "${fullFormat.format(now)}-12:00:00"
-                    return postParam
-                }
-            }
-            VolleySingleton.getInstance(this).addToRequestQueue(orderRequest)
-        }
     }
 
     class OrderAdapter(private var context: Context):
