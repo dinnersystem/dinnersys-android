@@ -64,6 +64,8 @@ class MainHistoryActivity : AppCompatActivity() {
 
         val now = getCurrentDateTime()
 
+        dishNameArr = emptyArray()
+
         //val now = java.util.Calendar.getInstance()
         val formatter = SimpleDateFormat("yyyy/MM/dd", Locale.TAIWAN)
         println(formatter.format(now))
@@ -145,7 +147,7 @@ class MainHistoryActivity : AppCompatActivity() {
             }
         ){
             override fun getParams(): MutableMap<String, String> {
-                var postParam: MutableMap<String, String> = HashMap()
+                val postParam: MutableMap<String, String> = HashMap()
                 postParam["cmd"] = "select_self"
                 postParam["esti_start"] = "${formatter.format(now)}-00:00:00"
                 postParam["esti_end"] = "${formatter.format(now)}-23:59:59"

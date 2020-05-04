@@ -69,6 +69,8 @@ class BeforeHistoryActivity : AppCompatActivity() {
 //        val selSelf = dsURL("select_self&history=true&esti_start=${formatter.format(now)}-00:00:00&esti_end=${formatter.format(now)}-23:59:59")
         val historyRequest = object: StringRequest(Method.POST, dsRequestURL,
             Response.Listener {
+                revDishNameArr = emptyArray()
+                revHistoryArr = JSONArray("[]")
                 if(it != ""){
                     if(it != "[]"){
                         if (isValidJson(it)){
@@ -148,7 +150,7 @@ class BeforeHistoryActivity : AppCompatActivity() {
             }
         ){
             override fun getParams(): MutableMap<String, String> {
-                var postParam: MutableMap<String, String> = HashMap()
+                val postParam: MutableMap<String, String> = HashMap()
                 postParam["cmd"] = "select_self"
                 postParam["history"] = "true"
                 return postParam

@@ -9,6 +9,7 @@ import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import kotlinx.android.synthetic.main.activity_change_password.*
 import org.jetbrains.anko.alert
+import java.util.HashMap
 
 class ChangePasswordActivity : AppCompatActivity() {
 
@@ -62,8 +63,7 @@ class ChangePasswordActivity : AppCompatActivity() {
                 positiveButton("OK"){}
             }.show()
         }else{
-            val chgURL = dsURL("change_password&old_pswd=$old&new_pswd=$new")
-            val chgRequest = StringRequest(chgURL, Response.Listener {
+            val chgRequest = object : StringRequest(Method.POST , dsRequestURL, Response.Listener {
                 if (it == "Invalid string."){
                     //indicator
                     progressBarHandler.hide()
@@ -108,7 +108,15 @@ class ChangePasswordActivity : AppCompatActivity() {
                 alert ("請注意網路狀態，或通知開發人員!","不知名的錯誤"){
                     positiveButton("OK"){}
                 }.show()
-            })
+            }){
+                override fun getParams(): MutableMap<String, String> {
+                    val postParam: MutableMap<String, String> = HashMap()
+                    postParam["cmd"] = "change_password"
+                    postParam["old_pswd"] = old
+                    postParam["new_pswd"] = new
+                    return postParam
+                }
+            }
             VolleySingleton.getInstance(this).addToRequestQueue(chgRequest)
         }
 

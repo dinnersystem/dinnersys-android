@@ -114,40 +114,40 @@ class StuOrderListActivity : AppCompatActivity() {
                 return postParam
             }
         }
-
-        val balanceRequest = object : StringRequest(Method.POST, dsRequestURL, Response.Listener {
-            if (isValidJson(it)) {
-                balance = JSONObject(it).getString("money").toInt()
-                VolleySingleton.getInstance(this).addToRequestQueue(dishRequest)
-            } else {
-                //indicator
-                progressBarHandler.hide()
-                window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-                //indicator
-                if(!this.isFinishing){
-                    alert("查詢餘額失敗，我們已經派出最精銳的猴子去修理這個問題，若長時間出現此問題請通知開發人員！", "請重新登入") {
-                        positiveButton("OK") {
-                            startActivity(Intent(this@StuOrderListActivity, LoginActivity::class.java))
-                        }
-                    }.show()
-                }
-            }
-        }, Response.ErrorListener {
-            //indicator
-            progressBarHandler.hide()
-            window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-            //indicator
-            alert("請注意網路狀態，或通知開發人員!", "不知名的錯誤") {
-                positiveButton("OK") {}
-            }.show()
-        }){
-            override fun getParams(): MutableMap<String, String> {
-                val postParam: MutableMap<String, String> = HashMap()
-                postParam["cmd"] = "get_pos"
-                return postParam
-            }
-        }
-        VolleySingleton.getInstance(this).addToRequestQueue(balanceRequest)
+        VolleySingleton.getInstance(this).addToRequestQueue(dishRequest)
+//        val balanceRequest = object : StringRequest(Method.POST, dsRequestURL, Response.Listener {
+//            if (isValidJson(it)) {
+//                balance = JSONObject(it).getString("money").toInt()
+//                VolleySingleton.getInstance(this).addToRequestQueue(dishRequest)
+//            } else {
+//                //indicator
+//                progressBarHandler.hide()
+//                window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+//                //indicator
+//                if(!this.isFinishing){
+//                    alert("查詢餘額失敗，我們已經派出最精銳的猴子去修理這個問題，若長時間出現此問題請通知開發人員！", "請重新登入") {
+//                        positiveButton("OK") {
+//                            startActivity(Intent(this@StuOrderListActivity, LoginActivity::class.java))
+//                        }
+//                    }.show()
+//                }
+//            }
+//        }, Response.ErrorListener {
+//            //indicator
+//            progressBarHandler.hide()
+//            window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+//            //indicator
+//            alert("請注意網路狀態，或通知開發人員!", "不知名的錯誤") {
+//                positiveButton("OK") {}
+//            }.show()
+//        }){
+//            override fun getParams(): MutableMap<String, String> {
+//                val postParam: MutableMap<String, String> = HashMap()
+//                postParam["cmd"] = "get_pos"
+//                return postParam
+//            }
+//        }
+//        VolleySingleton.getInstance(this).addToRequestQueue(balanceRequest)
     }
 
 

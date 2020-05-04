@@ -22,11 +22,12 @@ import com.journeyapps.barcodescanner.BarcodeEncoder
 import kotlinx.android.synthetic.main.activity_student_main.*
 import org.jetbrains.anko.alert
 import org.jetbrains.anko.toast
+import org.json.JSONArray
 import org.json.JSONObject
 
 
 class StudentMainActivity : AppCompatActivity() {
-    private lateinit var preferences: SharedPreferences
+    //private lateinit var preferences: SharedPreferences
     private lateinit var progBarHandler: ProgressBarHandler
     private lateinit var gestureDetector: GestureDetector
 
@@ -42,18 +43,27 @@ class StudentMainActivity : AppCompatActivity() {
 
         ogBrightness = this.window.attributes.screenBrightness
 
-        preferences = PreferenceManager.getDefaultSharedPreferences(this)
-        val isSubbed = preferences.getBoolean("isSubbed", false)
-        if((constUsername == "06610089") && !isSubbed){
-            FirebaseMessaging.getInstance().subscribeToTopic("seanpai.gsatnotify").addOnCompleteListener { task ->
-                var msg = "訂閱通知失敗"
-                if(task.isSuccessful){
-                    msg = "訂閱每日通知成功"
-                    preferences.edit().putBoolean("isSubbed", true).apply()
+        //preferences = PreferenceManager.getDefaultSharedPreferences(this)
+        //val isSubbed = preferences.getBoolean("isSubbed", false)
+        //if((constUsername == "06610089") && !isSubbed){
+        //    FirebaseMessaging.getInstance().subscribeToTopic("seanpai.gsatnotify").addOnCompleteListener { task ->
+        //        var msg = "訂閱通知失敗"
+        //        if(task.isSuccessful){
+        //            msg = "訂閱每日通知成功"
+        //            preferences.edit().putBoolean("isSubbed", true).apply()
+        //        }
+        //        println(msg)
+        //        Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
+        //    }
+        //}
+
+        if(!userInfo.has("name")){
+            alert("工作階段已逾時", "請重新登入") {
+                positiveButton("OK") {
+                    startActivity(Intent(this@StudentMainActivity, RemLoginActivity::class.java))
                 }
-                println(msg)
-                Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
-            }
+            }.show()
+            return
         }
 
         titleView.text = "歡迎使用午餐系統，\n${userInfo.getString("name").trimEnd()}."
@@ -61,7 +71,7 @@ class StudentMainActivity : AppCompatActivity() {
 
         gestureDetector = GestureDetector(this, DoubleTapListener(this))
 
-        val onTouchView = OnTouchListener { v, event ->
+        val onTouchView = OnTouchListener { _, event ->
             gestureDetector.onTouchEvent(event)
         }
 
@@ -105,6 +115,14 @@ class StudentMainActivity : AppCompatActivity() {
                 progBarHandler.hide()
                 window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 //indicator
+                if(!posInfo.has("card")){
+                    alert("查詢餘額失敗，我們已經派出最精銳的猴子去修理這個問題，若長時間出現此問題請通知開發人員！", "請重新登入") {
+                        positiveButton("OK") {
+                            startActivity(Intent(this@StudentMainActivity, RemLoginActivity::class.java))
+                        }
+                    }.show()
+                    return@Listener
+                }
                 val metrics = DisplayMetrics()
                 windowManager.defaultDisplay.getMetrics(metrics)
                 val multiFormatWriter = MultiFormatWriter()
@@ -114,7 +132,7 @@ class StudentMainActivity : AppCompatActivity() {
                 val bitmap = barcodeEncoder.createBitmap(bitMatrix)
                 barcodeView.setImageBitmap(bitmap)
                 cardDetail.text = "卡號：${posInfo.getString("card")}\n餘額：${posInfo.getString("money")}元（非即時）"
-            } else if (it.contains("\"Operation not allowed\"")){
+            } else if (it.contains("Operation not allowed")){
                 //indicator
                 progBarHandler.hide()
                 window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
@@ -159,12 +177,16 @@ class StudentMainActivity : AppCompatActivity() {
     }
 
     fun toHis(view:View){
+        revHistoryArr = JSONArray("[]")
+        historyArr = JSONArray("[]")
         startActivity(Intent(view.context,MainHistoryActivity::class.java))
     }
     fun toMore(view: View){
         startActivity(Intent(view.context,MainMoreActivity::class.java))
     }
     fun toBefore(view: View){
+        revHistoryArr = JSONArray("[]")
+        historyArr = JSONArray("[]")
         startActivity(Intent(view.context, BeforeHistoryActivity::class.java))
     }
 

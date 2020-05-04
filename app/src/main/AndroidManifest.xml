@@ -14,7 +14,8 @@
             android:supportsRtl="true"
             android:theme="@style/AppTheme.NoActionBar"
             tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".ConfirmOrderActivity"></activity>
+        <activity android:name=".DinnermanMainActivity"></activity>
+        <activity android:name=".ConfirmOrderActivity" />
         <activity
                 android:name=".RandomOrderActivity"
                 android:configChanges="orientation"

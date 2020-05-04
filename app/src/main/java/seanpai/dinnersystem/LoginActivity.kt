@@ -79,7 +79,12 @@ class LoginActivity : AppCompatActivity() {
                         .putString("name", userInfo.getString("name").trimEnd())
                         .apply()
                 }
-                startActivity(Intent(view.context,StudentMainActivity::class.java))
+                if(userInfo.getJSONArray("valid_oper").toString().contains("select_class") && !userInfo.getJSONArray("valid_oper").toString().contains("select_others")){
+                    startActivity(Intent(view.context,DinnermanMainActivity::class.java))
+                }else{
+                    startActivity(Intent(view.context,StudentMainActivity::class.java))
+                }
+
             }else {
                 //indicator
                 progressBarHandler.hide()
@@ -111,16 +116,16 @@ class LoginActivity : AppCompatActivity() {
             }
         }
 
-        if (usr.length == 5) {
-            //indicator
-            progressBarHandler.hide()
-            window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-            //indicator
-            alert("App版已不支援午餐股長，請透過網頁版查看班級訂單!", "不支援午餐股長") {
-                positiveButton("OK") {}
-            }.show()
-        } else {
+//        if (usr.length == 5) {
+//            //indicator
+//            progressBarHandler.hide()
+//            window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+//            //indicator
+//            alert("App版已不支援午餐股長，請透過網頁版查看班級訂單!", "不支援午餐股長") {
+//                positiveButton("OK") {}
+//            }.show()
+//        } else {
             VolleySingleton.getInstance(this).addToRequestQueue(loginRequest)
-        }
+//        }
     }
 }
