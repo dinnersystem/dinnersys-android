@@ -66,10 +66,25 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="36dp"
             android:layout_marginTop="60dp"
-            android:text="板 橋 高 中 點 餐 系 統"
+            android:text="點  餐  系  統"
             android:textColor="@color/pureBlack"
             android:textSize="15sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+    <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="32dp"
+            android:layout_marginBottom="32dp"
+            android:background="#EAEAEA"
+            app:layout_constraintBottom_toTopOf="@+id/username"
+            app:layout_constraintEnd_toEndOf="@+id/username"
+            app:layout_constraintStart_toStartOf="@+id/username">
+
+        <Spinner
+                android:id="@+id/spinner"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+    </RelativeLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

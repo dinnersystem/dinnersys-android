@@ -140,6 +140,12 @@ class RemLoginActivity : AppCompatActivity() {
         //indicator
         val usr = preferences.getString("username", "")!!
         val psw = RayTracing.disable(preferences.getString("password", "")!!,"52s131e31413a145n20")
+        var chosenID = preferences.getString("org_id", null)
+        val noID = chosenID == null
+        if(noID){
+            preferences.edit().putString("org_id", "1").apply()
+            chosenID = "1"
+        }
         val timeStamp = (System.currentTimeMillis() / 1000).toString()
         val loginRequest = object : StringRequest(Method.POST, dsRequestURL,Response.Listener { string ->
             println(isValidJson(string))
@@ -183,6 +189,7 @@ class RemLoginActivity : AppCompatActivity() {
                 postParam["id"] = usr
                 postParam["password"] = psw
                 postParam["time"] = timeStamp
+                postParam["org_id"] = chosenID
                 postParam["device_id"] = "HELLO_FROM_ANDROID"
                 return postParam
             }

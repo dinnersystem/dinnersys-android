@@ -11,12 +11,16 @@ import android.preference.PreferenceManager
 import android.view.View
 import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.Spinner
 import androidx.appcompat.app.AppCompatActivity
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import kotlinx.android.synthetic.main.activity_login.*
 import org.jetbrains.anko.alert
 import org.jetbrains.anko.toast
+import org.json.JSONArray
 import org.json.JSONObject
 import java.net.CookieHandler
 import java.net.CookieManager
@@ -25,6 +29,9 @@ import java.net.CookiePolicy
 class LoginActivity : AppCompatActivity() {
     private var preferences: SharedPreferences? = null
     private lateinit var progressBarHandler: ProgressBarHandler
+    var schoolList: MutableList<String> = mutableListOf()
+    var chosenName = ""
+    var chosenID = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,6 +40,71 @@ class LoginActivity : AppCompatActivity() {
         //indicator start
         progressBarHandler = ProgressBarHandler(this)
         //indicator end
+
+        progressBarHandler.show()
+        val spinnerRequest = object: StringRequest(Method.POST, dsRequestURL, Response.Listener {
+            progressBarHandler.hide()
+            if(isValidJson(it)){
+                schoolInfo = JSONArray(it)
+                for( i in 0 until schoolInfo.length()){
+                    val school = schoolInfo.getJSONObject(i)
+                    schoolList.add(school.getString("name"))
+                }
+                val adapter = ArrayAdapter(this, R.layout.support_simple_spinner_dropdown_item,schoolList)
+                spinner.adapter = adapter
+                spinner.onItemSelectedListener = object: AdapterView.OnItemSelectedListener{
+                    override fun onItemSelected(
+                        parent: AdapterView<*>?,
+                        view: View?,
+                        position: Int,
+                        id: Long
+                    ) {
+                        chosenID = schoolInfo.getJSONObject(position).getString("id")
+                        chosenName = schoolInfo.getJSONObject(position).getString("name")
+                    }
+
+                    override fun onNothingSelected(parent: AdapterView<*>?) {
+
+                    }
+                }
+
+                if (schoolList.size > 0){
+                    chosenID = schoolInfo.getJSONObject(0).getString("id")
+                    chosenName = schoolInfo.getJSONObject(0).getString("name")
+                }else{
+                    alert("發生錯誤，請聯絡開發人員！\n錯誤訊息：No School.","無法取得學校資訊"){
+                        positiveButton("OK"){
+                            startActivity(Intent(this@LoginActivity, RemLoginActivity::class.java))
+                        }
+                    }
+                }
+            }else{
+                alert("發生錯誤，請聯絡開發人員！\n錯誤訊息：$it","無法取得學校資訊"){
+                    positiveButton("OK"){
+                        startActivity(Intent(this@LoginActivity, RemLoginActivity::class.java))
+                    }
+                }
+            }
+        }, Response.ErrorListener {
+            //indicator
+            progressBarHandler.hide()
+            window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+            //indicator
+            //logout
+            alert("請確定你的網路連接！","無法取得學校資訊"){
+                positiveButton("OK"){
+                    startActivity(Intent(this@LoginActivity, RemLoginActivity::class.java))
+                }
+            }
+        }){
+            override fun getParams(): MutableMap<String, String> {
+                val postParam: MutableMap<String, String> = HashMap()
+                postParam["cmd"] = "show_organization"
+                return postParam
+            }
+        }
+
+        VolleySingleton.getInstance(this).addToRequestQueue(spinnerRequest)
 
         preferences = PreferenceManager.getDefaultSharedPreferences(this)
 
@@ -76,6 +148,7 @@ class LoginActivity : AppCompatActivity() {
                     preferences!!.edit()
                         .putString("username", usr)
                         .putString("password", RayTracing.enable(psw,"52n13o131v413i1452a0"))
+                        .putString("org_id", chosenID)
                         .putString("name", userInfo.getString("name").trimEnd())
                         .apply()
                 }
@@ -106,11 +179,12 @@ class LoginActivity : AppCompatActivity() {
         }.show()
         }){
             override fun getParams(): MutableMap<String, String> {
-                var postParam: MutableMap<String, String> = HashMap()
+                val postParam: MutableMap<String, String> = HashMap()
                 postParam["cmd"] = "login"
                 postParam["id"] = usr
                 postParam["password"] = psw
                 postParam["time"] = timeStamp
+                postParam["org_id"] = chosenID
                 postParam["device_id"] = "HELLO_FROM_ANDROID"
                 return postParam
             }

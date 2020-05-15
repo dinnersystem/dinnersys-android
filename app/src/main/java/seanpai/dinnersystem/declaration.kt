@@ -12,6 +12,7 @@ const val dinnersysURL = "https://dinnersystem.com/dinnersys_beta"
 const val dsRequestURL = "https://dinnersystem.com/dinnersys_beta/backend/backend.php"
 var userInfo = JSONObject("{}")
 var posInfo = JSONObject("{}")
+var schoolInfo = JSONArray("[]")
 var allMenuJson = JSONArray("[]")
 var taiwanMenuJson = JSONArray("[]")
 var aiJiaMenuJson = JSONArray("[]")
