@@ -15,6 +15,8 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
 import androidx.appcompat.app.AppCompatActivity
+import androidx.security.crypto.EncryptedSharedPreferences
+import androidx.security.crypto.MasterKeys
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import kotlinx.android.synthetic.main.activity_login.*
@@ -28,10 +30,14 @@ import java.net.CookiePolicy
 
 class LoginActivity : AppCompatActivity() {
     private var preferences: SharedPreferences? = null
+    private lateinit var encryptedSharedPreferences: SharedPreferences
     private lateinit var progressBarHandler: ProgressBarHandler
     var schoolList: MutableList<String> = mutableListOf()
     var chosenName = ""
     var chosenID = ""
+    private val keyGenParameterSpec = MasterKeys.AES256_GCM_SPEC
+    private val masterKeyAlias = MasterKeys.getOrCreate(keyGenParameterSpec)
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -107,6 +113,13 @@ class LoginActivity : AppCompatActivity() {
         VolleySingleton.getInstance(this).addToRequestQueue(spinnerRequest)
 
         preferences = PreferenceManager.getDefaultSharedPreferences(this)
+        encryptedSharedPreferences = EncryptedSharedPreferences.create(
+            "secret_shared_pref",
+            masterKeyAlias,
+            this,
+            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+        )
 
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
             val channelID = resources.getString(R.string.default_notification_channel_id)
@@ -145,9 +158,9 @@ class LoginActivity : AppCompatActivity() {
                 window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 //indicator
                 if (remSwitch.isChecked){
-                    preferences!!.edit()
+                    encryptedSharedPreferences.edit()
                         .putString("username", usr)
-                        .putString("password", RayTracing.enable(psw,"52n13o131v413i1452a0"))
+                        .putString("password", psw)
                         .putString("org_id", chosenID)
                         .putString("name", userInfo.getString("name").trimEnd())
                         .apply()

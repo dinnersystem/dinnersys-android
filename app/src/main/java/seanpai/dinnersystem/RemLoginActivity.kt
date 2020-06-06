@@ -9,6 +9,8 @@ import android.preference.PreferenceManager
 import android.view.View
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
+import androidx.security.crypto.EncryptedSharedPreferences
+import androidx.security.crypto.MasterKeys
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import kotlinx.android.synthetic.main.activity_rem_login.*
@@ -22,6 +24,9 @@ import java.net.CookiePolicy
 class RemLoginActivity : AppCompatActivity() {
     private lateinit var preferences: SharedPreferences
     private lateinit var progBarHandler: ProgressBarHandler
+    private lateinit var encryptedPreferences: SharedPreferences
+    private val keyGenParameterSpec = MasterKeys.AES256_GCM_SPEC
+    private val masterKeyAlias = MasterKeys.getOrCreate(keyGenParameterSpec)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,6 +34,13 @@ class RemLoginActivity : AppCompatActivity() {
         CookieHandler.setDefault(CookieManager(null, CookiePolicy.ACCEPT_ALL))
 
         //initialize late init variables
+        encryptedPreferences = EncryptedSharedPreferences.create(
+            "secret_shared_pref",
+            masterKeyAlias,
+            this,
+            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+        )
         preferences = PreferenceManager.getDefaultSharedPreferences(this)
         progBarHandler = ProgressBarHandler(this)
 
@@ -36,12 +48,13 @@ class RemLoginActivity : AppCompatActivity() {
         remButton.visibility = View.INVISIBLE
         fallbackButton.visibility = View.INVISIBLE
 
-        if(preferences.getString("username",null) != null && preferences.getString("clear",null) == null){
-            preferences.edit().remove("username").remove("password").remove("name").putString("clear","cleared").apply()
+        if(preferences.getString("username",null) != null && preferences.getString("clear",null) == null || preferences.getString("clear", null) == "cleared"){
+            preferences.edit().remove("username").remove("password").remove("name").putString("clear","cleared_2").apply()
             toast("請重新登入")
             fallbackAction()
             return
         }
+
 
         progBarHandler.show()
         val url = "$dinnersysURL/frontend/u_move_u_dead/version.txt"
@@ -103,8 +116,8 @@ class RemLoginActivity : AppCompatActivity() {
     }
 
     private fun initLoginButton(){
-        if(preferences.getString("username",null) != null){
-            val name = preferences.getString("name",null)!!
+        if(encryptedPreferences.getString("username",null) != null){
+            val name = encryptedPreferences.getString("name",null)!!
             remButton.visibility = View.VISIBLE
             fallbackButton.visibility = View.VISIBLE
             remButton.isEnabled = true
@@ -138,12 +151,12 @@ class RemLoginActivity : AppCompatActivity() {
         progBarHandler.show()
         window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         //indicator
-        val usr = preferences.getString("username", "")!!
-        val psw = RayTracing.disable(preferences.getString("password", "")!!,"52s131e31413a145n20")
-        var chosenID = preferences.getString("org_id", null)
+        val usr = encryptedPreferences.getString("username", "")!!
+        val psw = encryptedPreferences.getString("password", "")!!
+        var chosenID = encryptedPreferences.getString("org_id", null)
         val noID = chosenID == null
         if(noID){
-            preferences.edit().putString("org_id", "1").apply()
+            encryptedPreferences.edit().putString("org_id", "1").apply()
             chosenID = "1"
         }
         val timeStamp = (System.currentTimeMillis() / 1000).toString()
@@ -189,7 +202,7 @@ class RemLoginActivity : AppCompatActivity() {
                 postParam["id"] = usr
                 postParam["password"] = psw
                 postParam["time"] = timeStamp
-                postParam["org_id"] = chosenID
+                postParam["org_id"] = chosenID!!
                 postParam["device_id"] = "HELLO_FROM_ANDROID"
                 return postParam
             }
