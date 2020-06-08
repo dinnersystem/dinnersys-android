@@ -130,6 +130,7 @@ class StudentMainActivity : AppCompatActivity() {
                 val barcodeEncoder = BarcodeEncoder()
                 val bitmap = barcodeEncoder.createBitmap(bitMatrix)
                 barcodeView.setImageBitmap(bitmap)
+                balance = posInfo.getString("money").toInt()
                 cardDetail.text = "卡號：${posInfo.getString("card")}\n餘額：${posInfo.getString("money")}元（非即時）"
             } else if (it.contains("Operation not allowed")){
                 //indicator
