@@ -7,7 +7,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 //variable
-var currentVersion = 202000007
+var currentVersion = 202000009
 const val dinnersysURL = "https://dinnersystem.com/dinnersys_beta"
 const val dsRequestURL = "https://dinnersystem.com/dinnersys_beta/backend/backend.php"
 var userInfo = JSONObject("{}")

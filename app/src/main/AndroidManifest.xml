@@ -5,7 +5,7 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
 
-    <uses-sdk tools:overrideLibrary="androidx.security"/>
+
 
     <application
             android:name=".DinnerSystem"

@@ -7,21 +7,17 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.view.View
 import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.Spinner
 import androidx.appcompat.app.AppCompatActivity
-import androidx.security.crypto.EncryptedSharedPreferences
-import androidx.security.crypto.MasterKeys
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import kotlinx.android.synthetic.main.activity_login.*
 import org.jetbrains.anko.alert
-import org.jetbrains.anko.toast
 import org.json.JSONArray
 import org.json.JSONObject
 import java.net.CookieHandler
@@ -29,14 +25,13 @@ import java.net.CookieManager
 import java.net.CookiePolicy
 
 class LoginActivity : AppCompatActivity() {
-    private var preferences: SharedPreferences? = null
-    private lateinit var encryptedSharedPreferences: SharedPreferences
+    private lateinit var preferences: SharedPreferences
     private lateinit var progressBarHandler: ProgressBarHandler
+    private lateinit var keystoreHelper: KeyStoreHelper
+    private lateinit var preferencesHelper: SharedPreferencesHelper
     var schoolList: MutableList<String> = mutableListOf()
     var chosenName = ""
     var chosenID = ""
-    private val keyGenParameterSpec = MasterKeys.AES256_GCM_SPEC
-    private val masterKeyAlias = MasterKeys.getOrCreate(keyGenParameterSpec)
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -112,14 +107,9 @@ class LoginActivity : AppCompatActivity() {
 
         VolleySingleton.getInstance(this).addToRequestQueue(spinnerRequest)
 
-        preferences = PreferenceManager.getDefaultSharedPreferences(this)
-        encryptedSharedPreferences = EncryptedSharedPreferences.create(
-            "secret_shared_pref",
-            masterKeyAlias,
-            this,
-            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
-        )
+        preferences = this.getSharedPreferences("dinnersys_data",Context.MODE_PRIVATE)
+        preferencesHelper = SharedPreferencesHelper(applicationContext)
+        keystoreHelper = KeyStoreHelper(applicationContext,preferencesHelper)
 
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
             val channelID = resources.getString(R.string.default_notification_channel_id)
@@ -158,13 +148,15 @@ class LoginActivity : AppCompatActivity() {
                 window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 //indicator
                 if (remSwitch.isChecked){
-                    encryptedSharedPreferences.edit()
+                    preferences.edit()
                         .putString("username", usr)
-                        .putString("password", psw)
                         .putString("org_id", chosenID)
                         .putString("name", userInfo.getString("name").trimEnd())
                         .apply()
+
+                    preferencesHelper.setInput(keystoreHelper.encrypt(psw))
                 }
+                FirebaseCrashlytics.getInstance().setUserId(usr)
                 if(userInfo.getJSONArray("valid_oper").toString().contains("select_class") && !userInfo.getJSONArray("valid_oper").toString().contains("select_others")){
                     startActivity(Intent(view.context,DinnermanMainActivity::class.java))
                 }else{

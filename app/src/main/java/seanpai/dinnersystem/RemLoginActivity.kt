@@ -1,18 +1,17 @@
 package seanpai.dinnersystem
 
 import android.content.ActivityNotFoundException
+import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.view.View
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
-import androidx.security.crypto.EncryptedSharedPreferences
-import androidx.security.crypto.MasterKeys
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import kotlinx.android.synthetic.main.activity_rem_login.*
 import org.jetbrains.anko.alert
 import org.jetbrains.anko.toast
@@ -24,9 +23,8 @@ import java.net.CookiePolicy
 class RemLoginActivity : AppCompatActivity() {
     private lateinit var preferences: SharedPreferences
     private lateinit var progBarHandler: ProgressBarHandler
-    private lateinit var encryptedPreferences: SharedPreferences
-    private val keyGenParameterSpec = MasterKeys.AES256_GCM_SPEC
-    private val masterKeyAlias = MasterKeys.getOrCreate(keyGenParameterSpec)
+    private lateinit var preferenceHelper: SharedPreferencesHelper
+    private lateinit var keyStoreHelper: KeyStoreHelper
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,22 +32,18 @@ class RemLoginActivity : AppCompatActivity() {
         CookieHandler.setDefault(CookieManager(null, CookiePolicy.ACCEPT_ALL))
 
         //initialize late init variables
-        encryptedPreferences = EncryptedSharedPreferences.create(
-            "secret_shared_pref",
-            masterKeyAlias,
-            this,
-            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
-        )
-        preferences = PreferenceManager.getDefaultSharedPreferences(this)
+        preferences = this.getSharedPreferences("dinnersys_data",Context.MODE_PRIVATE)
         progBarHandler = ProgressBarHandler(this)
+
+        preferenceHelper = SharedPreferencesHelper(applicationContext)
+        keyStoreHelper = KeyStoreHelper(applicationContext,preferenceHelper)
 
         //lemme hide u
         remButton.visibility = View.INVISIBLE
         fallbackButton.visibility = View.INVISIBLE
 
-        if(preferences.getString("username",null) != null && preferences.getString("clear",null) == null || preferences.getString("clear", null) == "cleared"){
-            preferences.edit().remove("username").remove("password").remove("name").putString("clear","cleared_2").apply()
+        if(preferences.getString("clear",null) == null || preferences.getString("clear", null) == "cleared" || preferences.getString("clear", null) == "cleared_2"){
+            preferences.edit().remove("username").remove("password").remove("name").putString("clear","cleared_3").apply()
             toast("請重新登入")
             fallbackAction()
             return
@@ -116,8 +110,8 @@ class RemLoginActivity : AppCompatActivity() {
     }
 
     private fun initLoginButton(){
-        if(encryptedPreferences.getString("username",null) != null){
-            val name = encryptedPreferences.getString("name",null)!!
+        if(preferences.getString("username",null) != null){
+            val name = preferences.getString("name",null)!!
             remButton.visibility = View.VISIBLE
             fallbackButton.visibility = View.VISIBLE
             remButton.isEnabled = true
@@ -151,12 +145,12 @@ class RemLoginActivity : AppCompatActivity() {
         progBarHandler.show()
         window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         //indicator
-        val usr = encryptedPreferences.getString("username", "")!!
-        val psw = encryptedPreferences.getString("password", "")!!
-        var chosenID = encryptedPreferences.getString("org_id", null)
+        val usr = preferences.getString("username", "")!!
+        val psw = keyStoreHelper.decrypt(preferenceHelper.input!!)
+        var chosenID = preferences.getString("org_id", null)
         val noID = chosenID == null
         if(noID){
-            encryptedPreferences.edit().putString("org_id", "1").apply()
+            preferences.edit().putString("org_id", "1").apply()
             chosenID = "1"
         }
         val timeStamp = (System.currentTimeMillis() / 1000).toString()
@@ -170,6 +164,8 @@ class RemLoginActivity : AppCompatActivity() {
                 progBarHandler.hide()
                 window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 //indicator
+
+                FirebaseCrashlytics.getInstance().setUserId(usr)
 
                 if(userInfo.getJSONArray("valid_oper").toString().contains("select_class") && !userInfo.getJSONArray("valid_oper").toString().contains("select_others")){
                     startActivity(Intent(view.context,DinnermanMainActivity::class.java))
