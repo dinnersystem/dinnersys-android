@@ -1,4 +1,4 @@
-[![codebeat badge](https://codebeat.co/badges/b9d48414-5fcb-4d9c-90da-40d093fdc234)](https://codebeat.co/projects/github-com-seanpai96-dinnersys-android-master)<br/>
+[![codebeat badge](https://codebeat.co/badges/334879f4-8741-4da6-935a-de12597b5ea5)](https://codebeat.co/projects/github-com-dinnersystem-dinnersys-android-master)
 # DinnerSystem App for Android
 This is the first project I've made by Kotlin, and I'm still learning more about it. It seems stable now, but still there might be some flaws.
 <br/>
