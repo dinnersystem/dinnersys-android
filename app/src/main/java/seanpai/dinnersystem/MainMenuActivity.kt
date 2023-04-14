@@ -10,17 +10,19 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import kotlinx.android.synthetic.main.activity_main_menu.*
-import kotlinx.android.synthetic.main.main_menu_cell.view.*
+import seanpai.dinnersystem.databinding.ActivityMainMenuBinding
+import seanpai.dinnersystem.databinding.MainMenuCellBinding
 
 class MainMenuActivity : AppCompatActivity() {
     private val adaptor = TableAdaptor(this)
+    private lateinit var activityBinding: ActivityMainMenuBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main_menu)
-        this.tableView.adapter = adaptor
-        this.balanceText.text = "餘額：" + balance.toString() + "$"
+        activityBinding = ActivityMainMenuBinding.inflate(layoutInflater)
+        setContentView(activityBinding.root)
+        activityBinding.tableView.adapter = adaptor
+        activityBinding.balanceText.text = "餘額：" + balance.toString() + "$"
     }
 
 
@@ -41,13 +43,14 @@ class MainMenuActivity : AppCompatActivity() {
         override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
             val layoutInflater = LayoutInflater.from(mContext)
             val layout = layoutInflater.inflate(R.layout.main_menu_cell, parent, false)
+            val binding = MainMenuCellBinding.bind(layout)
             val dishCost = selectedFactoryArr.getJSONObject(position).getString("dish_cost")
             val dishID = selectedFactoryArr.getJSONObject(position).getString("dish_id")
             val dishName = selectedFactoryArr.getJSONObject(position).getString("dish_name")
             val factoryName = selectedFactoryArr.getJSONObject(position).getJSONObject("department").getJSONObject("factory").getString("name")
-            layout.title.text = dishName
-            layout.detailTitle.text = "$dishCost$"
-            layout.proceedOrderButton.setOnClickListener {
+            binding.title.text = dishName
+            binding.detailTitle.text = "$dishCost$"
+            binding.proceedOrderButton.setOnClickListener {
                 selOrder1 = SelOrder(dishID,dishName,dishCost)
                 confirmData = ConfirmStruct(dishName,factoryName,dishCost)
                 mContext.startActivity(Intent(mContext,MainOrderActivity::class.java))
@@ -55,12 +58,12 @@ class MainMenuActivity : AppCompatActivity() {
             val bestSeller = selectedFactoryArr.getJSONObject(position).getString("best_seller")
             val isBestSeller = bestSeller == "true"
             if(isBestSeller){
-                layout.title.setTextColor(ContextCompat.getColor(mContext,R.color.special))
-                layout.detailTitle.text = layout.detailTitle.text.toString() + "，人氣商品！"
-                layout.detailTitle.setTextColor(ContextCompat.getColor(mContext,R.color.special))
+                binding.title.setTextColor(ContextCompat.getColor(mContext,R.color.special))
+                binding.detailTitle.text = binding.detailTitle.text.toString() + "，人氣商品！"
+                binding.detailTitle.setTextColor(ContextCompat.getColor(mContext,R.color.special))
             }else{
-                layout.title.setTextColor(Color.BLACK)
-                layout.detailTitle.setTextColor(Color.BLACK)
+                binding.title.setTextColor(Color.BLACK)
+                binding.detailTitle.setTextColor(Color.BLACK)
             }
             return layout
         }

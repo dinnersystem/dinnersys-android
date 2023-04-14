@@ -1,29 +1,26 @@
 package seanpai.dinnersystem
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.pm.PackageInfoCompat
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.gms.oss.licenses.OssLicensesActivity
-import kotlinx.android.synthetic.main.activity_app_info.*
+import seanpai.dinnersystem.databinding.ActivityAppInfoBinding
 
 class AppInfoActivity : AppCompatActivity() {
 
+    private lateinit var activityBinding: ActivityAppInfoBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_app_info)
-        val pkgManager = this.packageManager
-        val info = pkgManager.getPackageInfo(this.packageName, 0)
-        val appVersion = "${info.versionName} (${PackageInfoCompat.getLongVersionCode(info)})"
+        activityBinding = ActivityAppInfoBinding.inflate(layoutInflater)
+        setContentView(activityBinding.root)
+        val appVersion = "${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})"
         DinnerSysInfo.clear()
         DinnerSysInfo.add(Pair("程式名稱","板橋高中午餐系統"))
         DinnerSysInfo.add(Pair("程式版本",appVersion))
@@ -35,12 +32,12 @@ class AppInfoActivity : AppCompatActivity() {
         //DinnerSysInfo.add(Pair("",""))
 
         val layoutManager = LinearLayoutManager(this)
-        infoList.layoutManager = layoutManager
-        val dividerItemDecoration = DividerItemDecoration(infoList.context,layoutManager.orientation)
-        infoList.addItemDecoration(dividerItemDecoration)
+        activityBinding.infoList.layoutManager = layoutManager
+        val dividerItemDecoration = DividerItemDecoration(activityBinding.infoList.context,layoutManager.orientation)
+        activityBinding.infoList.addItemDecoration(dividerItemDecoration)
 
         val adapter = InfoAdapter(this)
-        infoList.adapter = adapter
+        activityBinding.infoList.adapter = adapter
         adapter.notifyDataSetChanged()
     }
 

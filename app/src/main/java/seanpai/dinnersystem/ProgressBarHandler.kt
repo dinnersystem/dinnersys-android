@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
 import android.widget.RelativeLayout
-import org.jetbrains.anko.centerInParent
 
 
 class ProgressBarHandler(context: Context) {
@@ -21,12 +20,13 @@ class ProgressBarHandler(context: Context) {
         mIndicatorView = View(context)
         mIndicatorView.setBackgroundResource(R.color.colorPrimaryDark)
         val viewParam = RelativeLayout.LayoutParams(-1, -1)
-        viewParam.centerInParent()
+        viewParam.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE)
         mIndicatorView.layoutParams = viewParam
         val layoutParams: RelativeLayout.LayoutParams = RelativeLayout.LayoutParams(
             RelativeLayout.LayoutParams.MATCH_PARENT,
             RelativeLayout.LayoutParams.MATCH_PARENT
         )
+        layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE)
         val rl = RelativeLayout(context)
         rl.gravity = Gravity.CENTER
         rl.addView(mProgressBar)

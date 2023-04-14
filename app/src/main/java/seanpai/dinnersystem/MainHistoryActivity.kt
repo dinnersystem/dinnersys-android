@@ -15,27 +15,28 @@ import com.android.volley.DefaultRetryPolicy
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import kotlinx.android.synthetic.main.activity_main_history.*
-import kotlinx.android.synthetic.main.history_bottom_list_view.view.*
-import kotlinx.android.synthetic.main.history_list_cell.view.*
-import kotlinx.android.synthetic.main.paym_pw_alert.view.*
-import org.jetbrains.anko.alert
 import org.json.JSONArray
 import org.json.JSONObject
+import seanpai.dinnersystem.databinding.ActivityMainHistoryBinding
+import seanpai.dinnersystem.databinding.HistoryBottomListViewBinding
+import seanpai.dinnersystem.databinding.HistoryListCellBinding
+import seanpai.dinnersystem.databinding.PaymPwAlertBinding
 import java.text.SimpleDateFormat
 import java.util.*
 
 class MainHistoryActivity : AppCompatActivity() {
     private lateinit var progressBarHandler: ProgressBarHandler
+    private lateinit var activityBinding: ActivityMainHistoryBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main_history)
+        activityBinding = ActivityMainHistoryBinding.inflate(layoutInflater)
+        setContentView(activityBinding.root)
         //indicator start
         progressBarHandler = ProgressBarHandler(this)
         //indicator end
         val adapter = TableAdapter(this)
-        tableView.adapter = adapter
+        activityBinding.tableView.adapter = adapter
         reloadData(null)
 
     }
@@ -92,7 +93,7 @@ class MainHistoryActivity : AppCompatActivity() {
                             }
                         }
                         val adapter = TableAdapter(this)
-                        tableView.adapter = adapter
+                        activityBinding.tableView.adapter = adapter
                         //indicator
                         progressBarHandler.hide()
                         window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
@@ -103,25 +104,38 @@ class MainHistoryActivity : AppCompatActivity() {
                         progressBarHandler.hide()
                         window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                         //indicator
-                        alert("請重新登入","您已經登出"){
-                            positiveButton("OK"){
+//                        alert("請重新登入","您已經登出"){
+//                            positiveButton("OK"){
+//                                startActivity(Intent(this@MainHistoryActivity, LoginActivity::class.java))
+//                            }
+//                        }.show()
+                        AlertDialog.Builder(this)
+                            .setTitle("請重新登入")
+                            .setMessage("您已經登出")
+                            .setPositiveButton("OK") { _, _ ->
                                 startActivity(Intent(this@MainHistoryActivity, LoginActivity::class.java))
                             }
-                        }.show()
+                            .show()
                     }
                     }else{
                         historyArr = JSONArray("[]")
                         val adapter = TableAdapter(this)
-                        tableView.adapter = adapter
+                        activityBinding.tableView.adapter = adapter
                         //indicator
                         progressBarHandler.hide()
                         window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                         //indicator
                         adapter.notifyDataSetChanged()
-                        alert("請嘗試重新整理或進行點餐！","無點餐資料"){
-                            positiveButton("OK"){
+//                        alert("請嘗試重新整理或進行點餐！","無點餐資料"){
+//                            positiveButton("OK"){
+//                            }
+//                        }.show()
+                        AlertDialog.Builder(this)
+                            .setTitle("請嘗試重新整理或進行點餐！")
+                            .setMessage("無點餐資料")
+                            .setPositiveButton("OK") { _, _ ->
                             }
-                        }.show()
+                            .show()
                     }
                 }else{
                     //indicator
@@ -129,11 +143,18 @@ class MainHistoryActivity : AppCompatActivity() {
                     window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                     //indicator
                     //logout
-                    alert("請重新登入","您已經登出"){
-                        positiveButton("OK"){
+//                    alert("請重新登入","您已經登出"){
+//                        positiveButton("OK"){
+//                            startActivity(Intent(this@MainHistoryActivity, LoginActivity::class.java))
+//                        }
+//                    }
+                    AlertDialog.Builder(this)
+                        .setTitle("請重新登入")
+                        .setMessage("您已經登出")
+                        .setPositiveButton("OK") { _, _ ->
                             startActivity(Intent(this@MainHistoryActivity, LoginActivity::class.java))
                         }
-                    }
+                        .show()
                 }
             },
             Response.ErrorListener {
@@ -141,9 +162,15 @@ class MainHistoryActivity : AppCompatActivity() {
                 progressBarHandler.hide()
                 window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 //indicator
-                alert ("請注意網路狀態，或通知開發人員!","不知名的錯誤"){
-                    positiveButton("OK"){}
-                }.show()
+//                alert ("請注意網路狀態，或通知開發人員!","不知名的錯誤"){
+//                    positiveButton("OK"){}
+//                }.show()
+                AlertDialog.Builder(this)
+                    .setTitle("請注意網路狀態，或通知開發人員!")
+                    .setMessage("不知名的錯誤")
+                    .setPositiveButton("OK") { _, _ ->
+                    }
+                    .show()
             }
         ){
             override fun getParams(): MutableMap<String, String> {
@@ -161,17 +188,24 @@ class MainHistoryActivity : AppCompatActivity() {
             if (isValidJson(it)) {
                 balance = JSONObject(it).getString("money").toInt()
                 VolleySingleton.getInstance(this).addToRequestQueue(historyRequest)
-                balanceText.text = "餘額：$balance$"
+                activityBinding.balanceText.text = "餘額：$balance$"
             } else {
                 //indicator
                 progressBarHandler.hide()
                 window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 //indicator
-                alert("查詢餘額失敗，我們已經派出最精銳的猴子去修理這個問題，若長時間出現此問題請通知開發人員！", "請重新登入") {
-                    positiveButton("OK") {
+//                alert("查詢餘額失敗，我們已經派出最精銳的猴子去修理這個問題，若長時間出現此問題請通知開發人員！", "請重新登入") {
+//                    positiveButton("OK") {
+//                        startActivity(Intent(this@MainHistoryActivity, LoginActivity::class.java))
+//                    }
+//                }.show()
+                AlertDialog.Builder(this)
+                    .setTitle("查詢餘額失敗，我們已經派出最精銳的猴子去修理這個問題，若長時間出現此問題請通知開發人員！")
+                    .setMessage("請重新登入")
+                    .setPositiveButton("OK") { _, _ ->
                         startActivity(Intent(this@MainHistoryActivity, LoginActivity::class.java))
                     }
-                }.show()
+                    .show()
             }
 
         }, Response.ErrorListener {
@@ -179,9 +213,15 @@ class MainHistoryActivity : AppCompatActivity() {
             progressBarHandler.hide()
             window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
             //indicator
-            alert("請注意網路狀態，或通知開發人員!", "不知名的錯誤") {
-                positiveButton("OK") {}
-            }.show()
+//            alert("請注意網路狀態，或通知開發人員!", "不知名的錯誤") {
+//                positiveButton("OK") {}
+//            }.show()
+            AlertDialog.Builder(this)
+                .setTitle("請注意網路狀態，或通知開發人員!")
+                .setMessage("不知名的錯誤")
+                .setPositiveButton("OK") { _, _ ->
+                }
+                .show()
         }){
             override fun getParams(): MutableMap<String, String> {
                 var postParam: MutableMap<String, String> = HashMap()
@@ -213,40 +253,42 @@ class MainHistoryActivity : AppCompatActivity() {
             val info = historyArr.getJSONObject(position)
             val layoutInflater = LayoutInflater.from(mContext)
             val layout = layoutInflater.inflate(R.layout.history_list_cell, parent, false)
+            val cellBinding = HistoryListCellBinding.bind(layout)
             if(historyArr.length() != 0){
                 if(historyArr.getJSONObject(position).getJSONArray("dish").length() > 1){
-                    layout.title.text = "自訂套餐(${info.getJSONArray("dish").length()}樣)"
+                    cellBinding.title.text = "自訂套餐(${info.getJSONArray("dish").length()}樣)"
                 }else{
-                    layout.title.text = dishNameArr[position]
+                    cellBinding.title.text = dishNameArr[position]
                 }
                 val isPaid = info.getJSONObject("money").getJSONArray("payment").getJSONObject(0).getString("paid")
                 val paid = isPaid == "true"
                 var paidStr = ""
                 if(paid){
                     paidStr = "已付款"
-                    layout.detailTitle.text = "${info.getJSONObject("money").getString("charge")}$, 已付款"
+                    cellBinding.detailTitle.text = "${info.getJSONObject("money").getString("charge")}$, 已付款"
                 }else{
                     paidStr = "未付款"
-                    layout.detailTitle.text = "${info.getJSONObject("money").getString("charge")}$, 未付款"
+                    cellBinding.detailTitle.text = "${info.getJSONObject("money").getString("charge")}$, 未付款"
                 }
 
-                layout.infoButton.setOnClickListener {
+                cellBinding.infoButton.setOnClickListener {
                     val dialog = BottomSheetDialog(mContext)
                     val bottomSheet = layoutInflater.inflate(R.layout.history_bottom_list_view, null)
-
+                    val sheetBinding = HistoryBottomListViewBinding.bind(bottomSheet)
                     val now = getCurrentDateTime()
                     val hourFormat = SimpleDateFormat("HHmm", Locale.TAIWAN)
                     val hour = hourFormat.format(now).toInt()
                     val timeBool = info.getString("recv_date").contains("11:00")
                     val timeString = if (timeBool) "09:10" else "10:10"
-                    bottomSheet.textMessage.text =
+                    sheetBinding.textMessage.text =
                         "訂餐編號:${info.getString("id")}\n餐點內容:${dishNameArr[position]}\n訂餐日期:${info.getString("recv_date").dropLast(
                             3
                         )}\n餐點金額:${info.getJSONObject("money").getString("charge")}\n付款狀態:$paidStr\n請於${timeString}前付款！"
-                    bottomSheet.paymentButton.setOnClickListener{
+                    sheetBinding.paymentButton.setOnClickListener{
                         val alert = AlertDialog.Builder(mContext)
                         val inputView = layoutInflater.inflate(R.layout.paym_pw_alert, null)
-                        val paymentPwText = inputView.paymentPW
+                        val inputBinding = PaymPwAlertBinding.bind(inputView)
+                        val paymentPwText = inputBinding.paymentPW
                         alert.setView(inputView)
                         alert.setTitle("請輸入驗證碼")
                         alert.setMessage("預設為身分證後四碼")
@@ -350,7 +392,7 @@ class MainHistoryActivity : AppCompatActivity() {
                         val paymentAlert = alert.create()
                         paymentAlert.show()
                     }
-                    bottomSheet.deleteButton.setOnClickListener {
+                    sheetBinding.deleteButton.setOnClickListener {
                         activity.startInd()
 //                        val deleteURL = dsURL("delete_self&order_id=${info.getString("id")}")
                         val deleteRequest = object :StringRequest(Method.POST, dsRequestURL, Response.Listener {
@@ -399,27 +441,27 @@ class MainHistoryActivity : AppCompatActivity() {
                         dialog.dismiss()
                         VolleySingleton.getInstance(mContext).addToRequestQueue(deleteRequest)
                     }
-                    bottomSheet.cancelButton.setOnClickListener { dialog.dismiss() }
+                    sheetBinding.cancelButton.setOnClickListener { dialog.dismiss() }
                     if (paid){
-                        bottomSheet.paymentButton.isEnabled = false
-                        bottomSheet.paymentButton.text = "已成功付款"
-                        bottomSheet.deleteButton.isEnabled = false
-                        bottomSheet.deleteButton.text = "已付款者請聯絡合作社取消"
+                        sheetBinding.paymentButton.isEnabled = false
+                        sheetBinding.paymentButton.text = "已成功付款"
+                        sheetBinding.deleteButton.isEnabled = false
+                        sheetBinding.deleteButton.text = "已付款者請聯絡合作社取消"
                     }else{
                         if((timeBool && hour>910) || (!timeBool && hour>1010)){
                             val timeString = if (timeBool) "09:10" else "10:10"
-                            bottomSheet.paymentButton.isEnabled = false
-                            bottomSheet.paymentButton.text = "已超過繳款時間($timeString)"
+                            sheetBinding.paymentButton.isEnabled = false
+                            sheetBinding.paymentButton.text = "已超過繳款時間($timeString)"
                         }else if(balance >= info.getJSONObject("money").getString("charge").toInt()) {
-                            bottomSheet.paymentButton.text = "以學生證付款(餘額:$balance)"
+                            sheetBinding.paymentButton.text = "以學生證付款(餘額:$balance)"
                         }else{
-                            bottomSheet.paymentButton.isEnabled = false
-                            bottomSheet.paymentButton.text = "餘額不足（您只剩${balance}元）"
+                            sheetBinding.paymentButton.isEnabled = false
+                            sheetBinding.paymentButton.text = "餘額不足（您只剩${balance}元）"
                         }
-                        bottomSheet.deleteButton.text = "取消訂單"
+                        sheetBinding.deleteButton.text = "取消訂單"
                     }
 
-                    bottomSheet.cancelButton.text = "返回"
+                    sheetBinding.cancelButton.text = "返回"
                     dialog.setContentView(bottomSheet)
                     dialog.show()
 

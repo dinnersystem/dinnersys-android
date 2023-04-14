@@ -8,15 +8,18 @@ import android.view.View
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
-import kotlinx.android.synthetic.main.activity_main_more.*
+import seanpai.dinnersystem.databinding.ActivityMainMoreBinding
 
 class MainMoreActivity : AppCompatActivity() {
     private lateinit var indicatorView : View
     private lateinit var progressBar: ProgressBar
+    private lateinit var activityBinding: ActivityMainMoreBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main_more)
+        activityBinding = ActivityMainMoreBinding.inflate(layoutInflater)
+        setContentView(activityBinding.root)
+
         //indicator start
         indicatorView = View(this)
         indicatorView.setBackgroundResource(R.color.colorPrimaryDark)
@@ -30,8 +33,8 @@ class MainMoreActivity : AppCompatActivity() {
         progressBar.layoutParams = prams
         indicatorView.visibility = View.INVISIBLE
         progressBar.visibility = View.INVISIBLE
-        layout.addView(indicatorView)
-        layout.addView(progressBar)
+        activityBinding.layout.addView(indicatorView)
+        activityBinding.layout.addView(progressBar)
         //indicator end
     }
 

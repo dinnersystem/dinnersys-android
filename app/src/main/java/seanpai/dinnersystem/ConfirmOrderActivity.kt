@@ -22,29 +22,30 @@ import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.DefaultRetryPolicy
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
-import kotlinx.android.synthetic.main.activity_confirm_order.*
-import kotlinx.android.synthetic.main.paym_pw_alert.view.*
-import org.jetbrains.anko.alert
 import org.json.JSONArray
 import org.json.JSONObject
+import seanpai.dinnersystem.databinding.ActivityConfirmOrderBinding
+import seanpai.dinnersystem.databinding.PaymPwAlertBinding
 import java.text.SimpleDateFormat
 import java.util.*
 
 class ConfirmOrderActivity : AppCompatActivity() {
 
     private lateinit var progressBarHandler: ProgressBarHandler
+    private lateinit var activityBinding: ActivityConfirmOrderBinding
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_confirm_order)
+        activityBinding = ActivityConfirmOrderBinding.inflate(layoutInflater)
+        setContentView(activityBinding.root)
 
         progressBarHandler = ProgressBarHandler(this)
 
         val layoutManager = LinearLayoutManager(this)
-        confirmList.layoutManager = layoutManager
-        val dividerItemDecoration = DividerItemDecoration(confirmList.context,layoutManager.orientation)
-        confirmList.addItemDecoration(dividerItemDecoration)
+        activityBinding.confirmList.layoutManager = layoutManager
+        val dividerItemDecoration = DividerItemDecoration(activityBinding.confirmList.context,layoutManager.orientation)
+        activityBinding.confirmList.addItemDecoration(dividerItemDecoration)
 
         //confirmContentList: source of recycleView
         //confirmData: source of confirmActivity
@@ -65,7 +66,7 @@ class ConfirmOrderActivity : AppCompatActivity() {
         factory = dish.getJSONObject("department").getJSONObject("factory")
 
         val adapter = ConfirmAdapter(this)
-        confirmList.adapter = adapter
+        activityBinding.confirmList.adapter = adapter
         adapter.notifyDataSetChanged()
     }
 
@@ -83,7 +84,7 @@ class ConfirmOrderActivity : AppCompatActivity() {
         }
         canOrder = payBool != null && selectedTime != ""
         val adapter = ConfirmAdapter(this)
-        confirmList.adapter = adapter
+        activityBinding.confirmList.adapter = adapter
         adapter.notifyDataSetChanged()
     }
 
@@ -179,7 +180,7 @@ class ConfirmOrderActivity : AppCompatActivity() {
                         }
                         val builder = AlertDialog.Builder(mContext)
                         builder.setTitle("請選擇取餐時間")
-                        builder.setItems(pickerTime.toTypedArray()) { dialog, which ->
+                        builder.setItems(pickerTime.toTypedArray()) { _, which ->
                             selectedTime = pickerTime[which]
                             println(selectedTime)
                             activity.reloadData()
@@ -257,7 +258,12 @@ class ConfirmOrderActivity : AppCompatActivity() {
                             dateFormat = SimpleDateFormat("aHH:mm", Locale.TAIWAN)
                             var time = dateFormat.format(orderDeadLine)
                             time = time.replace("PM","下午").replace("AM","上午")
-                            activity.alert("${time}後無法訂餐，明日請早","超過訂餐時間") { positiveButton("OK"){} }.show()
+//                            activity.alert("${time}後無法訂餐，明日請早","超過訂餐時間") { positiveButton("OK"){} }.show()
+                            AlertDialog.Builder(mContext)
+                                .setTitle("超過訂餐時間")
+                                .setMessage("${time}後無法訂餐，明日請早")
+                                .setPositiveButton("OK", null)
+                                .show()
                         }else{
                             //send order
                             val orderRequest = object: StringRequest(Method.POST, dsRequestURL, Response.Listener {
@@ -269,7 +275,8 @@ class ConfirmOrderActivity : AppCompatActivity() {
                                     if(payBool!!){
                                         val alert = AlertDialog.Builder(mContext)
                                         val inputView = layoutInflater.inflate(R.layout.paym_pw_alert, null)
-                                        val paymentPwText = inputView.paymentPW
+                                        val binding = PaymPwAlertBinding.bind(inputView)
+                                        val paymentPwText = binding.paymentPW
                                         alert.setView(inputView)
                                         alert.setTitle("請輸入驗證碼")
                                         alert.setMessage("預設為身分證後四碼")
@@ -375,11 +382,18 @@ class ConfirmOrderActivity : AppCompatActivity() {
                                         //indicator
                                         activity.stopInd()
                                         //indicator
-                                        activity.alert("訂單編號$orderID,請記得付款！", "點餐成功"){
-                                            positiveButton("OK"){
-                                                activity.startActivity(Intent(mContext,StudentMainActivity::class.java))
-                                            }
-                                        }.show()
+//                                        activity.alert("訂單編號$orderID,請記得付款！", "點餐成功"){
+//                                            positiveButton("OK"){
+//                                                activity.startActivity(Intent(mContext,StudentMainActivity::class.java))
+//                                            }
+//                                        }.show()
+                                        val successAlertBuilder = AlertDialog.Builder(mContext)
+                                        successAlertBuilder.setTitle("點餐成功").setMessage("訂單編號$orderID,請記得付款！")
+                                        successAlertBuilder.setPositiveButton("OK"){_, _ ->
+                                            activity.startActivity(Intent(mContext, StudentMainActivity::class.java))
+                                        }
+                                        val successAlert = successAlertBuilder.create()
+                                        successAlert.show()
                                     }
 
 
@@ -389,56 +403,96 @@ class ConfirmOrderActivity : AppCompatActivity() {
                                         //indicator
                                         activity.stopInd()
                                         //indicator
-                                        activity.alert("請不要在00:00-04:00之間或於點餐時間外點餐！","訂餐錯誤"){
-                                            positiveButton("OK"){}
-                                        }.show()
+//                                        activity.alert("請不要在00:00-04:00之間或於點餐時間外點餐！","訂餐錯誤"){
+//                                            positiveButton("OK"){}
+//                                        }.show()
+                                        val errorAlertBuilder = AlertDialog.Builder(mContext)
+                                        errorAlertBuilder.setTitle("訂餐錯誤")
+                                        errorAlertBuilder.setMessage("請不要在00:00-04:00之間或於點餐時間外點餐！")
+                                        errorAlertBuilder.setPositiveButton("OK") { _, _ -> }
+                                        val errorAlert = errorAlertBuilder.create()
+                                        errorAlert.show()
                                     }else if (it.contains("Invalid")){
                                         //indicator
                                         activity.stopInd()
                                         //indicator
-                                        activity.alert("發生了不知名的錯誤。請嘗試重新登入，或嘗試重新開啟程式，若持續發生問題，請通知開發人員！", "Unexpected Error"){
-                                            positiveButton("OK"){}
-                                        }.show()
+//                                        activity.alert("發生了不知名的錯誤。請嘗試重新登入，或嘗試重新開啟程式，若持續發生問題，請通知開發人員！", "Unexpected Error"){
+//                                            positiveButton("OK"){}
+//                                        }.show()
+                                        val errorAlertBuilder = AlertDialog.Builder(mContext)
+                                        errorAlertBuilder.setTitle("Unexpected Error")
+                                        errorAlertBuilder.setMessage("發生了不知名的錯誤。請嘗試重新登入，或嘗試重新開啟程式，若持續發生問題，請通知開發人員！")
+                                        errorAlertBuilder.setPositiveButton("OK") { _, _ -> }
+                                        val errorAlert = errorAlertBuilder.create()
+                                        errorAlert.show()
                                     }else if (it == ""){
                                         //indicator
                                         activity.stopInd()
                                         //indicator
-                                        activity.alert("請重新登入", "您已經登出") {
-                                            positiveButton("OK") {
-                                                activity.startActivity(Intent(mContext,StudentMainActivity::class.java))
-                                            }
-                                        }.show()
+//                                        activity.alert("請重新登入", "您已經登出") {
+//                                            positiveButton("OK") {
+//                                                activity.startActivity(Intent(mContext,StudentMainActivity::class.java))
+//                                            }
+//                                        }.show()
+                                        val errorAlertBuilder = AlertDialog.Builder(mContext)
+                                        errorAlertBuilder.setTitle("您已經登出")
+                                        errorAlertBuilder.setMessage("請重新登入")
+                                        errorAlertBuilder.setPositiveButton("OK") { _, _ ->
+                                            activity.startActivity(Intent(mContext, StudentMainActivity::class.java))
+                                        }
+                                        val errorAlert = errorAlertBuilder.create()
+                                        errorAlert.show()
                                     }else if (it.contains("exceed")){
                                         //indicator
                                         activity.stopInd()
                                         //indicator
-                                        activity.alert("您的訂單中似乎有一或多項餐點已售完", "餐點已售完") {
-                                            positiveButton("OK") {
-                                                activity.startActivity(Intent(mContext,StudentMainActivity::class.java))
-                                            }
-                                        }.show()
+//                                        activity.alert("您的訂單中似乎有一或多項餐點已售完", "餐點已售完") {
+//                                            positiveButton("OK") {
+//                                                activity.startActivity(Intent(mContext,StudentMainActivity::class.java))
+//                                            }
+//                                        }.show()
+                                        val errorAlertBuilder = AlertDialog.Builder(mContext)
+                                        errorAlertBuilder.setTitle("餐點已售完")
+                                        errorAlertBuilder.setMessage("您的訂單中似乎有一或多項餐點已售完")
+                                        errorAlertBuilder.setPositiveButton("OK") { _, _ ->
+                                            activity.startActivity(Intent(mContext, StudentMainActivity::class.java))
+                                        }
+                                        val errorAlert = errorAlertBuilder.create()
+                                        errorAlert.show()
                                     }else{
                                         //indicator
                                         activity.stopInd()
                                         //indicator
-                                        activity.alert("發生了不知名的錯誤。請嘗試重新登入，或嘗試重新開啟程式，若持續發生問題，請通知開發人員！", "Unexpected Error"){
-                                            positiveButton("OK"){}
-                                        }.build().apply {
-                                            setCancelable(false)
-                                            setCanceledOnTouchOutside(false)
-                                        }.show()
+//                                        activity.alert("發生了不知名的錯誤。請嘗試重新登入，或嘗試重新開啟程式，若持續發生問題，請通知開發人員！", "Unexpected Error"){
+//                                            positiveButton("OK"){}
+//                                        }.build().apply {
+//                                            setCancelable(false)
+//                                            setCanceledOnTouchOutside(false)
+//                                        }.show()
+                                        val errorAlertBuilder = AlertDialog.Builder(mContext)
+                                        errorAlertBuilder.setTitle("Unexpected Error")
+                                        errorAlertBuilder.setMessage("發生了不知名的錯誤。請嘗試重新登入，或嘗試重新開啟程式，若持續發生問題，請通知開發人員！")
+                                        errorAlertBuilder.setPositiveButton("OK") { _, _ -> }
+                                        val errorAlert = errorAlertBuilder.create()
+                                        errorAlert.show()
                                     }
                                 }
                             }, Response.ErrorListener {
                                 //indicator
                                 activity.stopInd()
                                 //indicator
-                                activity.alert ("請注意網路狀態，或通知開發人員!","不知名的錯誤"){
-                                    positiveButton("OK"){}
-                                }.build().apply {
-                                    setCancelable(false)
-                                    setCanceledOnTouchOutside(false)
-                                }.show()
+//                                activity.alert ("請注意網路狀態，或通知開發人員!","不知名的錯誤"){
+//                                    positiveButton("OK"){}
+//                                }.build().apply {
+//                                    setCancelable(false)
+//                                    setCanceledOnTouchOutside(false)
+//                                }.show()
+                                val errorAlertBuilder = AlertDialog.Builder(mContext)
+                                errorAlertBuilder.setTitle("不知名的錯誤")
+                                errorAlertBuilder.setMessage("請注意網路狀態，或通知開發人員!")
+                                errorAlertBuilder.setPositiveButton("OK") { _, _ -> }
+                                val errorAlert = errorAlertBuilder.create()
+                                errorAlert.show()
                             }){
                                 override fun getParams(): MutableMap<String, String> {
                                     val postParam: MutableMap<String, String> = HashMap()

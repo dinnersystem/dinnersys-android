@@ -4,20 +4,24 @@ import android.graphics.Bitmap
 import android.os.Bundle
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
-import com.android.volley.Response
 import com.android.volley.toolbox.ImageRequest
-import kotlinx.android.synthetic.main.activity_developer_bonus.*
+import seanpai.dinnersystem.databinding.ActivityDeveloperBonusBinding
 
 class DeveloperBonusActivity : AppCompatActivity() {
+    private lateinit var activityBinding: ActivityDeveloperBonusBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_developer_bonus)
+
+        activityBinding = ActivityDeveloperBonusBinding.inflate(layoutInflater)
+        setContentView(activityBinding.root)
+
         val url = "$dinnersysURL/frontend/u_move_u_dead/dinnersys0.png"
         val imageRequest = ImageRequest(url,
-                                        Response.Listener {
-                                            imageView7.setImageBitmap(it)
-                                        },
-                                        0,0,ImageView.ScaleType.FIT_XY, Bitmap.Config.ARGB_8888, Response.ErrorListener {
+            {
+                activityBinding.imageView7.setImageBitmap(it)
+            },
+                                        0,0,ImageView.ScaleType.FIT_XY, Bitmap.Config.ARGB_8888, {
 
             })
         VolleySingleton.getInstance(this).addToRequestQueue(imageRequest)
