@@ -8,35 +8,37 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
-import kotlinx.android.synthetic.main.activity_guan_don_order.*
-import org.jetbrains.anko.alert
 import org.json.JSONArray
+import seanpai.dinnersystem.databinding.ActivityGuanDonOrderBinding
 import java.text.SimpleDateFormat
 import java.util.*
 
 class GuanDonOrderActivity : AppCompatActivity() {
     private lateinit var progressBarHandler: ProgressBarHandler
+    private lateinit var activityBinding: ActivityGuanDonOrderBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_guan_don_order)
+        activityBinding = ActivityGuanDonOrderBinding.inflate(layoutInflater)
+        setContentView(activityBinding.root)
         //indicator start
         progressBarHandler = ProgressBarHandler(this)
         //indicator end
 
         val layoutManager = LinearLayoutManager(this)
-        guandonOrderList.layoutManager = layoutManager
-        val dividerItemDecoration = DividerItemDecoration(guandonOrderList.context,layoutManager.orientation)
-        guandonOrderList.addItemDecoration(dividerItemDecoration)
+        activityBinding.guandonOrderList.layoutManager = layoutManager
+        val dividerItemDecoration = DividerItemDecoration(activityBinding.guandonOrderList.context,layoutManager.orientation)
+        activityBinding.guandonOrderList.addItemDecoration(dividerItemDecoration)
 
         val adapter = GuanDonOrderAdapter(this)
-        guandonOrderList.adapter = adapter
+        activityBinding.guandonOrderList.adapter = adapter
         adapter.notifyDataSetChanged()
     }
 

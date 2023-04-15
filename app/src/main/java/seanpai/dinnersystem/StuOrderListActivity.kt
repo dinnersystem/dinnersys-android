@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.Button
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -16,10 +17,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
-import kotlinx.android.synthetic.main.activity_stu_order_list.*
-import org.jetbrains.anko.alert
 import org.json.JSONArray
-import org.json.JSONObject
+import seanpai.dinnersystem.databinding.ActivityStuOrderListBinding
 
 
 var factoryNames: MutableList<String> = mutableListOf()
@@ -28,9 +27,13 @@ class StuOrderListActivity : AppCompatActivity() {
 
     private lateinit var progressBarHandler: ProgressBarHandler
 
+    private lateinit var activityBinding: ActivityStuOrderListBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_stu_order_list)
+
+        activityBinding = ActivityStuOrderListBinding.inflate(layoutInflater)
+        setContentView(activityBinding.root)
 
         //indicator start
         progressBarHandler = ProgressBarHandler(this)
@@ -44,9 +47,9 @@ class StuOrderListActivity : AppCompatActivity() {
 
         //recycle
         val linearLayoutManager = LinearLayoutManager(this)
-        factoryList.layoutManager = linearLayoutManager
-        val dividerItemDecoration = DividerItemDecoration(factoryList.context,linearLayoutManager.orientation)
-        factoryList.addItemDecoration(dividerItemDecoration)
+        activityBinding.factoryList.layoutManager = linearLayoutManager
+        val dividerItemDecoration = DividerItemDecoration(activityBinding.factoryList.context,linearLayoutManager.orientation)
+        activityBinding.factoryList.addItemDecoration(dividerItemDecoration)
 
         val dishRequest = object : StringRequest(Method.POST, dsRequestURL, Response.Listener { response ->
             allMenuJson = JSONArray("[]")
@@ -83,17 +86,24 @@ class StuOrderListActivity : AppCompatActivity() {
                 factoryNames.add("Random")
                 println(factoryNames)
                 val factoryAdapter = FactoryAdapter(this)
-                factoryList.adapter = factoryAdapter
+                activityBinding.factoryList.adapter = factoryAdapter
             }else{
                 //indicator
                 progressBarHandler.hide()
                 window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 //indicator
-                alert("請重新登入","您已經登出"){
-                    positiveButton("OK"){
+//                alert("請重新登入","您已經登出"){
+//                    positiveButton("OK"){
+//                        startActivity(Intent(this@StuOrderListActivity, LoginActivity::class.java))
+//                    }
+//                }.show()
+                AlertDialog.Builder(this)
+                    .setTitle("請重新登入")
+                    .setMessage("您已經登出")
+                    .setPositiveButton("OK") { _, _ ->
                         startActivity(Intent(this@StuOrderListActivity, LoginActivity::class.java))
                     }
-                }.show()
+                    .show()
             }
             //indicator
             progressBarHandler.hide()
@@ -104,9 +114,14 @@ class StuOrderListActivity : AppCompatActivity() {
             progressBarHandler.hide()
             window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
             //indicator
-            alert ("請注意網路狀態，或通知開發人員!","不知名的錯誤"){
-                positiveButton("OK"){}
-            }.show()
+//            alert ("請注意網路狀態，或通知開發人員!","不知名的錯誤"){
+//                positiveButton("OK"){}
+//            }.show()
+            AlertDialog.Builder(this)
+                .setTitle("請注意網路狀態，或通知開發人員!")
+                .setMessage("不知名的錯誤")
+                .setPositiveButton("OK") { _, _ -> }
+                .show()
         }){
             override fun getParams(): MutableMap<String, String> {
                 val postParam: MutableMap<String, String> = HashMap()

@@ -8,14 +8,14 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.google.firebase.crashlytics.FirebaseCrashlytics
-import kotlinx.android.synthetic.main.activity_rem_login.*
-import org.jetbrains.anko.alert
-import org.jetbrains.anko.toast
 import org.json.JSONObject
+import seanpai.dinnersystem.databinding.ActivityRemLoginBinding
 import java.net.CookieHandler
 import java.net.CookieManager
 import java.net.CookiePolicy
@@ -25,10 +25,12 @@ class RemLoginActivity : AppCompatActivity() {
     private lateinit var progBarHandler: ProgressBarHandler
     private lateinit var preferenceHelper: SharedPreferencesHelper
     private lateinit var keyStoreHelper: KeyStoreHelper
+    private lateinit var activityBinding: ActivityRemLoginBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_rem_login)
+        activityBinding = ActivityRemLoginBinding.inflate(layoutInflater)
+        setContentView(activityBinding.root)
         CookieHandler.setDefault(CookieManager(null, CookiePolicy.ACCEPT_ALL))
 
         //initialize late init variables
@@ -39,12 +41,13 @@ class RemLoginActivity : AppCompatActivity() {
         keyStoreHelper = KeyStoreHelper(applicationContext,preferenceHelper)
 
         //lemme hide u
-        remButton.visibility = View.INVISIBLE
-        fallbackButton.visibility = View.INVISIBLE
+        activityBinding.remButton.visibility = View.INVISIBLE
+        activityBinding.fallbackButton.visibility = View.INVISIBLE
 
         if(preferences.getString("clear",null) == null || preferences.getString("clear", null) == "cleared" || preferences.getString("clear", null) == "cleared_2"){
             preferences.edit().remove("username").remove("password").remove("name").putString("clear","cleared_3").apply()
-            toast("請重新登入")
+//            toast("請重新登入")
+            Toast.makeText(this,"請重新登入",Toast.LENGTH_SHORT).show()
             fallbackAction()
             return
         }
@@ -52,7 +55,7 @@ class RemLoginActivity : AppCompatActivity() {
 
         progBarHandler.show()
         val url = "$dinnersysURL/frontend/u_move_u_dead/version.txt"
-        val versionRequest = StringRequest(url, Response.Listener {
+        val versionRequest = StringRequest(url, {
             //indicator
 
             window.setFlags(
@@ -75,8 +78,28 @@ class RemLoginActivity : AppCompatActivity() {
                 progBarHandler.hide()
                 window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 //indicator
-                alert("請至Google Play更新最新版本的點餐系統!", "偵測到更新版本") {
-                    positiveButton("OK(跳轉至GooglePlay)") {
+//                alert("請至Google Play更新最新版本的點餐系統!", "偵測到更新版本") {
+//                    positiveButton("OK(跳轉至GooglePlay)") {
+//                        val packageName = packageName
+//                        try {
+//                            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + packageName)))
+//                        } catch (e: ActivityNotFoundException) {
+//                            startActivity(
+//                                Intent(
+//                                    Intent.ACTION_VIEW,
+//                                    Uri.parse("https://play.google.com/store/apps/details?id=" + packageName)
+//                                )
+//                            )
+//                        }
+//                    }
+//                }.build().apply {
+//                    setCancelable(false)
+//                    setCanceledOnTouchOutside(false)
+//                }.show()
+                AlertDialog.Builder(this)
+                    .setTitle("偵測到更新版本")
+                    .setMessage("請至Google Play更新最新版本的點餐系統!")
+                    .setPositiveButton("OK(跳轉至GooglePlay)") { _, _ ->
                         val packageName = packageName
                         try {
                             startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + packageName)))
@@ -89,10 +112,8 @@ class RemLoginActivity : AppCompatActivity() {
                             )
                         }
                     }
-                }.build().apply {
-                    setCancelable(false)
-                    setCanceledOnTouchOutside(false)
-                }.show()
+                    .setCancelable(false)
+                    .show()
 
             }
             //indicator
@@ -100,10 +121,17 @@ class RemLoginActivity : AppCompatActivity() {
             window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
             //indicator
             initLoginButton()
-        }, Response.ErrorListener {
-            alert("請注意網路連線", "不知名的錯誤") {
-                positiveButton("OK") {}
-            }
+        }, {
+//            alert("請注意網路連線", "不知名的錯誤") {
+//                positiveButton("OK") {}
+//            }
+            AlertDialog.Builder(this)
+                .setTitle("不知名的錯誤")
+                .setMessage("請注意網路連線")
+                .setPositiveButton("OK") { _, _ -> }
+                .setCancelable(false)
+                .show()
+            FirebaseCrashlytics.getInstance().recordException(it)
         })
         VolleySingleton.getInstance(this).addToRequestQueue(versionRequest)
 
@@ -112,10 +140,10 @@ class RemLoginActivity : AppCompatActivity() {
     private fun initLoginButton(){
         if(preferences.getString("username",null) != null){
             val name = preferences.getString("name",null)!!
-            remButton.visibility = View.VISIBLE
-            fallbackButton.visibility = View.VISIBLE
-            remButton.isEnabled = true
-            remButton.text = "以${name}登入"
+            activityBinding.remButton.visibility = View.VISIBLE
+            activityBinding.fallbackButton.visibility = View.VISIBLE
+            activityBinding.remButton.isEnabled = true
+            activityBinding.remButton.text = "以${name}登入"
         }else{
             fallbackAction()
         }
@@ -126,7 +154,8 @@ class RemLoginActivity : AppCompatActivity() {
         //super.onBackPressed()
         if(back){
             back = false
-            toast("再按一次以退出")
+//            toast("再按一次以退出")
+            Toast.makeText(this,"再按一次以退出",Toast.LENGTH_SHORT).show()
         }else{
             this.finishAffinity()
         }
@@ -178,9 +207,14 @@ class RemLoginActivity : AppCompatActivity() {
                 window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 //indicator
 
-                alert("請注意帳號密碼是否錯誤，若持續失敗請通知開發人員!\n錯誤訊息$string","登入失敗"){
-                    positiveButton("OK"){}
-                }.show()
+//                alert("請注意帳號密碼是否錯誤，若持續失敗請通知開發人員!\n錯誤訊息$string","登入失敗"){
+//                    positiveButton("OK"){}
+//                }.show()
+                AlertDialog.Builder(this)
+                    .setTitle("登入失敗")
+                    .setMessage("請注意帳號密碼是否錯誤，若持續失敗請通知開發人員!\n錯誤訊息$string")
+                    .setPositiveButton("OK") { _, _ -> }
+                    .show()
             }
         },Response.ErrorListener { error ->
             //indicator
@@ -188,9 +222,15 @@ class RemLoginActivity : AppCompatActivity() {
             window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
             //indicator
             println(error)
-            alert ("請注意網路狀態，或通知開發人員!","不知名的錯誤"){
-                positiveButton("OK"){}
-            }.show()
+//            alert ("請注意網路狀態，或通知開發人員!","不知名的錯誤"){
+//                positiveButton("OK"){}
+//            }.show()
+            AlertDialog.Builder(this)
+                .setTitle("不知名的錯誤")
+                .setMessage("請注意網路狀態，或通知開發人員!")
+                .setPositiveButton("OK") { _, _ -> }
+                .show()
+            FirebaseCrashlytics.getInstance().recordException(error)
         }){
             override fun getParams(): MutableMap<String, String> {
                 val postParam: MutableMap<String, String> = HashMap()

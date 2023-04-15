@@ -3,7 +3,6 @@ package seanpai.dinnersystem
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.util.DisplayMetrics
 import android.view.GestureDetector
 import android.view.MotionEvent
@@ -11,31 +10,31 @@ import android.view.View
 import android.view.View.OnTouchListener
 import android.view.WindowManager
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
-import com.google.firebase.messaging.FirebaseMessaging
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.MultiFormatWriter
 import com.journeyapps.barcodescanner.BarcodeEncoder
-import kotlinx.android.synthetic.main.activity_student_main.*
-import org.jetbrains.anko.alert
-import org.jetbrains.anko.toast
 import org.json.JSONArray
 import org.json.JSONObject
+import seanpai.dinnersystem.databinding.ActivityStudentMainBinding
 
 
 class StudentMainActivity : AppCompatActivity() {
     //private lateinit var preferences: SharedPreferences
     private lateinit var progBarHandler: ProgressBarHandler
     private lateinit var gestureDetector: GestureDetector
+    private lateinit var activityBinding: ActivityStudentMainBinding
 
 
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_student_main)
+        activityBinding = ActivityStudentMainBinding.inflate(layoutInflater)
+        setContentView(activityBinding.root)
         //indicator start
         progBarHandler = ProgressBarHandler(this)
         //indicator end
@@ -57,15 +56,22 @@ class StudentMainActivity : AppCompatActivity() {
         //}
 
         if(!userInfo.has("name")){
-            alert("工作階段已逾時", "請重新登入") {
-                positiveButton("OK") {
+//            alert("工作階段已逾時", "請重新登入") {
+//                positiveButton("OK") {
+//                    startActivity(Intent(this@StudentMainActivity, RemLoginActivity::class.java))
+//                }
+//            }.show()
+            AlertDialog.Builder(this)
+                .setTitle("工作階段已逾時")
+                .setMessage("請重新登入")
+                .setPositiveButton("OK") { _, _ ->
                     startActivity(Intent(this@StudentMainActivity, RemLoginActivity::class.java))
                 }
-            }.show()
+                .show()
             return
         }
 
-        titleView.text = "歡迎使用午餐系統，\n${userInfo.getString("name").trimEnd()}."
+        activityBinding.titleView.text = "歡迎使用午餐系統，\n${userInfo.getString("name").trimEnd()}."
         getBarcode()
 
         gestureDetector = GestureDetector(this, DoubleTapListener(this))
@@ -74,9 +80,9 @@ class StudentMainActivity : AppCompatActivity() {
             gestureDetector.onTouchEvent(event)
         }
 
-        barcodeView.setOnTouchListener(onTouchView)
+        activityBinding.barcodeView.setOnTouchListener(onTouchView)
 
-        barcodeView.setOnLongClickListener {
+        activityBinding.barcodeView.setOnLongClickListener {
             print("I've heard something long pressed")
             if(lighted){
                 val layoutParams = this.window.attributes
@@ -99,7 +105,8 @@ class StudentMainActivity : AppCompatActivity() {
         //super.onBackPressed()
         if(back){
             back = false
-            toast("再按一次以登出")
+//            toast("再按一次以登出")
+            Toast.makeText(this, "再按一次以登出", Toast.LENGTH_SHORT).show()
         }else{
             startActivity(Intent(this@StudentMainActivity, RemLoginActivity::class.java))
         }
@@ -115,43 +122,64 @@ class StudentMainActivity : AppCompatActivity() {
                 window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 //indicator
                 if(!posInfo.has("card")){
-                    alert("查詢餘額失敗，我們已經派出最精銳的猴子去修理這個問題，若長時間出現此問題請通知開發人員！", "請重新登入") {
-                        positiveButton("OK") {
+//                    alert("查詢餘額失敗，我們已經派出最精銳的猴子去修理這個問題，若長時間出現此問題請通知開發人員！", "請重新登入") {
+//                        positiveButton("OK") {
+//                            startActivity(Intent(this@StudentMainActivity, RemLoginActivity::class.java))
+//                        }
+//                    }.show()
+                    AlertDialog.Builder(this)
+                        .setTitle("查詢餘額失敗，我們已經派出最精銳的猴子去修理這個問題，若長時間出現此問題請通知開發人員！")
+                        .setMessage("請重新登入")
+                        .setPositiveButton("OK") { _, _ ->
                             startActivity(Intent(this@StudentMainActivity, RemLoginActivity::class.java))
                         }
-                    }.show()
+                        .show()
                     return@Listener
                 }
                 val metrics = DisplayMetrics()
                 windowManager.defaultDisplay.getMetrics(metrics)
                 val multiFormatWriter = MultiFormatWriter()
                 val bitMatrix = multiFormatWriter.encode(posInfo.getString("card"),
-                    BarcodeFormat.CODE_39,barcodeView.width,barcodeView.height)
+                    BarcodeFormat.CODE_39,activityBinding.barcodeView.width,activityBinding.barcodeView.height)
                 val barcodeEncoder = BarcodeEncoder()
                 val bitmap = barcodeEncoder.createBitmap(bitMatrix)
-                barcodeView.setImageBitmap(bitmap)
+                activityBinding.barcodeView.setImageBitmap(bitmap)
                 balance = posInfo.getString("money").toInt()
-                cardDetail.text = "卡號：${posInfo.getString("card")}\n餘額：${posInfo.getString("money")}元（非即時）"
+                activityBinding.cardDetail.text = "卡號：${posInfo.getString("card")}\n餘額：${posInfo.getString("money")}元（非即時）"
             } else if (it.contains("Operation not allowed")){
                 //indicator
                 progBarHandler.hide()
                 window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 //indicator
-                alert("工作階段已逾時", "請重新登入") {
-                    positiveButton("OK") {
+//                alert("工作階段已逾時", "請重新登入") {
+//                    positiveButton("OK") {
+//                        startActivity(Intent(this@StudentMainActivity, RemLoginActivity::class.java))
+//                    }
+//                }.show()
+                AlertDialog.Builder(this)
+                    .setTitle("工作階段已逾時")
+                    .setMessage("請重新登入")
+                    .setPositiveButton("OK") { _, _ ->
                         startActivity(Intent(this@StudentMainActivity, RemLoginActivity::class.java))
                     }
-                }.show()
+                    .show()
             } else {
                 //indicator
                 progBarHandler.hide()
                 window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 //indicator
-                alert("查詢餘額失敗，我們已經派出最精銳的猴子去修理這個問題，若長時間出現此問題請通知開發人員！", "請重新登入") {
-                    positiveButton("OK") {
+//                alert("查詢餘額失敗，我們已經派出最精銳的猴子去修理這個問題，若長時間出現此問題請通知開發人員！", "請重新登入") {
+//                    positiveButton("OK") {
+//                        startActivity(Intent(this@StudentMainActivity, RemLoginActivity::class.java))
+//                    }
+//                }.show()
+                AlertDialog.Builder(this)
+                    .setTitle("查詢餘額失敗，我們已經派出最精銳的猴子去修理這個問題，若長時間出現此問題請通知開發人員！")
+                    .setMessage("請重新登入")
+                    .setPositiveButton("OK") { _, _ ->
                         startActivity(Intent(this@StudentMainActivity, RemLoginActivity::class.java))
                     }
-                }.show()
+                    .show()
             }
         }, Response.ErrorListener {
             //indicator
@@ -159,9 +187,14 @@ class StudentMainActivity : AppCompatActivity() {
             window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
             //indicator
             println(it)
-            alert("請注意網路狀態，或通知開發人員!", "不知名的錯誤") {
-                positiveButton("OK") {}
-            }.show()
+//            alert("請注意網路狀態，或通知開發人員!", "不知名的錯誤") {
+//                positiveButton("OK") {}
+//            }.show()
+            AlertDialog.Builder(this)
+                .setTitle("請注意網路狀態，或通知開發人員!")
+                .setMessage("不知名的錯誤")
+                .setPositiveButton("OK") { _, _ -> }
+                .show()
         }){
             override fun getParams(): MutableMap<String, String> {
                 val postParam: MutableMap<String, String> = HashMap()
@@ -192,7 +225,7 @@ class StudentMainActivity : AppCompatActivity() {
 
     class DoubleTapListener(context: Context): GestureDetector.SimpleOnGestureListener() {
         private val mContext = context as StudentMainActivity
-        override fun onDoubleTap(e: MotionEvent?): Boolean {
+        override fun onDoubleTap(e: MotionEvent): Boolean {
             println("double tap")
             if(lighted){
                 val layoutParams = mContext.window.attributes
@@ -208,7 +241,7 @@ class StudentMainActivity : AppCompatActivity() {
             return true
         }
 
-        override fun onDown(e: MotionEvent?): Boolean {
+        override fun onDown(e: MotionEvent): Boolean {
             return true
         }
     }

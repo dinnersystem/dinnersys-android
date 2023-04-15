@@ -5,7 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.view.View
-import kotlinx.android.synthetic.main.activity_random_order.*
+import seanpai.dinnersystem.databinding.ActivityRandomOrderBinding
 import kotlin.math.round
 import kotlin.random.Random
 
@@ -18,15 +18,19 @@ class RandomOrderActivity : AppCompatActivity() {
     private var currentRandom = 0
     var randomUpper = 0
 
+    private lateinit var activityBinding: ActivityRandomOrderBinding
 
-        override fun onCreate(savedInstanceState: Bundle?) {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_random_order)
+        activityBinding = ActivityRandomOrderBinding.inflate(layoutInflater)
+        setContentView(activityBinding.root)
+
         randomming = false
         totalDishCount = randomMenuArr.length()
         totalPossibilities = 1.0/totalDishCount.toDouble()
         totalPossibilities = round(totalPossibilities*10000)/100
-        infoText.text = "今日共${totalDishCount}，每個餐點中獎機率平均，各為$totalPossibilities%。"
+        activityBinding.infoText.text = "今日共${totalDishCount}，每個餐點中獎機率平均，各為$totalPossibilities%。"
     }
 
     fun startRandom(view: View){
@@ -49,7 +53,7 @@ class RandomOrderActivity : AppCompatActivity() {
             randomming = false
             val randomIndex = Random.nextInt(0,totalDishCount-1)
             val item = randomMenuArr.getJSONObject(randomIndex)
-            nameText.text = item.getString("dish_name")
+            activityBinding.nameText.text = item.getString("dish_name")
             val dishName = item.getString("dish_name")
             val dishID = item.getString("dish_id")
             val dishCost = item.getString("dish_cost")
@@ -62,7 +66,7 @@ class RandomOrderActivity : AppCompatActivity() {
         }else{
             val randomIndex = Random.nextInt(0,totalDishCount-1)
             val item = randomMenuArr.getJSONObject(randomIndex)
-            nameText.text = item.getString("dish_name")
+            activityBinding.nameText.text = item.getString("dish_name")
             currentRandom += 1
         }
     }

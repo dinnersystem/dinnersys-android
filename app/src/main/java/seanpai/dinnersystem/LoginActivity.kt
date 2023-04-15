@@ -12,14 +12,14 @@ import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.google.firebase.crashlytics.FirebaseCrashlytics
-import kotlinx.android.synthetic.main.activity_login.*
-import org.jetbrains.anko.alert
 import org.json.JSONArray
 import org.json.JSONObject
+import seanpai.dinnersystem.databinding.ActivityLoginBinding
 import java.net.CookieHandler
 import java.net.CookieManager
 import java.net.CookiePolicy
@@ -29,6 +29,7 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var progressBarHandler: ProgressBarHandler
     private lateinit var keystoreHelper: KeyStoreHelper
     private lateinit var preferencesHelper: SharedPreferencesHelper
+    private lateinit var activityBinding: ActivityLoginBinding
     var schoolList: MutableList<String> = mutableListOf()
     var chosenName = ""
     var chosenID = ""
@@ -36,7 +37,8 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_login)
+        activityBinding = ActivityLoginBinding.inflate(layoutInflater)
+        setContentView(activityBinding.root)
         CookieHandler.setDefault(CookieManager(null, CookiePolicy.ACCEPT_ALL))
         //indicator start
         progressBarHandler = ProgressBarHandler(this)
@@ -52,8 +54,8 @@ class LoginActivity : AppCompatActivity() {
                     schoolList.add(school.getString("name"))
                 }
                 val adapter = ArrayAdapter(this, R.layout.support_simple_spinner_dropdown_item,schoolList)
-                spinner.adapter = adapter
-                spinner.onItemSelectedListener = object: AdapterView.OnItemSelectedListener{
+                activityBinding.spinner.adapter = adapter
+                activityBinding.spinner.onItemSelectedListener = object: AdapterView.OnItemSelectedListener{
                     override fun onItemSelected(
                         parent: AdapterView<*>?,
                         view: View?,
@@ -73,18 +75,32 @@ class LoginActivity : AppCompatActivity() {
                     chosenID = schoolInfo.getJSONObject(0).getString("id")
                     chosenName = schoolInfo.getJSONObject(0).getString("name")
                 }else{
-                    alert("發生錯誤，請聯絡開發人員！\n錯誤訊息：No School.","無法取得學校資訊"){
-                        positiveButton("OK"){
+//                    alert("發生錯誤，請聯絡開發人員！\n錯誤訊息：No School.","無法取得學校資訊"){
+//                        positiveButton("OK"){
+//                            startActivity(Intent(this@LoginActivity, RemLoginActivity::class.java))
+//                        }
+//                    }
+                    AlertDialog.Builder(this)
+                        .setTitle("無法取得學校資訊")
+                        .setMessage("發生錯誤，請聯絡開發人員！\n錯誤訊息：No School.")
+                        .setPositiveButton("OK"){ _, _ ->
                             startActivity(Intent(this@LoginActivity, RemLoginActivity::class.java))
                         }
-                    }
+                        .show()
                 }
             }else{
-                alert("發生錯誤，請聯絡開發人員！\n錯誤訊息：$it","無法取得學校資訊"){
-                    positiveButton("OK"){
+//                alert("發生錯誤，請聯絡開發人員！\n錯誤訊息：$it","無法取得學校資訊"){
+//                    positiveButton("OK"){
+//                        startActivity(Intent(this@LoginActivity, RemLoginActivity::class.java))
+//                    }
+//                }
+                AlertDialog.Builder(this)
+                    .setTitle("無法取得學校資訊")
+                    .setMessage("發生錯誤，請聯絡開發人員！\n錯誤訊息：$it")
+                    .setPositiveButton("OK"){ _, _ ->
                         startActivity(Intent(this@LoginActivity, RemLoginActivity::class.java))
                     }
-                }
+                    .show()
             }
         }, Response.ErrorListener {
             //indicator
@@ -92,11 +108,18 @@ class LoginActivity : AppCompatActivity() {
             window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
             //indicator
             //logout
-            alert("請確定你的網路連接！","無法取得學校資訊"){
-                positiveButton("OK"){
+//            alert("請確定你的網路連接！","無法取得學校資訊"){
+//                positiveButton("OK"){
+//                    startActivity(Intent(this@LoginActivity, RemLoginActivity::class.java))
+//                }
+//            }
+            AlertDialog.Builder(this)
+                .setTitle("無法取得學校資訊")
+                .setMessage("請確定你的網路連接！")
+                .setPositiveButton("OK"){ _, _ ->
                     startActivity(Intent(this@LoginActivity, RemLoginActivity::class.java))
                 }
-            }
+                .show()
         }){
             override fun getParams(): MutableMap<String, String> {
                 val postParam: MutableMap<String, String> = HashMap()
@@ -128,10 +151,10 @@ class LoginActivity : AppCompatActivity() {
         window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         //indicator
         //keyboard
-        username.onEditorAction(EditorInfo.IME_ACTION_DONE)
-        password.onEditorAction(EditorInfo.IME_ACTION_DONE)
-        val usr = username.text.toString()
-        val psw = password.text.toString()
+        activityBinding.username.onEditorAction(EditorInfo.IME_ACTION_DONE)
+        activityBinding.password.onEditorAction(EditorInfo.IME_ACTION_DONE)
+        val usr = activityBinding.username.text.toString()
+        val psw = activityBinding.password.text.toString()
         val timeStamp = (System.currentTimeMillis() / 1000).toString()
         val hashOri = "{\"id\":\"$usr\",\"password\":\"$psw\",\"time\":\"$timeStamp\"}"
         println(hashOri)
@@ -147,7 +170,7 @@ class LoginActivity : AppCompatActivity() {
                 progressBarHandler.hide()
                 window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 //indicator
-                if (remSwitch.isChecked){
+                if (activityBinding.remSwitch.isChecked){
                     preferences.edit()
                         .putString("username", usr)
                         .putString("org_id", chosenID)
@@ -169,9 +192,14 @@ class LoginActivity : AppCompatActivity() {
                 window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 //indicator
 
-                alert("請注意帳號密碼是否錯誤，若持續失敗請通知開發人員!","登入失敗"){
-                    positiveButton("OK"){}
-                }.show()
+//                alert("請注意帳號密碼是否錯誤，若持續失敗請通知開發人員!","登入失敗"){
+//                    positiveButton("OK"){}
+//                }.show()
+                AlertDialog.Builder(this)
+                    .setTitle("登入失敗")
+                    .setMessage("請注意帳號密碼是否錯誤，若持續失敗請通知開發人員!")
+                    .setPositiveButton("OK"){ _, _ ->}
+                    .show()
             }
         },Response.ErrorListener { error ->
             //indicator
@@ -179,9 +207,14 @@ class LoginActivity : AppCompatActivity() {
             window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
             //indicator
             println(error)
-            alert ("請注意網路狀態，或通知開發人員!","不知名的錯誤"){
-            positiveButton("OK"){}
-        }.show()
+//            alert ("請注意網路狀態，或通知開發人員!","不知名的錯誤"){
+//                positiveButton("OK"){}
+//            }.show()
+            AlertDialog.Builder(this)
+                .setTitle("不知名的錯誤")
+                .setMessage("請注意網路狀態，或通知開發人員!")
+                .setPositiveButton("OK"){ _, _ ->}
+                .show()
         }){
             override fun getParams(): MutableMap<String, String> {
                 val postParam: MutableMap<String, String> = HashMap()

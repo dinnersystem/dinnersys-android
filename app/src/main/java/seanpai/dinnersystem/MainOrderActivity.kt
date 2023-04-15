@@ -11,13 +11,16 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.android.synthetic.main.activity_main_order.*
+import seanpai.dinnersystem.databinding.ActivityMainOrderBinding
 
 class MainOrderActivity : AppCompatActivity() {
     private lateinit var progressBarHandler: ProgressBarHandler
+    private lateinit var activityBinding: ActivityMainOrderBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main_order)
+        activityBinding = ActivityMainOrderBinding.inflate(layoutInflater)
+        setContentView(activityBinding.root)
         //indicator start
         progressBarHandler = ProgressBarHandler(this)
         //indicator end
@@ -31,12 +34,12 @@ class MainOrderActivity : AppCompatActivity() {
         foodArray.add(FoodInfo("小計","x1", selOrder1.cost))
 
         val layoutManager = LinearLayoutManager(this)
-        orderList.layoutManager = layoutManager
-        val dividerItemDecoration = DividerItemDecoration(orderList.context,layoutManager.orientation)
-        orderList.addItemDecoration(dividerItemDecoration)
+        activityBinding.orderList.layoutManager = layoutManager
+        val dividerItemDecoration = DividerItemDecoration(activityBinding.orderList.context,layoutManager.orientation)
+        activityBinding.orderList.addItemDecoration(dividerItemDecoration)
 
         val adapter = OrderAdapter(this)
-        orderList.adapter = adapter
+        activityBinding.orderList.adapter = adapter
         adapter.notifyDataSetChanged()
 
         //this.confirmText.text = confirmString

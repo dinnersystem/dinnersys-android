@@ -10,8 +10,8 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import kotlinx.android.synthetic.main.activity_guandon_order_list.*
-import kotlinx.android.synthetic.main.guandon_list_cell.view.*
+import seanpai.dinnersystem.databinding.ActivityGuandonOrderListBinding
+import seanpai.dinnersystem.databinding.GuandonListCellBinding
 
 class GuandonOrderListActivity : AppCompatActivity() {
     var totalCost = 0
@@ -20,12 +20,15 @@ class GuandonOrderListActivity : AppCompatActivity() {
     var noodleCount = 0
     val lowCost = selectedFactoryArr.getJSONObject(0).getJSONObject("department").getJSONObject("factory").getString("minimum").toInt()
 
+    private lateinit var activityBinding: ActivityGuandonOrderListBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_guandon_order_list)
+        activityBinding = ActivityGuandonOrderListBinding.inflate(layoutInflater)
+        setContentView(activityBinding.root)
         val adaptor = TableAdaptor(this, {updateValue()})
-        this.guandonTableView.adapter = adaptor
-        this.balanceText.text = "餘額：" + balance.toString() + "$"
+        activityBinding.guandonTableView.adapter = adaptor
+        activityBinding.balanceText.text = "餘額：" + balance.toString() + "$"
         dishIDtoIndex = IntArray(1000)
         for(i in 0 until selectedFactoryArr.length()){
             quantityDict[selectedFactoryArr.getJSONObject(i).getString("dish_id")] = 0
@@ -55,8 +58,8 @@ class GuandonOrderListActivity : AppCompatActivity() {
                 }
             }
         }
-        totalText.text = "$totalCost$"
-        guandonButton.isEnabled = (totalCost >= lowCost && totalSelected <= 20 && noodleCount < 2)
+        activityBinding.totalText.text = "$totalCost$"
+        activityBinding.guandonButton.isEnabled = (totalCost >= lowCost && totalSelected <= 20 && noodleCount < 2)
     }
 
     fun sendOrder(view:View){
@@ -104,6 +107,7 @@ class GuandonOrderListActivity : AppCompatActivity() {
         override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
             val layoutInflater = LayoutInflater.from(mContext)
             val layout = layoutInflater.inflate(R.layout.guandon_list_cell, parent, false)
+            val binding = GuandonListCellBinding.bind(layout)
             val dishCost = selectedFactoryArr.getJSONObject(position).getString("dish_cost")
             val dishName = selectedFactoryArr.getJSONObject(position).getString("dish_name")
             val dishID = selectedFactoryArr.getJSONObject(position).getString("dish_id")
@@ -118,53 +122,53 @@ class GuandonOrderListActivity : AppCompatActivity() {
 			/* ------------------------- */
 			
             dishIDtoIndex[dishID.toInt()] = position
-            layout.plus_button.setOnClickListener {
+            binding.plusButton.setOnClickListener {
                 var quantity = quantityDict[dishID]!!
                 quantity += 1
                 if(quantity==5 || quantity == dishRemain.toInt()){
-                    layout.plus_button.isEnabled = false
-                    layout.stepperDisplay.text = "${quantity}份"
+                    binding.plusButton.isEnabled = false
+                    binding.stepperDisplay.text = "${quantity}份"
                     quantityDict[dishID] = quantity
                 }else {
-                    layout.stepperDisplay.text = "${quantity}份"
+                    binding.stepperDisplay.text = "${quantity}份"
                     quantityDict[dishID] = quantity
                 }
                 if (quantity >= 1) {
-                    layout.minus_button.isEnabled = true
+                    binding.minusButton.isEnabled = true
                 }
                 updateValue()
             }
-            layout.minus_button.setOnClickListener {
+            binding.minusButton.setOnClickListener {
                 var quantity = quantityDict[dishID]!!
                 quantity -= 1
                 if(quantity==0){
-                    layout.minus_button.isEnabled = false
-                    layout.stepperDisplay.text = "${quantity}份"
+                    binding.minusButton.isEnabled = false
+                    binding.minusButton.text = "${quantity}份"
                     quantityDict[dishID] = quantity
                 }else {
-                    layout.stepperDisplay.text = "${quantity}份"
+                    binding.minusButton.text = "${quantity}份"
                     quantityDict[dishID] = quantity
                 }
                 if(quantity<5 && quantity< dishRemain.toInt()){
-                    layout.plus_button.isEnabled = true
+                    binding.minusButton.isEnabled = true
                 }
                 updateValue()
             }
-            layout.titleText.text = dishName
-            layout.detailTitleText.text = "$dishCost$, 剩${dishRemain}個"
+            binding.titleText.text = dishName
+            binding.detailTitleText.text = "$dishCost$, 剩${dishRemain}個"
             val bestSeller = selectedFactoryArr.getJSONObject(position).getString("best_seller")
             val isBestSeller = bestSeller == "true"
             if(isBestSeller){
-                layout.titleText.setTextColor(ContextCompat.getColor(mContext,R.color.special))
-                layout.detailTitleText.text = layout.detailTitleText.text.toString() + "，人氣商品！"
-                layout.detailTitleText.setTextColor(ContextCompat.getColor(mContext,R.color.special))
+                binding.titleText.setTextColor(ContextCompat.getColor(mContext,R.color.special))
+                binding.detailTitleText.text = binding.detailTitleText.text.toString() + "，人氣商品！"
+                binding.detailTitleText.setTextColor(ContextCompat.getColor(mContext,R.color.special))
             }else{
-                layout.titleText.setTextColor(Color.BLACK)
-                layout.detailTitleText.setTextColor(Color.BLACK)
+                binding.titleText.setTextColor(Color.BLACK)
+                binding.detailTitleText.setTextColor(Color.BLACK)
             }
-            layout.stepperDisplay.text = "${quantityDict[dishID]!!}份"
-            layout.plus_button.isEnabled = dishRemain.toInt() != 0 && quantityDict[dishID]!! < 5
-            layout.minus_button.isEnabled = quantityDict[dishID]!! > 0
+            binding.stepperDisplay.text = "${quantityDict[dishID]!!}份"
+            binding.plusButton.isEnabled = dishRemain.toInt() != 0 && quantityDict[dishID]!! < 5
+            binding.minusButton.isEnabled = quantityDict[dishID]!! > 0
             return layout
         }
     }

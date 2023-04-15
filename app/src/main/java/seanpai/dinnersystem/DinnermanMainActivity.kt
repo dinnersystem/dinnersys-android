@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,29 +18,29 @@ import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import kotlinx.android.synthetic.main.activity_dinnerman_main.*
-import kotlinx.android.synthetic.main.history_list_cell.view.*
-import org.jetbrains.anko.alert
-import org.jetbrains.anko.toast
 import org.json.JSONArray
 import org.json.JSONObject
+import seanpai.dinnersystem.databinding.ActivityDinnermanMainBinding
 import java.text.SimpleDateFormat
 import java.util.*
 
 class DinnermanMainActivity : AppCompatActivity() {
 
     private lateinit var progressBarHandler: ProgressBarHandler
+    private lateinit var activityBinding: ActivityDinnermanMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_dinnerman_main)
+
+        activityBinding = ActivityDinnermanMainBinding.inflate(layoutInflater)
+        setContentView(activityBinding.root)
 
         progressBarHandler = ProgressBarHandler(this)
 
         val linearLayoutManager = LinearLayoutManager(this)
-        tableView.layoutManager = linearLayoutManager
-        val dividerItemDecoration = DividerItemDecoration(tableView.context, linearLayoutManager.orientation)
-        tableView.addItemDecoration(dividerItemDecoration)
+        activityBinding.tableView.layoutManager = linearLayoutManager
+        val dividerItemDecoration = DividerItemDecoration(activityBinding.tableView.context, linearLayoutManager.orientation)
+        activityBinding.tableView.addItemDecoration(dividerItemDecoration)
 
         reloadData()
     }
@@ -48,7 +49,8 @@ class DinnermanMainActivity : AppCompatActivity() {
         //super.onBackPressed()
         if(back){
             back = false
-            toast("再按一次以登出")
+//            toast("再按一次以登出")
+            Toast.makeText(this, "再按一次以登出", Toast.LENGTH_SHORT).show()
         }else{
             startActivity(Intent(this@DinnermanMainActivity, RemLoginActivity::class.java))
         }
@@ -106,15 +108,22 @@ class DinnermanMainActivity : AppCompatActivity() {
                             }
                             progressBarHandler.hide()
                             val adapter = HistoryAdapter(this)
-                            tableView.adapter = adapter
+                            activityBinding.tableView.adapter = adapter
                             adapter.notifyDataSetChanged()
                         }else{
                             progressBarHandler.hide()
-                            alert("請重新登入","您已經登出"){
-                                positiveButton("OK"){
+//                            alert("請重新登入","您已經登出"){
+//                                positiveButton("OK"){
+//                                    startActivity(Intent(this@DinnermanMainActivity, LoginActivity::class.java))
+//                                }
+//                            }.show()
+                            AlertDialog.Builder(this)
+                                .setTitle("請重新登入")
+                                .setMessage("您已經登出")
+                                .setPositiveButton("OK") { _, _ ->
                                     startActivity(Intent(this@DinnermanMainActivity, LoginActivity::class.java))
                                 }
-                            }.show()
+                                .show()
                         }
                     }else{
                         progressBarHandler.hide()
@@ -123,29 +132,48 @@ class DinnermanMainActivity : AppCompatActivity() {
                         DMHistoryArr.clear()
                         DMListArr.clear()
                         val adapter = HistoryAdapter(this)
-                        tableView.adapter = adapter
+                        activityBinding.tableView.adapter = adapter
 
                         adapter.notifyDataSetChanged()
-                        alert("請嘗試重新整理或進行點餐！","無點餐資料"){
-                            positiveButton("OK"){
+//                        alert("請嘗試重新整理或進行點餐！","無點餐資料"){
+//                            positiveButton("OK"){
+//                            }
+//                        }.show()
+                        AlertDialog.Builder(this)
+                            .setTitle("請嘗試重新整理或進行點餐！")
+                            .setMessage("無點餐資料")
+                            .setPositiveButton("OK") { _, _ ->
                             }
-                        }.show()
+                            .show()
                     }
                 }else{
                     progressBarHandler.hide()
                     //logout
-                    alert("請重新登入","您已經登出"){
-                        positiveButton("OK"){
+//                    alert("請重新登入","您已經登出"){
+//                        positiveButton("OK"){
+//                            startActivity(Intent(this@DinnermanMainActivity, LoginActivity::class.java))
+//                        }
+//                    }
+                    AlertDialog.Builder(this)
+                        .setTitle("請重新登入")
+                        .setMessage("您已經登出")
+                        .setPositiveButton("OK") { _, _ ->
                             startActivity(Intent(this@DinnermanMainActivity, LoginActivity::class.java))
                         }
-                    }
+                        .show()
                 }
             },
             Response.ErrorListener {
                 progressBarHandler.hide()
-                alert ("請注意網路狀態，或通知開發人員!","不知名的錯誤"){
-                    positiveButton("OK"){}
-                }.show()
+//                alert ("請注意網路狀態，或通知開發人員!","不知名的錯誤"){
+//                    positiveButton("OK"){}
+//                }.show()
+                AlertDialog.Builder(this)
+                    .setTitle("請注意網路狀態，或通知開發人員!")
+                    .setMessage("不知名的錯誤")
+                    .setPositiveButton("OK") { _, _ ->
+                    }
+                    .show()
             }
         ){
             override fun getParams(): MutableMap<String, String> {

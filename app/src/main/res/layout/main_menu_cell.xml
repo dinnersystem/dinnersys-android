@@ -4,11 +4,17 @@
                                                    android:layout_height="match_parent" android:id="@+id/relativeLayout">
 
     <TextView
-            android:layout_width="wrap_content"
+            android:id="@+id/title"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:id="@+id/title" android:textSize="18sp" app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginStart="16dp" android:layout_marginTop="12dp"
-            app:layout_constraintTop_toTopOf="parent" android:text="TextView"/>
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="16dp"
+            android:text="TextView"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toStartOf="@+id/proceedOrderButton"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
     <TextView
             android:text="TextView"
             android:layout_width="wrap_content"
