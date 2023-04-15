@@ -36,12 +36,15 @@
 
     <TextView
             android:id="@+id/titleText"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
             android:text="TextView"
             android:textColor="@color/pureBlack"
+            android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="@+id/contentView"
+            app:layout_constraintEnd_toStartOf="@+id/detailText"
             app:layout_constraintStart_toStartOf="@+id/contentView"
             app:layout_constraintTop_toTopOf="@+id/contentView" />
 
