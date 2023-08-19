@@ -5,10 +5,10 @@
     <string name="password">密碼</string>
     <string name="rem_pass">記住密碼</string>
     <string name="input_help_account">
-        帳號(ex. 06610089)
+        帳號(ex. 12210089)
     </string>
     <string name="input_help_password">
-        密碼預設為生日(ex. 911023)
+        密碼預設為生日(ex. 940423)
     </string>
     <string name="welcome_title">
         歡迎使用午餐系統，\n$name.
