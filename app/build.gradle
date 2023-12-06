@@ -14,8 +14,8 @@ android {
         targetSdkVersion 33
         compileSdkVersion 33
         //1101 + major(digit:2) + minor(digit:2) + patch(digit:2)
-        versionCode 1101010202
-        versionName "1.02.02"
+        versionCode 1101010203
+        versionName "1.02.03"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }

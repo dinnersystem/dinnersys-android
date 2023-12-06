@@ -14,7 +14,7 @@
         歡迎使用午餐系統，\n$name.
     </string>
     <string name="balance_title" tools:ignore="TypographyDashes">
-        卡號：000000\n餘額：--元（非即時）
+        卡號：000000\n餘額：--元（非即時）\n2023/01/01 00:00:00
     </string>
     <string name="login_text">登入</string>
     <string name="title_activity_student_main">StudentMainActivity</string>

@@ -20,6 +20,9 @@ import com.journeyapps.barcodescanner.BarcodeEncoder
 import org.json.JSONArray
 import org.json.JSONObject
 import seanpai.dinnersystem.databinding.ActivityStudentMainBinding
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.HashMap
 
 
 class StudentMainActivity : AppCompatActivity() {
@@ -145,7 +148,12 @@ class StudentMainActivity : AppCompatActivity() {
                 val bitmap = barcodeEncoder.createBitmap(bitMatrix)
                 activityBinding.barcodeView.setImageBitmap(bitmap)
                 balance = posInfo.getString("money").toInt()
-                activityBinding.cardDetail.text = "卡號：${posInfo.getString("card")}\n餘額：${posInfo.getString("money")}元（非即時）"
+
+                val now = getCurrentDateTime()
+                val dateFormat = SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.TAIWAN)
+                val dateString = dateFormat.format(now)
+
+                activityBinding.cardDetail.text = "卡號：${posInfo.getString("card")}\n餘額：${posInfo.getString("money")}元（非即時）\n${dateString}"
             } else if (it.contains("Operation not allowed")){
                 //indicator
                 progBarHandler.hide()
