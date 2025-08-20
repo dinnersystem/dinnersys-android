@@ -4,7 +4,10 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="com.google.android.gms.permission.AD_ID" tools:node="remove"/>
-
+    <uses-feature android:name="android.hardware.camera" android:required="false"/>
+    <uses-feature android:name="android.hardware.camera.autofocus" android:required="false"/>
+    <uses-feature android:name="android.hardware.camera.flash" android:required="false"/>
+    <uses-feature android:name="android.hardware.camera.front" android:required="false"/>
 
     <application
             android:name=".DinnerSystem"
@@ -27,14 +30,6 @@
                 android:configChanges="orientation"
                 android:screenOrientation="portrait"
                 tools:ignore="LockedOrientationActivity" />
-
-        <service
-                android:name=".FCMService"
-                android:exported="false">
-            <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT" />
-            </intent-filter>
-        </service>
 
         <activity
                 android:name=".RemLoginActivity"
@@ -122,12 +117,6 @@
                 android:screenOrientation="portrait"
                 tools:ignore="LockedOrientationActivity" />
 
-        <meta-data
-                android:name="com.google.firebase.messaging.default_notification_channel_id"
-                android:value="@string/default_notification_channel_id" />
-        <meta-data
-                android:name="com.google.firebase.messaging.default_notification_icon"
-                android:resource="@drawable/dinnersys_icon_grey_transp" />
     </application>
 
 </manifest>
